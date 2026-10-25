@@ -1,0 +1,1173 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><meta name="theme-color" content="#0b080a"><title>Mochi 🍡 – Class 10 Planner</title><style>
+:root{--bg:#0b080a;--card:#1a1217;--ink:#fff1f6;--mute:#d3b3c3;--line:#3d2632;--pri:#ff4fa3;--pri2:#ff9acb;--onpri:#1c0612;--ok:#6ee7b0;--okbg:#10291e;--bad:#ff7a90;--badbg:#3b1520;--warn:#ffc857;--soft:#2b1824;--chip:#261a21;--sh:0 2px 10px rgba(0,0,0,.55)}
+
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;color-scheme:dark;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Noto Sans Devanagari",sans-serif;font-size:17px;line-height:1.45}
+#app{max-width:720px;margin:0 auto;padding:12px 12px 96px}
+h1,h2,h3{margin:.2em 0 .4em;line-height:1.2}h1{font-size:1.5rem}h2{font-size:1.25rem}h3{font-size:1.05rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin:12px 0;box-shadow:var(--sh)}
+.mute{color:var(--mute);font-size:.9rem}.small{font-size:.85rem}.center{text-align:center}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.grow{flex:1}
+button,.btn{font:inherit;min-height:48px;padding:10px 16px;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;font-weight:600}
+button:active{transform:scale(.98)}button:disabled{opacity:.45}
+.btn.pri,button.pri{background:var(--pri);border-color:var(--pri);color:var(--onpri)}
+.btn.ok,button.ok{background:var(--ok);border-color:var(--ok);color:#06210f}
+.btn.ghost{background:transparent}
+.big{width:100%;min-height:68px;font-size:1.25rem;border-radius:20px}
+.full{width:100%}
+input,select,textarea{font:inherit;min-height:48px;padding:8px 12px;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--ink);max-width:100%}
+label{display:block;margin:8px 0 4px;font-weight:600}
+.nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;z-index:20;padding-bottom:env(safe-area-inset-bottom)}
+.nav button{flex:1;border:none;border-radius:0;min-height:62px;background:transparent;font-size:.95rem;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--mute)}
+.nav button .ic{font-size:1.5rem;line-height:1}.nav button.on{color:var(--pri)}
+.seg{display:flex;gap:6px;background:var(--chip);padding:5px;border-radius:16px;margin:8px 0}
+.seg button{flex:1;border:none;background:transparent;min-height:46px;border-radius:12px;padding:6px}
+.seg button.on{background:var(--pri);box-shadow:var(--sh);color:var(--onpri)}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.stat{background:var(--chip);border-radius:16px;padding:10px 12px}.stat b{font-size:1.35rem;display:block}
+.bar{height:12px;background:var(--chip);border-radius:8px;overflow:hidden;position:relative;border:1px solid var(--line)}
+.bar i{display:block;position:absolute;left:0;top:0;bottom:0;border-radius:8px}
+.bar i.a{background:var(--pri2)}.bar i.b{background:var(--ok)}
+.bar.thin{height:8px}
+.mochi{display:flex;gap:10px;align-items:flex-end;margin:8px 0}
+.mochi svg{flex:0 0 74px;width:74px;height:74px;filter:drop-shadow(0 0 8px rgba(255,79,163,.5))}
+.bubble{position:relative;background:var(--card);border:2px solid var(--pri2);border-radius:18px;padding:10px 14px;flex:1;font-weight:500}
+.bubble:before{content:"";position:absolute;left:-10px;bottom:16px;border:8px solid transparent;border-right-color:var(--pri2);border-left:0}
+.task{display:flex;gap:10px;align-items:center;border-left:8px solid var(--c,#999);padding:10px 10px 10px 12px;border-radius:14px;background:var(--card);border:1px solid var(--line);border-left:8px solid var(--c,#999);margin:8px 0}
+.task.done{opacity:.6}.task .t{flex:1;min-width:0}.task .t b{display:block}
+.task button{min-width:84px}
+.chip{display:inline-block;padding:3px 10px;border-radius:999px;background:var(--chip);font-size:.8rem;font-weight:600;margin:2px 4px 2px 0;border:1px solid var(--line)}
+.chip.ok{background:var(--okbg);color:var(--ok)}.chip.bad{background:var(--badbg);color:var(--bad)}.chip.off{background:var(--soft)}
+.topic{display:flex;gap:10px;align-items:center;width:100%;text-align:left;min-height:60px;padding:10px 12px;border-radius:16px;border:2px solid var(--line);background:var(--card);margin:6px 0}
+.topic .bx{flex:0 0 36px;height:36px;border-radius:10px;border:3px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.topic.s1{background:var(--okbg);border-color:var(--ok)}.topic.s1 .bx{background:var(--ok);border-color:var(--ok);color:#06210f}
+.topic.s2{background:var(--okbg);border-color:var(--ok);box-shadow:inset 0 0 0 2px var(--ok)}.topic.s2 .bx{background:var(--ok);border-color:var(--ok);color:#06210f}
+.topic.f{border-color:var(--warn);background:var(--soft)}
+.topic .tn{flex:1;font-weight:600}
+.star{flex:0 0 52px;min-width:52px;height:52px;padding:0;font-size:1.5rem;border-radius:14px}
+.star.on{background:var(--warn);border-color:var(--warn)}.star,.pen{flex:0 0 48px;min-width:48px}
+.tick{display:flex;align-items:center;gap:8px;min-height:48px;padding:6px 12px;border-radius:14px;border:2px solid var(--line);background:var(--card);margin:4px 4px 4px 0}
+.vid{display:flex;align-items:center;gap:8px;min-height:44px;padding:4px 12px;border-radius:14px;border:2px solid var(--line);background:var(--card);margin:0 0 6px 46px;font-size:.9rem}
+.vid.on{background:#3a1430;border-color:var(--pri);color:#ffc2e0}
+.tick.on{background:var(--okbg);border-color:var(--ok);color:var(--ok)}
+.acc{width:100%;text-align:left;display:block;min-height:64px;padding:12px;border-radius:16px;margin:8px 0;background:var(--card)}
+.ov{position:fixed;inset:0;background:var(--bg);z-index:50;overflow:auto;padding:12px;-webkit-overflow-scrolling:touch}
+.ov .in{max-width:720px;margin:0 auto;padding-bottom:40px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:90;display:flex;align-items:center;justify-content:center;padding:18px}
+.modal .box{background:var(--card);border:2px solid var(--pri);border-radius:20px;padding:18px;max-width:420px;width:100%}
+.opt{display:flex;gap:10px;width:100%;text-align:left;margin:8px 0;min-height:56px;align-items:flex-start;border-radius:14px;padding:12px}
+.opt .l{flex:0 0 28px;height:28px;border-radius:50%;background:var(--chip);display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.opt.ok{background:var(--okbg);border-color:var(--ok)}.opt.bad{background:var(--badbg);border-color:var(--bad)}
+.fb{border-radius:14px;padding:10px 12px;margin:10px 0}.fb.ok{background:var(--okbg)}.fb.bad{background:var(--badbg)}
+.case{background:var(--chip);border-radius:12px;padding:10px;margin:8px 0;font-size:.95rem}
+.q{white-space:pre-wrap;font-size:1.08rem;font-weight:600;margin:8px 0}
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:#2b1824;border:2px solid var(--pri);color:var(--ink);padding:12px 18px;border-radius:14px;z-index:99;max-width:90%;text-align:center}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.cal .h{font-size:.75rem;color:var(--mute)}
+.cal button{min-height:44px;padding:0;border-radius:10px;font-size:.9rem;border:2px solid transparent;position:relative}
+.cal .studied{background:var(--ok);color:#06210f}.cal .missed{background:var(--badbg);color:var(--bad);border-color:var(--bad)}
+.cal .rest{background:var(--chip);color:var(--mute)}.cal .frozen{background:#15293d;color:#9fd0ff}.cal .today{border-color:var(--pri);font-weight:800}.cal .fut{opacity:.4}.cal .pre{opacity:.25}
+.legend span{margin-right:10px;font-size:.8rem;white-space:nowrap}
+.dot{display:inline-block;width:12px;height:12px;border-radius:4px;vertical-align:-1px;margin-right:4px}
+.chart{display:flex;align-items:flex-end;gap:6px;height:150px;padding:8px 4px;overflow-x:auto;border-bottom:2px solid var(--line)}
+.chart .c{flex:0 0 38px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}
+.chart .c i{display:block;width:30px;border-radius:6px 6px 0 0;min-height:3px}
+.chart .c span{font-size:.7rem;font-weight:700}
+.warn{background:var(--soft);border:1px solid var(--warn);border-radius:12px;padding:10px 12px;margin:10px 0}
+.weekrow{display:flex;gap:4px}.weekrow div{flex:1;text-align:center;padding:6px 0;border-radius:10px;background:var(--chip);font-size:.8rem}
+.weekrow .studied{background:var(--ok);color:#06210f}.weekrow .missed{background:var(--badbg);color:var(--bad)}.weekrow .today{outline:2px solid var(--pri)}
+table.t{width:100%;border-collapse:collapse;font-size:.88rem}table.t td,table.t th{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left}
+details summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:600}
+.pts{margin:6px 0;padding-left:20px}.pts li{margin:4px 0}
+.src{font-size:.78rem;color:var(--mute);margin-top:6px}
+@media (min-width:560px){.stats{grid-template-columns:repeat(4,1fr)}}
+/* Mochi animation */
+.mo{overflow:visible}.mo *{transform-box:fill-box}
+.mo-all{transform-origin:50% 100%}
+.mo-body{animation:moBob 3.4s ease-in-out infinite;transform-origin:50% 100%}
+.mo-eye{animation:moBlink 5s infinite;transform-origin:50% 50%}
+.mo-ear{transform-origin:50% 95%}.mo-ear.l{animation:moEarL 6s ease-in-out infinite}.mo-ear.r{animation:moEarR 6s ease-in-out 1.2s infinite}
+.mo-arm{transform-origin:20% 25%}
+.mo-sp{opacity:0}.mo-sp path{transform-origin:50% 50%}
+.m-s{display:none}
+@keyframes moBob{0%,100%{transform:translateY(0) scale(1,1)}50%{transform:translateY(-3px) scale(1.015,.985)}}
+@keyframes moBlink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.08)}}
+@keyframes moEarL{0%,80%,100%{transform:rotate(0)}85%{transform:rotate(-9deg)}90%{transform:rotate(5deg)}95%{transform:rotate(-4deg)}}
+@keyframes moEarR{0%,80%,100%{transform:rotate(0)}85%{transform:rotate(9deg)}90%{transform:rotate(-5deg)}95%{transform:rotate(4deg)}}
+@keyframes moJump{0%{transform:translateY(0) scale(1.08,.9)}25%{transform:translateY(-22px) scale(.95,1.08)}50%{transform:translateY(0) scale(1.08,.92)}70%{transform:translateY(-10px)}100%{transform:translateY(0) scale(1,1)}}
+@keyframes moWave{0%,100%{transform:rotate(0)}20%{transform:rotate(-35deg)}40%{transform:rotate(15deg)}60%{transform:rotate(-35deg)}80%{transform:rotate(10deg)}}
+@keyframes moSp{0%{opacity:0}20%{opacity:1}100%{opacity:0}}
+@keyframes moSpin{0%{transform:scale(.2) rotate(0)}50%{transform:scale(1.25) rotate(60deg)}100%{transform:scale(.6) rotate(120deg)}}
+@keyframes moSad{0%,100%{transform:rotate(0) translateY(0)}20%{transform:rotate(-6deg) translateY(2px)}40%{transform:rotate(5deg) translateY(2px)}60%{transform:rotate(-4deg) translateY(2px)}80%{transform:rotate(2deg)}}
+@keyframes moDrop{0%,100%{transform:rotate(0)}30%,70%{transform:rotate(18deg)}}
+@keyframes moEnc{0%,100%{transform:translateY(0)}30%{transform:translateY(-9px)}60%{transform:translateY(0)}80%{transform:translateY(-4px)}}
+.mo.cheer .mo-all{animation:moJump 1.1s ease-in-out 1}.mo.cheer .mo-body{animation:none}.mo.cheer .mo-arm{animation:moWave 1.1s ease-in-out .3s 1}
+.mo.cheer .mo-sp{animation:moSp 1.6s ease-out 1}.mo.cheer .mo-sp path{animation:moSpin 1.6s ease-out 1}
+.mo.sad .mo-all{animation:moSad 1.3s ease-in-out 1}.mo.sad .mo-body{animation:none}.mo.sad .m-h{display:none}.mo.sad .m-s{display:inline}.mo.sad .mo-ear{animation:moDrop 1.3s ease-in-out 1}
+.mo.enc .mo-all{animation:moEnc .9s ease-in-out 2}.mo.enc .mo-arm{animation:moWave 1s ease-in-out 1}.mo.enc .mo-body{animation:none}
+@media (prefers-reduced-motion:reduce){.mo *,.mo{animation:none!important}.mo.cheer .mo-sp{opacity:1}.mo.sad .m-h{display:none}.mo.sad .m-s{display:inline}}
+.pen{height:48px;padding:0;font-size:1.25rem;border-radius:14px}
+.sheet{position:fixed;inset:0;background:var(--bg);z-index:70;overflow:auto;padding:12px;-webkit-overflow-scrolling:touch}.sheet .in{max-width:720px;margin:0 auto;padding-bottom:60px}
+.erow{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}.erow .grow{min-width:0;overflow-wrap:anywhere}
+.chip.ed{background:#3a1430;color:#ffc2e0;border-color:var(--pri)}
+.dayrow{width:100%;text-align:left;display:block;min-height:56px;border-radius:16px;margin:8px 0;padding:10px 12px;background:var(--card)}
+.edf{background:var(--chip);border-radius:14px;padding:10px;margin:8px 0}
+.opt:disabled{opacity:1}.opt.ok,.opt.bad{color:var(--ink)}.opt.ok .l{background:var(--ok);color:#06210f}.opt.bad .l{background:var(--bad);color:#2a0710}
+.topic:disabled{opacity:1}
+</style></head><body><div id="app"></div><nav class="nav" id="nav"></nav><div class="ov" id="ov" hidden></div><script>
+// Syllabus data (CBSE Class 10, session 2026-27). '~' prefix on a topic = school-assessed only (not in board paper). bonus:true chapter = school/internal only.
+var SUBJECTS = [
+{id:'maths',name:'Maths',emoji:'📐',color:'#7c5cff',w:3.2,m:16,chapters:[
+{id:'m1',n:'Real Numbers',t:['Fundamental Theorem of Arithmetic','HCF & LCM by prime factorisation','Proof: √2 is irrational','Proofs: √3, √5, 3+2√5 irrational','Word problems on HCF/LCM']},
+{id:'m2',n:'Polynomials',t:['Zeroes of a polynomial','Graph of a polynomial & number of zeroes','Zeroes & coefficients (quadratic)','Forming a quadratic from sum & product','Problems on zeroes & coefficients']},
+{id:'m3',n:'Pair of Linear Equations in Two Variables',t:['Pair of equations & graphical method','Consistent / inconsistent (conditions)','Substitution method','Elimination method','Situational word problems']},
+{id:'m4',n:'Quadratic Equations',t:['Standard form & checking roots','Solving by factorisation','Quadratic formula','Discriminant & nature of roots','Word problems']},
+{id:'m5',n:'Arithmetic Progressions',t:['What is an AP; common difference','nth term of an AP','Sum of first n terms','Daily-life problems on AP']},
+{id:'m6',n:'Coordinate Geometry',t:['Cartesian plane review','Distance formula','Section formula (internal)','Mixed problems (shapes, collinear, ratio)']},
+{id:'m7',n:'Triangles',t:['Similar figures & similar triangles','Basic Proportionality Theorem (proof)','Converse of BPT','Similarity criteria: AA, SSS, SAS','Problems on similarity']},
+{id:'m8',n:'Circles',t:['Tangent to a circle','Tangent ⟂ radius (proof)','Tangents from an external point are equal (proof)','Problems on tangents']},
+{id:'m9',n:'Introduction to Trigonometry',t:['Trigonometric ratios of an acute angle','Values at 0°, 30°, 45°, 60°, 90°','Relations between the ratios','Identity sin²A + cos²A = 1 (proof)','Proving simple identities','Evaluating expressions']},
+{id:'m10',n:'Some Applications of Trigonometry',t:['Line of sight, elevation & depression','Problems with one right triangle','Problems with two right triangles (30°, 45°, 60°)']},
+{id:'m11',n:'Areas Related to Circles',t:['Circumference & area of a circle','Sector area & arc length','Segment area (60°, 90°, 120°)','Combination of plane figures']},
+{id:'m12',n:'Surface Areas and Volumes',t:['Cube, cuboid, cylinder formulas','Cone, sphere, hemisphere formulas','Combination of two solids: surface area','Combination of two solids: volume']},
+{id:'m13',n:'Statistics',t:['Mean (direct method)','Mean (assumed mean / step deviation)','Median of grouped data','Mode of grouped data']},
+{id:'m14',n:'Probability',t:['Classical definition of probability','Coins & dice problems','Cards & bag problems','Complementary events']}]},
+
+{id:'sci',name:'Science',emoji:'🔬',color:'#00b894',w:3.2,m:14,chapters:[
+{id:'s1',g:'Chemistry',n:'Chemical Reactions and Equations',t:['Chemical equations & balancing','Combination & decomposition','Displacement & double displacement','Precipitation reactions','Exothermic & endothermic','Oxidation & reduction (redox)']},
+{id:'s2',g:'Chemistry',n:'Acids, Bases and Salts',t:['Indicators & properties of acids/bases','Reactions with metals, carbonates, neutralisation','pH scale & everyday importance','NaOH, bleaching powder (chlor-alkali)','Baking soda, washing soda','Plaster of Paris','Practical: pH & properties of HCl/NaOH']},
+{id:'s3',g:'Chemistry',n:'Metals and Non-metals',t:['Physical properties','Chemical properties of metals','Reactivity series','Ionic compounds: formation & properties','Metallurgy: extraction of metals','Corrosion & prevention']},
+{id:'s4',g:'Chemistry',n:'Carbon and its Compounds',t:['Covalent bonding','Versatile nature of carbon','Hydrocarbons & homologous series','Nomenclature & functional groups','Combustion, oxidation, addition, substitution','Ethanol & ethanoic acid','Soaps & detergents']},
+{id:'s5',g:'Biology',n:'Life Processes',t:['Nutrition: photosynthesis','Heterotrophic nutrition & human digestion','Respiration (aerobic & anaerobic)','Transport in humans (heart, blood)','Transport in plants (xylem, phloem)','Excretion in humans & plants']},
+{id:'s6',g:'Biology',n:'Control and Coordination',t:['Nervous system & reflex arc','Human brain','Plant hormones & tropic movements','Animal hormones (chemical coordination)']},
+{id:'s7',g:'Biology',n:'How do Organisms Reproduce?',t:['Asexual reproduction','Sexual reproduction in flowering plants','Human reproductive system','Reproductive health & family planning','Child bearing, HIV/AIDS & women’s health']},
+{id:'s8',g:'Biology',n:'Heredity',t:['Inheritance & variation','Mendel: monohybrid cross','Mendel: dihybrid cross','Sex determination']},
+{id:'s9',g:'Physics',n:'Light – Reflection and Refraction',t:['Reflection & spherical mirrors','Image formation by mirrors','Mirror formula & magnification','Refraction & refractive index','Image formation by lenses','Lens formula, magnification & power']},
+{id:'s10',g:'Physics',n:'The Human Eye and the Colourful World',t:['Human eye & accommodation','Defects of vision & correction','Prism refraction & dispersion','Atmospheric refraction & scattering']},
+{id:'s11',g:'Physics',n:'Electricity',t:['Current, potential difference, circuits','Ohm’s law & V–I graph','Resistance & resistivity','Series & parallel combinations','Heating effect & electric power','Numericals on electricity']},
+{id:'s12',g:'Physics',n:'Magnetic Effects of Electric Current',t:['Magnetic field & field lines','Field due to straight wire (right-hand rule)','Field due to loop & solenoid','Force on a conductor; Fleming’s left-hand rule','AC vs DC & domestic circuits']},
+{id:'s13',g:'Biology',n:'Our Environment',t:['Ecosystem, food chains & webs','Trophic levels & the 10% law','Ozone depletion','Waste: biodegradable & non-biodegradable']},
+{id:'sb1',g:'Chemistry',bonus:true,n:'Periodic Classification of Elements (school-assessed only)',t:['Döbereiner, Newlands, Mendeléev','Modern periodic table & trends']},
+{id:'sb2',g:'Biology',bonus:true,n:'Evolution (school-assessed only)',t:['Acquired vs inherited traits, speciation','Fossils & human evolution']},
+{id:'sb3',g:'Physics',bonus:true,n:'Motor, EM Induction & Generator (school-assessed only)',t:['Electric motor','Electromagnetic induction & generator']}]},
+
+{id:'sst',name:'Social Science',emoji:'🌍',color:'#f39c12',w:2,m:11,chapters:[
+{id:'hi1',g:'History',n:'The Rise of Nationalism in Europe',t:['French Revolution & the idea of the nation','1815 conservatism & liberal nationalism','Unification of Germany & Italy','Visualising the nation; Balkan nationalism']},
+{id:'hi2',g:'History',n:'Nationalism in India',t:['WWI, Khilafat & Non-Cooperation','Rowlatt Satyagraha & Jallianwala Bagh','Civil Disobedience & Dandi March','Different social groups & limits of the movement','Sense of collective belonging','Map: Congress sessions & satyagrahas']},
+{id:'hi3',g:'History',n:'The Making of a Global World',t:['The pre-modern world: Silk Routes','Food travels; conquest, disease & trade','~19th century world economy (internal)','~Inter-war economy & post-war order (internal)']},
+{id:'hi4',g:'History',bonus:true,n:'The Age of Industrialisation (periodic assessment only)',t:['Before the factory age','Industrialisation in India']},
+{id:'hi5',g:'History',n:'Print Culture and the Modern World',t:['First printed books: East Asia & Europe','Print revolution & its impact','Print in India: manuscripts to newspapers','Women, reform & censorship']},
+{id:'ge1',g:'Geography',n:'Resources and Development',t:['Types of resources & development','Resource planning & sustainable development','Land use patterns','Soil types & conservation','Map: major soil types']},
+{id:'ge2',g:'Geography',n:'Forest and Wildlife Resources',t:['Biodiversity & flora/fauna','Conservation: Project Tiger, forest types','Community conservation']},
+{id:'ge3',g:'Geography',n:'Water Resources',t:['Water scarcity','Multipurpose river projects','Rainwater harvesting','Map: dams']},
+{id:'ge4',g:'Geography',n:'Agriculture',t:['Types of farming','Cropping seasons & major crops','Technical & institutional reforms','Map: crop-producing areas']},
+{id:'ge5',g:'Geography',n:'Minerals and Energy Resources',t:['Minerals: types & distribution','Conventional energy','Non-conventional energy & conservation','Map: mines, power plants']},
+{id:'ge6',g:'Geography',n:'Manufacturing Industries',t:['Importance & classification','Textile, iron & steel, other industries','Industrial pollution & control','Map: industries']},
+{id:'ge7',g:'Geography',n:'Lifelines of National Economy (map pointing only)',t:['Map: ports & airports','Roads, railways, pipelines – reading']},
+{id:'po1',g:'Political Science',n:'Power Sharing',t:['Belgium & Sri Lanka','Why power sharing is desirable','Forms of power sharing']},
+{id:'po2',g:'Political Science',n:'Federalism',t:['What is federalism; features','How federalism is practised in India','Decentralisation: panchayati raj']},
+{id:'po3',g:'Political Science',n:'Gender, Religion and Caste',t:['Gender & politics','Religion & politics (communalism)','Caste & politics']},
+{id:'po4',g:'Political Science',n:'Political Parties',t:['Why we need parties; functions','Party systems; national & state parties','Challenges & reforms']},
+{id:'po5',g:'Political Science',n:'Outcomes of Democracy',t:['Accountable & responsive government','Economic growth & inequality','Social differences, dignity & freedom']},
+{id:'ec1',g:'Economics',n:'Development',t:['Development goals & income','Per capita income & HDI','Public facilities & sustainability']},
+{id:'ec2',g:'Economics',n:'Sectors of the Indian Economy',t:['Primary, secondary, tertiary sectors','GDP & employment (underemployment)','Organised vs unorganised','Public vs private sector; MGNREGA']},
+{id:'ec3',g:'Economics',n:'Money and Credit',t:['Money as medium of exchange','Banks & RBI','Loans, credit sources & SHGs']},
+{id:'ec4',g:'Economics',n:'Globalisation and the Indian Economy',t:['What is globalisation?','Factors enabling globalisation','~Production across countries, WTO, fair globalisation (internal)']},
+{id:'ec5',g:'Economics',bonus:true,n:'Consumer Rights (project work)',t:['Consumer rights & COPRA']}]},
+
+{id:'eng',name:'English',emoji:'📖',color:'#e84393',w:1.5,m:12,chapters:[
+{id:'ep1',g:'First Flight – Prose',n:'A Letter to God',t:['Read & summary','Characters, theme & Q&A']},
+{id:'ep2',g:'First Flight – Prose',n:'Nelson Mandela: Long Walk to Freedom',t:['Read & summary','Characters, theme & Q&A']},
+{id:'ep3',g:'First Flight – Prose',n:'Two Stories about Flying',t:['His First Flight','The Black Aeroplane']},
+{id:'ep4',g:'First Flight – Prose',n:'From the Diary of Anne Frank',t:['Read & summary','Characters, theme & Q&A']},
+{id:'ep5',g:'First Flight – Prose',n:'Glimpses of India',t:['A Baker from Goa','Coorg & Tea from Assam']},
+{id:'ep6',g:'First Flight – Prose',n:'Mijbil the Otter',t:['Read & summary','Characters, theme & Q&A']},
+{id:'ep7',g:'First Flight – Prose',n:'Madam Rides the Bus',t:['Read & summary','Characters, theme & Q&A']},
+{id:'ep8',g:'First Flight – Prose',n:'The Sermon at Benares',t:['Read & summary','Theme & Q&A']},
+{id:'ep9',g:'First Flight – Prose',n:'The Proposal (Play)',t:['Read & summary','Characters, theme & Q&A']},
+{id:'eq1',g:'First Flight – Poems',n:'Dust of Snow',t:['Meaning & theme','Poetic devices & Q&A']},
+{id:'eq2',g:'First Flight – Poems',n:'Fire and Ice',t:['Meaning & theme','Poetic devices & Q&A']},
+{id:'eq3',g:'First Flight – Poems',n:'A Tiger in the Zoo',t:['Meaning & theme','Poetic devices & Q&A']},
+{id:'eq4',g:'First Flight – Poems',n:'How to Tell Wild Animals',t:['Meaning & theme','Poetic devices & Q&A']},
+{id:'eq5',g:'First Flight – Poems',n:'The Ball Poem',t:['Meaning & theme','Poetic devices & Q&A']},
+{id:'eq6',g:'First Flight – Poems',n:'Amanda!',t:['Meaning & theme','Poetic devices & Q&A']},
+{id:'eq7',g:'First Flight – Poems',n:'The Trees',t:['Meaning & theme','Poetic devices & Q&A']},
+{id:'eq8',g:'First Flight – Poems',n:'Fog',t:['Meaning & theme','Poetic devices & Q&A']},
+{id:'eq9',g:'First Flight – Poems',n:'The Tale of Custard the Dragon',t:['Meaning & theme','Poetic devices & Q&A']},
+{id:'eq10',g:'First Flight – Poems',n:'For Anne Gregory',t:['Meaning & theme','Poetic devices & Q&A']},
+{id:'ef1',g:'Footprints Without Feet',n:'A Triumph of Surgery',t:['Read & summary','Characters, theme & Q&A']},
+{id:'ef2',g:'Footprints Without Feet',n:'The Thief’s Story',t:['Read & summary','Characters, theme & Q&A']},
+{id:'ef3',g:'Footprints Without Feet',n:'The Midnight Visitor',t:['Read & summary','Characters, theme & Q&A']},
+{id:'ef4',g:'Footprints Without Feet',n:'A Question of Trust',t:['Read & summary','Characters, theme & Q&A']},
+{id:'ef5',g:'Footprints Without Feet',n:'Footprints Without Feet',t:['Read & summary','Characters, theme & Q&A']},
+{id:'ef6',g:'Footprints Without Feet',n:'The Making of a Scientist',t:['Read & summary','Characters, theme & Q&A']},
+{id:'ef7',g:'Footprints Without Feet',n:'The Necklace',t:['Read & summary','Characters, theme & Q&A']},
+{id:'ef8',g:'Footprints Without Feet',n:'Bholi',t:['Read & summary','Characters, theme & Q&A']},
+{id:'ef9',g:'Footprints Without Feet',n:'The Book That Saved the Earth',t:['Read & summary','Characters, theme & Q&A']},
+{id:'ew1',g:'Reading, Writing & Grammar',n:'Reading Comprehension',t:['Unseen passage: strategies','Practise 2 passages']},
+{id:'ew2',g:'Reading, Writing & Grammar',n:'Writing Skills',t:['Formal letter (format & practice)','Analytical paragraph']},
+{id:'ew3',g:'Reading, Writing & Grammar',n:'Grammar',t:['Tenses & subject–verb agreement','Modals & determiners','Reported speech','Gap-filling, editing & omission']},
+{id:'ew4',g:'Reading, Writing & Grammar',n:'Words and Expressions II (Workbook)',t:['Workbook Units 1–4','Workbook Units 7–11']}]},
+
+{id:'hin',name:'Hindi (Course A)',emoji:'🪔',color:'#e17055',w:1,m:12,chapters:[
+{id:'hk1',g:'क्षितिज – गद्य',n:'नेताजी का चश्मा',t:['पाठ व सार','प्रश्न-उत्तर व शब्दार्थ']},
+{id:'hk2',g:'क्षितिज – गद्य',n:'बालगोबिन भगत',t:['पाठ व सार','प्रश्न-उत्तर व शब्दार्थ']},
+{id:'hk3',g:'क्षितिज – गद्य',n:'लखनवी अंदाज़',t:['पाठ व सार','प्रश्न-उत्तर व शब्दार्थ']},
+{id:'hk4',g:'क्षितिज – गद्य',n:'एक कहानी यह भी',t:['पाठ व सार','प्रश्न-उत्तर व शब्दार्थ']},
+{id:'hk5',g:'क्षितिज – गद्य',n:'नौबतखाने में इबादत',t:['पाठ व सार','प्रश्न-उत्तर व शब्दार्थ']},
+{id:'hk6',g:'क्षितिज – गद्य',n:'संस्कृति',t:['पाठ व सार','प्रश्न-उत्तर व शब्दार्थ']},
+{id:'hq1',g:'क्षितिज – काव्य',n:'सूरदास के पद',t:['भावार्थ','प्रश्न-उत्तर']},
+{id:'hq2',g:'क्षितिज – काव्य',n:'राम-लक्ष्मण-परशुराम संवाद',t:['भावार्थ','प्रश्न-उत्तर']},
+{id:'hq3',g:'क्षितिज – काव्य',n:'आत्मकथ्य',t:['भावार्थ','प्रश्न-उत्तर']},
+{id:'hq4',g:'क्षितिज – काव्य',n:'उत्साह / अट नहीं रही है',t:['भावार्थ','प्रश्न-उत्तर']},
+{id:'hq5',g:'क्षितिज – काव्य',n:'यह दंतुरित मुसकान / फ़सल',t:['भावार्थ','प्रश्न-उत्तर']},
+{id:'hq6',g:'क्षितिज – काव्य',n:'संगतकार',t:['भावार्थ','प्रश्न-उत्तर']},
+{id:'hr1',g:'कृतिका',n:'माता का अँचल',t:['पाठ व सार','प्रश्न-उत्तर व शब्दार्थ']},
+{id:'hr2',g:'कृतिका',n:'साना-साना हाथ जोड़ि',t:['पाठ व सार','प्रश्न-उत्तर व शब्दार्थ']},
+{id:'hr3',g:'कृतिका',n:'मैं क्यों लिखता हूँ?',t:['पाठ व सार','प्रश्न-उत्तर व शब्दार्थ']},
+{id:'hg1',g:'व्याकरण',n:'वाक्य भेद (रचना के आधार पर) व वाच्य',t:['वाक्य भेद','वाच्य']},
+{id:'hg2',g:'व्याकरण',n:'पद परिचय व अलंकार',t:['पद परिचय','अलंकार (उपमा, रूपक, उत्प्रेक्षा, अतिशयोक्ति, मानवीकरण)']},
+{id:'hg3',g:'अपठित बोध',n:'अपठित गद्यांश व काव्यांश',t:['अपठित गद्यांश','अपठित काव्यांश']},
+{id:'hg4',g:'रचनात्मक लेखन',n:'रचनात्मक लेखन',t:['अनुच्छेद','औपचारिक/अनौपचारिक पत्र','ई-मेल / स्व-परिचय (बायोडाटा)','विज्ञापन / संदेश लेखन']}]}
+];
+// Quiz bank part 1: Maths + Science. Constructors:
+// M(ch,t,q,opts,ans,exp)   1-mark MCQ        AR(ch,t,A,R,code,exp) assertion-reason (0:both true,R explains 1:both true,R doesn't explain 2:A true,R false 3:A false,R true)
+// CB(ch,t,case,q,opts,ans,exp) case-based    S(ch,t,marks,q,model,points) short/long answer self-check
+// O* = official CBSE Sample Question Paper 2025-26 (src 'sqp2526'), text taken from CBSE SQP + marking scheme.
+var QB = [];
+var ARO = ['Both A and R are true, and R is the correct explanation of A','Both A and R are true, but R is not the correct explanation of A','A is true but R is false','A is false but R is true'];
+function _p(o){QB.push(o);}
+function M(ch,t,q,o,a,e){_p({ch:ch,t:t,ty:'mcq',mk:1,q:q,o:o,a:a,e:e,src:'own'});}
+function AR(ch,t,A,R,c,e){_p({ch:ch,t:t,ty:'ar',mk:1,q:'Assertion (A): '+A+'\nReason (R): '+R,o:ARO,a:c,e:e,src:'own'});}
+function CB(ch,t,cs,q,o,a,e){_p({ch:ch,t:t,ty:'case',mk:1,cs:cs,q:q,o:o,a:a,e:e,src:'own'});}
+function S(ch,t,mk,q,m,p){_p({ch:ch,t:t,ty:'short',mk:mk,q:q,m:m,p:p,src:'own'});}
+function OM(id,ch,t,q,o,a,e){_p({id:id,ch:ch,t:t,ty:'mcq',mk:1,q:q,o:o,a:a,e:e,src:'sqp2526'});}
+function OAR(id,ch,t,A,R,c,e){_p({id:id,ch:ch,t:t,ty:'ar',mk:1,q:'Assertion (A): '+A+'\nReason (R): '+R,o:ARO,a:c,e:e,src:'sqp2526'});}
+var U='Unit'; // placeholder
+
+/* ===== MATHS (own practice questions) ===== */
+M('m1',1,'The HCF of 96 and 404 is',['2','4','8','12'],1,'96 = 2⁵×3 and 404 = 2²×101, so HCF = 2² = 4.');
+M('m1',1,'If HCF(26, 91) = 13, then LCM(26, 91) is',['182','91','26','1183'],0,'HCF × LCM = product of numbers, so LCM = 26×91/13 = 182.');
+M('m1',0,'Which of these numbers can never end with the digit 0 (n a natural number)?',['6ⁿ','10ⁿ','20ⁿ','50ⁿ'],0,'To end in 0 a number needs both 2 and 5 as prime factors. 6ⁿ = 2ⁿ·3ⁿ has no factor 5.');
+AR('m1',3,'3 + 2√5 is an irrational number.','The sum of a rational number and an irrational number is irrational.',0,'3 is rational and 2√5 is irrational, so their sum is irrational. R is exactly the reason.');
+S('m1',2,3,'Prove that √3 is an irrational number.','Assume √3 is rational: √3 = p/q with p, q co-prime, q ≠ 0. Squaring, 3q² = p², so 3 divides p² and hence p. Let p = 3k, then 3q² = 9k², so q² = 3k², hence 3 divides q. Then p and q have a common factor 3, which contradicts co-primality. So √3 is irrational.',['Assume √3 = p/q with p, q co-prime','Get p² = 3q², so 3 | p','Put p = 3k, get 3 | q','Contradiction with co-prime → √3 irrational']);
+M('m2',0,'The zeroes of the polynomial x² − 5x + 6 are',['2 and 3','−2 and −3','1 and 6','−1 and 6'],0,'x² − 5x + 6 = (x−2)(x−3), so the zeroes are 2 and 3.');
+M('m2',2,'The sum and product of the zeroes of 2x² − 8x + 6 are',['4 and 3','−4 and 3','8 and 6','4 and −3'],0,'Sum = −b/a = 8/2 = 4; product = c/a = 6/2 = 3.');
+M('m2',3,'A quadratic polynomial whose zeroes are 3 and −2 is',['x² − x − 6','x² + x − 6','x² − x + 6','x² − 5x − 6'],0,'Sum = 1, product = −6, so the polynomial is x² − (sum)x + product = x² − x − 6.');
+M('m2',1,'The graph of a quadratic polynomial can NOT cut the x-axis at',['0 points','1 point','2 points','3 points'],3,'A quadratic has at most 2 zeroes, so its parabola cuts the x-axis at most twice.');
+AR('m2',1,'x² + 1 has no real zeroes.','The graph of y = x² + 1 does not meet the x-axis.',0,'x² + 1 ≥ 1 for all x, so the parabola stays above the x-axis; no intersection means no real zeroes.');
+S('m2',4,3,'If α and β are the zeroes of 2x² − 7x + 3, find α² + β².','α + β = 7/2 and αβ = 3/2. α² + β² = (α+β)² − 2αβ = 49/4 − 3 = 37/4.',['Sum = 7/2, product = 3/2','Use (α+β)² − 2αβ','Answer 37/4']);
+M('m3',1,'The pair x + 2y = 3 and 2x + 4y = 7 has',['a unique solution','no solution','infinitely many solutions','exactly two solutions'],1,'a₁/a₂ = b₁/b₂ = 1/2 but c₁/c₂ = 3/7, so the lines are parallel: no solution.');
+M('m3',3,'Solution of x + y = 5 and x − y = 1 is',['(3, 2)','(2, 3)','(4, 1)','(5, 0)'],0,'Adding: 2x = 6, x = 3, so y = 2.');
+M('m3',1,'For what value of k does 2x + 3y = 7 and (k−1)x + (k+2)y = 3k have infinitely many solutions?',['5','6','7','8'],2,'Need (k−1)/2 = (k+2)/3 = 3k/7. From the first two, 3k − 3 = 2k + 4, so k = 7; and 3k/7 = 3 matches.');
+AR('m3',1,'The system 2x + 3y = 5 and 4x + 6y = 10 has infinitely many solutions.','For a₁x+b₁y+c₁=0 and a₂x+b₂y+c₂=0, a₁/a₂ = b₁/b₂ = c₁/c₂ gives infinitely many solutions.',0,'Here 2/4 = 3/6 = 5/10, so the lines coincide.');
+S('m3',4,3,'The sum of the digits of a two-digit number is 9. The number obtained by reversing the digits is 27 more than the original number. Find the number.','Let the digits be x (tens) and y (units). x + y = 9 and (10y + x) − (10x + y) = 27 ⇒ y − x = 3. Solving: y = 6, x = 3. The number is 36.',['Form x + y = 9','Form y − x = 3','Solve: x = 3, y = 6','Number = 36']);
+M('m4',1,'The roots of x² − 3x − 10 = 0 are',['5 and −2','−5 and 2','5 and 2','−5 and −2'],0,'x² − 3x − 10 = (x − 5)(x + 2).');
+M('m4',3,'The discriminant of 2x² − 4x + 3 = 0 is',['−8','8','16','−16'],0,'D = b² − 4ac = 16 − 24 = −8 < 0, so no real roots.');
+M('m4',3,'The value(s) of k for which x² + kx + 9 = 0 has equal roots:',['±6','6 only','±3','−6 only'],0,'Equal roots need D = 0: k² − 36 = 0, so k = ±6.');
+M('m4',0,'Which of these is NOT a quadratic equation?',['(x+1)² = 2(x−3)','x(x+1) + 8 = (x+2)(x−2)','x² + 3x + 1 = (x−2)²','(x−2)² + 1 = 2x − 3'],1,'x² + x + 8 = x² − 4 simplifies to x + 12 = 0, which is linear.');
+AR('m4',3,'3x² − 6x + 3 = 0 has equal roots.','A quadratic has equal real roots when its discriminant is zero.',0,'D = 36 − 36 = 0, so the roots are equal, which is exactly what R says.');
+S('m4',4,3,'The product of two consecutive positive integers is 306. Find the integers.','Let the integers be x and x+1. x(x+1) = 306 ⇒ x² + x − 306 = 0 ⇒ (x + 18)(x − 17) = 0. Since x > 0, x = 17. The integers are 17 and 18.',['Form x² + x − 306 = 0','Factorise (x+18)(x−17)','Reject negative root','17 and 18']);
+M('m5',1,'The 10th term of the AP 2, 7, 12, … is',['47','52','42','50'],0,'a = 2, d = 5: a₁₀ = 2 + 9×5 = 47.');
+M('m5',2,'The sum of the first 10 terms of the AP 3, 7, 11, … is',['210','200','220','190'],0,'Sₙ = n/2 [2a + (n−1)d] = 5[6 + 36] = 210.');
+M('m5',1,'Which term of the AP 3, 8, 13, … is 78?',['15th','16th','17th','14th'],1,'3 + 5(n−1) = 78 ⇒ n − 1 = 15 ⇒ n = 16.');
+AR('m5',0,'The sequence 5, 5, 5, 5, … is an AP.','In an AP the common difference can be zero.',0,'Each term differs from the previous by 0, so it is an AP with d = 0.');
+CB('m5',3,'Seema saves ₹10 in the 1st week, ₹15 in the 2nd week, ₹20 in the 3rd week, and so on (each week ₹5 more).','How much does she save in the 10th week?',['₹50','₹55','₹60','₹45'],1,'AP with a = 10, d = 5: a₁₀ = 10 + 9×5 = 55.');
+S('m5',2,3,'Find the sum of all two-digit numbers that are divisible by 3.','The numbers are 12, 15, …, 99: AP with a = 12, d = 3, l = 99. n = (99−12)/3 + 1 = 30. S = n/2 (a + l) = 15 × 111 = 1665.',['Identify AP: 12 to 99, d = 3','Find n = 30','Use S = n/2 (a + l)','1665']);
+M('m6',1,'The distance of the point (−5, 12) from the origin is',['13','17','7','12'],0,'√(25 + 144) = 13.');
+M('m6',2,'The point dividing (1, 2) and (4, 8) internally in the ratio 1 : 2 is',['(2, 4)','(3, 6)','(2, 5)','(5/2, 5)'],0,'x = (1×4 + 2×1)/3 = 2, y = (1×8 + 2×2)/3 = 4.');
+M('m6',1,'The values of x for which the distance between (x, 0) and (0, 4) is 5:',['±3','3 only','±4','±5'],0,'x² + 16 = 25 ⇒ x² = 9 ⇒ x = ±3.');
+AR('m6',0,'The point (−3, 0) lies on the x-axis.','Every point on the x-axis has y-coordinate 0.',0,'Its y-coordinate is 0, so it lies on the x-axis; R states exactly this.');
+S('m6',2,3,'Find the ratio in which the point (−4, 6) divides the line segment joining A(−6, 10) and B(3, −8).','Let ratio be m : n. x: (3m − 6n)/(m + n) = −4 ⇒ 7m = 2n ⇒ m : n = 2 : 7. Check with y: (−8×2 + 10×7)/9 = 6 ✓.',['Use section formula for x','Get 7m = 2n','Ratio 2 : 7','Verify with y']);
+M('m7',3,'In △ABC, DE ∥ BC with D on AB, E on AC. If AD = 2 cm, DB = 3 cm, AE = 4 cm, then EC =',['6 cm','8 cm','3 cm','5 cm'],0,'By BPT, AD/DB = AE/EC ⇒ 2/3 = 4/EC ⇒ EC = 6 cm.');
+M('m7',3,'If △ABC ~ △DEF with AB : DE = 2 : 3, the ratio of their perimeters is',['2 : 3','4 : 9','3 : 2','2 : 9'],0,'Perimeters of similar triangles are in the same ratio as corresponding sides.');
+M('m7',3,'Which criterion shows two triangles are similar if two angles of one equal two angles of the other?',['AA','SSS (congruence)','RHS','ASA only'],0,'AA similarity: two equal angles force the third to be equal as well.');
+AR('m7',0,'All equilateral triangles are similar.','All angles of an equilateral triangle are 60°, so any two are equiangular.',0,'Equiangular triangles are similar by the AA criterion.');
+S('m7',1,5,'State and prove the Basic Proportionality Theorem (Thales).','If a line is drawn parallel to one side of a triangle to intersect the other two sides in distinct points, the other two sides are divided in the same ratio. Proof: in △ABC, DE ∥ BC. Join BE and CD, draw EN ⊥ AB and DM ⊥ AC. ar(ADE)/ar(BDE) = AD/DB, and ar(ADE)/ar(CED) = AE/EC. △BDE and △CED are on the same base DE and between the same parallels DE and BC, so they have equal area. Hence AD/DB = AE/EC.',['Statement of BPT','Figure and construction (join BE, CD; draw perpendiculars)','Area ratios with ½ × base × height','ar(BDE) = ar(CED) (same base, same parallels)','Conclude AD/DB = AE/EC']);
+M('m8',2,'The length of the tangent from a point 13 cm from the centre of a circle of radius 5 cm is',['12 cm','18 cm','√194 cm','8 cm'],0,'Tangent ⟂ radius, so length = √(13² − 5²) = 12 cm.');
+M('m8',3,'From an external point P, tangents PA and PB are drawn. If ∠APB = 60°, then ∠AOB (O = centre) =',['120°','60°','90°','30°'],0,'Quadrilateral OAPB has two right angles at A and B, so ∠AOB = 360° − 90° − 90° − 60° = 120°.');
+M('m8',0,'The number of tangents that can be drawn to a circle from a point lying ON the circle is',['1','2','0','infinite'],0,'Only one tangent touches the circle at a point on it.');
+S('m8',3,3,'Prove that the lengths of tangents drawn from an external point to a circle are equal.','Let PA and PB be tangents from P to the circle with centre O. Join OA, OB, OP. OA ⟂ PA and OB ⟂ PB. In right △OAP and △OBP: OA = OB (radii), OP is common, ∠OAP = ∠OBP = 90°. So △OAP ≅ △OBP (RHS), hence PA = PB.',['Figure with OA, OB, OP','Use tangent ⟂ radius','Congruence by RHS','Hence PA = PB']);
+M('m9',1,'The value of sin 30° + cos 60° is',['1','1/2','√3/2','0'],0,'1/2 + 1/2 = 1.');
+M('m9',2,'If sin θ = 3/5, then cos θ =',['4/5','3/4','5/4','2/5'],0,'cos θ = √(1 − 9/25) = 4/5.');
+M('m9',5,'The value of sin 60° cos 30° + sin 30° cos 60° is',['1','3/4','1/4','√3/2'],0,'(√3/2)(√3/2) + (1/2)(1/2) = 3/4 + 1/4 = 1.');
+M('m9',3,'(1 + tan²θ) equals',['sec²θ','cosec²θ','cot²θ','sin²θ'],0,'Dividing sin²θ + cos²θ = 1 by cos²θ gives tan²θ + 1 = sec²θ.');
+AR('m9',2,'The value of sin θ can never be greater than 1.','In a right triangle the hypotenuse is the longest side.',0,'sin θ = opposite/hypotenuse, and the hypotenuse ≥ opposite side, so sin θ ≤ 1.');
+S('m9',4,3,'Prove that (1 − cos²θ)(1 + cot²θ) = 1.','LHS = sin²θ × cosec²θ (since 1 − cos²θ = sin²θ and 1 + cot²θ = cosec²θ) = sin²θ × (1/sin²θ) = 1 = RHS.',['1 − cos²θ = sin²θ','1 + cot²θ = cosec²θ','Multiply to get 1']);
+M('m10',1,'The angle of elevation of the top of a 30 m tower from a point on the ground is 45°. The distance of the point from the tower base is',['30 m','30√3 m','10√3 m','15 m'],0,'tan 45° = 30/d = 1, so d = 30 m.');
+M('m10',1,'A tower is 10√3 m tall. The angle of elevation of its top from a point 10 m from its base is',['60°','30°','45°','90°'],0,'tan θ = 10√3/10 = √3 ⇒ θ = 60°.');
+M('m10',0,'The angle of depression of an object from an observer equals',['the angle of elevation of the observer from the object','90° minus the elevation','half the elevation','180° minus the elevation'],0,'Horizontal lines are parallel, so alternate angles are equal.');
+S('m10',1,3,'A ladder 10 m long leans against a wall making 60° with the ground. Find how far the foot of the ladder is from the wall and how high it reaches.','cos 60° = d/10 ⇒ d = 5 m. sin 60° = h/10 ⇒ h = 5√3 m ≈ 8.66 m.',['Draw right triangle','Foot distance = 10 cos 60° = 5 m','Height = 10 sin 60° = 5√3 m']);
+M('m11',1,'The area of a sector of a circle of radius 7 cm and central angle 90° is',['38.5 cm²','154 cm²','77 cm²','19.25 cm²'],0,'(90/360) × (22/7) × 49 = 38.5 cm².');
+M('m11',1,'The length of an arc of a circle of radius 21 cm and angle 60° is',['22 cm','44 cm','11 cm','66 cm'],0,'(60/360) × 2 × (22/7) × 21 = 22 cm.');
+M('m11',2,'The area of a segment of a circle with sector angle θ is',['Area of sector − area of triangle','Area of sector + area of triangle','Area of sector × 2','Area of triangle − area of sector'],0,'The minor segment is the sector minus the triangle formed by the radii and chord.');
+M('m11',0,'The circumference of a circle is 44 cm. Its area is (π = 22/7)',['154 cm²','44 cm²','308 cm²','616 cm²'],0,'2πr = 44 ⇒ r = 7, area = (22/7)×49 = 154.');
+M('m12',0,'The total surface area of a cube of side 5 cm is',['150 cm²','125 cm²','100 cm²','75 cm²'],0,'6a² = 6 × 25 = 150 cm².');
+M('m12',1,'The volume of a cone of radius 3 cm and height 4 cm is',['12π cm³','36π cm³','48π cm³','9π cm³'],0,'(1/3)πr²h = (1/3)π(9)(4) = 12π.');
+M('m12',1,'The curved surface area of a hemisphere of radius r is',['2πr²','3πr²','4πr²','πr²'],0,'Hemisphere: CSA = 2πr², TSA = 3πr².');
+S('m12',2,3,'Find the total surface area of a cylinder of radius 7 cm and height 10 cm (π = 22/7).','TSA = 2πr(r + h) = 2 × (22/7) × 7 × (7 + 10) = 44 × 17 = 748 cm².',['Formula 2πr(r + h)','Substitute values','748 cm²']);
+M('m13',0,'The mean of the first five natural numbers is',['3','2.5','5','15'],0,'(1+2+3+4+5)/5 = 3.');
+M('m13',2,'The median of 3, 5, 7, 9, 11 is',['7','9','5','35'],0,'The middle value of the ordered list is 7.');
+M('m13',3,'In a grouped frequency distribution, the modal class is',['the class with the highest frequency','the middle class','the class with the lowest frequency','the first class'],0,'The mode lies in the class that has the maximum frequency.');
+S('m13',0,3,'Find the mean of: class 0–10 (f=5), 10–20 (f=10), 20–30 (f=5).','Class marks 5, 15, 25. Σfx = 25 + 150 + 125 = 300, Σf = 20, so mean = 300/20 = 15.',['Class marks 5, 15, 25','Σfx = 300, Σf = 20','Mean = 15']);
+M('m14',0,'The probability of getting a prime number on throwing a die is',['1/2','1/3','2/3','1/6'],0,'Primes: 2, 3, 5, so 3/6 = 1/2.');
+M('m14',1,'Two coins are tossed. The probability of getting two heads is',['1/4','1/2','3/4','1'],0,'Outcomes HH, HT, TH, TT; only HH works → 1/4.');
+M('m14',2,'The probability of drawing an ace from a well-shuffled pack of 52 cards is',['1/13','1/4','4/13','1/52'],0,'4 aces out of 52 → 1/13.');
+M('m14',3,'If P(E) = 0.35, then P(not E) is',['0.65','0.35','0.5','1.35'],0,'P(not E) = 1 − P(E) = 0.65.');
+S('m14',1,3,'Two dice are thrown together. Find the probability that the sum of the numbers is 9.','Total outcomes = 36. Favourable: (3,6), (4,5), (5,4), (6,3) = 4. Probability = 4/36 = 1/9.',['Total outcomes 36','List favourable outcomes: 4','4/36 = 1/9']);
+CB('m14',1,'A bag has 3 red and 5 blue balls. One ball is drawn at random.','The probability that the ball drawn is blue is',['5/8','3/8','5/3','1/8'],0,'Favourable 5 out of total 8 balls.');
+
+/* ===== MATHS: official CBSE Sample Question Paper 2025-26 (Standard) – Section A ===== */
+OM('SQP-M-1','m1',0,'If a = 2²×3ˣ, b = 2²×3×5, c = 2²×3×7 and LCM(a, b, c) = 3780, then x is equal to',['1','2','3','0'],2,'3780 = 2²×3³×5×7, and the LCM takes the highest power of 3, so x = 3.');
+OM('SQP-M-2','m6',0,'The shortest distance (in units) of the point (2, 3) from the y-axis is',['2','3','5','1'],0,'Distance from the y-axis is the absolute value of the x-coordinate, i.e. 2.');
+OM('SQP-M-3','m3',1,'If the lines 3x + 2ky = 2 and 2x + 5y + 1 = 0 are NOT parallel, then k has to be',['15/4','≠ 15/4','any rational number','any rational number having 4 as denominator'],1,'Parallel when 3/2 = 2k/5, i.e. k = 15/4. So not parallel means k ≠ 15/4.');
+OM('SQP-M-4','m8',3,'A quadrilateral ABCD is drawn to circumscribe a circle. If BC = 7 cm, CD = 4 cm and AD = 3 cm, then the length of AB is',['3 cm','4 cm','6 cm','7 cm'],2,'For a circumscribed quadrilateral AB + CD = AD + BC, so AB + 4 = 3 + 7 and AB = 6 cm.');
+OM('SQP-M-5','m9',3,'If sec θ + tan θ = x, then sec θ − tan θ will be',['x','x²','1/x','1/x²'],2,'(sec θ + tan θ)(sec θ − tan θ) = sec²θ − tan²θ = 1.');
+OM('SQP-M-6','m4',0,'Which one of the following is NOT a quadratic equation?',['(x+2)² = 2(x+3)','x² + 3x = (−1)(1 − 3x)²','x³ − x² + 2x + 1 = (x+1)³','(x+2)(x+1) = x² + 2x + 3'],3,'(x+2)(x+1) = x² + 2x + 3 gives x² + 3x + 2 = x² + 2x + 3, i.e. x − 1 = 0, which is linear.');
+OM('SQP-M-8','m14',0,'A pair of dice is tossed. The probability of NOT getting the sum eight is',['5/36','31/36','5/18','5/9'],1,'P(sum 8) = 5/36, so P(not 8) = 1 − 5/36 = 31/36.');
+OM('SQP-M-9','m9',1,'If 2 sin 5x = √3, 0° ≤ x ≤ 90°, then x is equal to',['10°','12°','20°','50°'],1,'sin 5x = √3/2 = sin 60°, so 5x = 60° and x = 12°.');
+OM('SQP-M-10','m1',4,'The sum of two numbers is 1215 and their HCF is 81. The number of possible pairs of such numbers is',['2','3','4','5'],2,'Numbers 81x and 81y with x + y = 15 and co-prime: (1,14), (2,13), (4,11), (7,8) → 4 pairs.');
+OM('SQP-M-11','m12',1,'If the area of the base of a right circular cone is 51 cm² and its volume is 85 cm³, then the height of the cone is',['5/6 cm','5/3 cm','5/2 cm','5 cm'],3,'V = (1/3) × base area × h ⇒ 85 = (1/3) × 51 × h ⇒ h = 5 cm.');
+OM('SQP-M-12','m4',3,'If the zeroes of the quadratic polynomial ax² + bx + c (a, c ≠ 0) are equal, then',['c and b must have opposite signs','c and a must have opposite signs','c and b must have same signs','c and a must have same signs'],3,'Equal zeroes ⇒ b² = 4ac, so ac = b²/4 > 0, meaning a and c have the same sign.');
+OM('SQP-M-13','m11',1,'The area (in cm²) of a sector of a circle of radius 21 cm cut off by an arc of length 22 cm is',['441','321','231','221'],2,'Area = ½ × l × r = ½ × 22 × 21 = 231 cm².');
+OM('SQP-M-14','m7',3,'If △ABC ~ △DEF, AB = 6 cm, DE = 9 cm, EF = 6 cm and FD = 12 cm, then the perimeter of △ABC is',['28 cm','28.5 cm','18 cm','23 cm'],2,'Ratio = 6/9 = 2/3. Perimeter of DEF = 9 + 6 + 12 = 27, so ABC = 18 cm.');
+OM('SQP-M-18','m8',3,'The length of a tangent drawn to a circle of radius 9 cm from a point 41 cm from the centre is',['40 cm','9 cm','41 cm','50 cm'],0,'Tangent = √(41² − 9²) = √(1681 − 81) = 40 cm.');
+/* ===== SCIENCE (own practice) ===== */
+M('s1',0,'In 2Mg + O₂ → 2MgO, the type of reaction is',['Combination','Decomposition','Displacement','Double displacement'],0,'Two reactants combine to form a single product, so it is a combination reaction.');
+M('s1',5,'In CuO + H₂ → Cu + H₂O, the substance that is oxidised is',['H₂','CuO','Cu','H₂O'],0,'Hydrogen gains oxygen (forms H₂O), so H₂ is oxidised; CuO is reduced.');
+M('s1',3,'When barium chloride solution is added to sodium sulphate solution, a white precipitate of ___ forms.',['BaSO₄','NaCl','BaCl₂','Na₂SO₄'],0,'BaCl₂ + Na₂SO₄ → BaSO₄↓ + 2NaCl: a double displacement (precipitation) reaction.');
+M('s1',4,'Which of these is an endothermic process?',['Photosynthesis','Respiration','Burning of natural gas','Dilution of acid'],0,'Photosynthesis absorbs energy (sunlight); the others release heat.');
+AR('s1',4,'Respiration is an exothermic process.','During respiration glucose is oxidised to release energy.',0,'Energy is released when glucose is broken down, so respiration is exothermic.');
+S('s1',0,3,'Balance: Fe + H₂O → Fe₃O₄ + H₂. Why must a chemical equation be balanced?','3Fe + 4H₂O → Fe₃O₄ + 4H₂. An equation must be balanced to satisfy the law of conservation of mass: the number of atoms of each element must be equal on both sides.',['Correct balanced equation 3Fe + 4H₂O → Fe₃O₄ + 4H₂','Law of conservation of mass','Equal atoms on both sides']);
+M('s2',0,'The pH of lemon juice is most likely',['2','7','10','14'],0,'Lemon juice is acidic (pH below 7), around 2.');
+M('s2',4,'The chemical formula of baking soda is',['NaHCO₃','Na₂CO₃·10H₂O','CaSO₄·½H₂O','NaOH'],0,'Baking soda is sodium hydrogencarbonate, NaHCO₃.');
+M('s2',5,'The chemical formula of Plaster of Paris is',['CaSO₄·½H₂O','CaSO₄·2H₂O','CaOCl₂','CaCO₃'],0,'Plaster of Paris is calcium sulphate hemihydrate; gypsum is CaSO₄·2H₂O.');
+M('s2',3,'The chlor-alkali process on electrolysis of brine gives',['NaOH, Cl₂ and H₂','NaOH, O₂ and H₂','Na₂CO₃ and Cl₂','NaHCO₃ and H₂'],0,'Brine electrolysis: 2NaCl + 2H₂O → 2NaOH + Cl₂ + H₂.');
+AR('s2',2,'Tooth decay starts when the pH of the mouth falls below 5.5.','Bacteria in the mouth produce acids by degrading sugars left after eating.',0,'The acids lower the pH, corroding tooth enamel when pH falls below 5.5.');
+S('s2',0,3,'Why does dry HCl gas not change the colour of dry blue litmus paper, while HCl solution does?','Acids show acidic behaviour only in the presence of water. Dry HCl gas has no free H⁺ (H₃O⁺) ions, so it does not change the colour. In aqueous solution HCl ionises to give H⁺ ions, which turn blue litmus red.',['Acidic character due to H⁺ ions','No H⁺ ions without water','In water HCl ionises → litmus turns red']);
+M('s3',0,'Which metal is liquid at room temperature?',['Mercury','Sodium','Iron','Lead'],0,'Mercury (and gallium in warm rooms) is liquid; mercury is the common example.');
+M('s3',2,'The most reactive metal among these is',['Potassium','Zinc','Iron','Copper'],0,'Potassium is at the top of the reactivity series.');
+M('s3',3,'Ionic compounds generally have',['high melting points','low melting points','no ions','poor solubility in water always'],0,'Strong electrostatic forces between ions need a lot of energy to overcome.');
+M('s3',1,'Metals react with dilute acids to give salt and',['hydrogen gas','oxygen gas','carbon dioxide','water only'],0,'Metal + dilute acid → salt + H₂ (for metals above hydrogen).');
+S('s3',4,3,'How is zinc (a metal of medium reactivity) extracted from its ore zinc carbonate?','Zinc carbonate is first calcined (heated strongly in limited air) to give ZnO: ZnCO₃ → ZnO + CO₂. ZnO is then reduced with carbon: ZnO + C → Zn + CO.',['Calcination of carbonate ore to oxide','Reduction of oxide with carbon','Equations']);
+M('s4',3,'The IUPAC name of CH₃CH₂OH is',['Ethanol','Methanol','Ethanal','Ethane'],0,'Two carbons with an –OH group: ethanol.');
+M('s4',0,'The number of covalent bonds in an ethane (C₂H₆) molecule is',['7','6','8','5'],0,'One C–C bond and six C–H bonds make 7.');
+M('s4',2,'The successive members of a homologous series differ by',['CH₂','CH₃','C₂H₄','H'],0,'Each member differs from the next by a –CH₂– unit (14 u).');
+M('s4',4,'Ethene reacts with hydrogen in the presence of nickel to form',['ethane','ethanol','ethyne','methane'],0,'Addition reaction (hydrogenation): C₂H₄ + H₂ → C₂H₆.');
+M('s4',5,'Ethanoic acid reacts with sodium hydrogencarbonate to release',['carbon dioxide','hydrogen','oxygen','methane'],0,'CH₃COOH + NaHCO₃ → CH₃COONa + H₂O + CO₂ (brisk effervescence).');
+S('s4',0,3,'Why are covalent compounds generally poor conductors of electricity?','Covalent compounds are formed by sharing electrons between atoms, so no ions or free electrons are formed. With no charged particles to carry current they are poor conductors.',['Formed by sharing electrons','No ions/free electrons','So cannot conduct']);
+AR('s4',1,'Carbon forms a very large number of compounds.','Carbon shows catenation and tetravalency.',0,'Catenation (self-linking) and valency four allow chains, branches and rings.');
+M('s5',1,'The enzyme present in saliva that digests starch is',['salivary amylase','pepsin','trypsin','lipase'],0,'Salivary amylase breaks starch into sugars (maltose).');
+M('s5',2,'In yeast, anaerobic respiration produces',['ethanol and carbon dioxide','lactic acid','carbon dioxide and water','only water'],0,'Yeast ferments glucose to ethanol + CO₂ + energy.');
+M('s5',4,'Water and minerals are transported in plants by',['xylem','phloem','stomata','cambium'],0,'Xylem carries water and minerals from the roots upwards; phloem carries food.');
+M('s5',3,'Oxygenated blood is carried to the heart from the lungs by',['pulmonary vein','pulmonary artery','vena cava','aorta'],0,'Pulmonary veins bring oxygen-rich blood to the left atrium.');
+M('s5',5,'The basic filtration unit of the kidney is the',['nephron','neuron','alveolus','villus'],0,'Each kidney has about a million nephrons.');
+S('s5',3,3,'Why is the separation of oxygenated and deoxygenated blood necessary in the human heart?','Separation prevents mixing of oxygen-rich and oxygen-poor blood, so that the body receives fully oxygenated blood. This supports a high rate of oxygen supply, needed by warm-blooded animals like humans to maintain body temperature and energy.',['Prevents mixing of the two types of blood','Efficient oxygen supply','Needed for high energy needs of warm-blooded animals']);
+M('s6',0,'The correct path of a reflex arc is',['receptor → sensory neuron → spinal cord → motor neuron → effector','receptor → motor neuron → brain → effector','effector → spinal cord → receptor','brain → receptor → effector'],0,'Reflex arc: stimulus → receptor → sensory neuron → relay in spinal cord → motor neuron → effector.');
+M('s6',3,'The hormone that prepares the body for “fight or flight” is',['adrenaline','insulin','thyroxine','oestrogen'],0,'Adrenaline from the adrenal glands raises heart rate and blood sugar.');
+M('s6',2,'The plant hormone that promotes cell elongation is',['auxin','abscisic acid','ethylene','cytokinin only'],0,'Auxin made at the shoot tip helps cells grow longer; it causes phototropism.');
+M('s6',1,'The part of the brain that maintains posture and balance is the',['cerebellum','cerebrum','medulla','pituitary'],0,'The cerebellum is in the hindbrain and coordinates balance and precision of movement.');
+AR('s6',3,'Iodised salt is necessary in our diet.','Iodine is needed to make thyroxine, which regulates carbohydrate, protein and fat metabolism.',0,'Lack of iodine causes goitre because thyroxine cannot be made properly.');
+M('s7',0,'Hydra reproduces asexually mainly by',['budding','binary fission','spore formation','fragmentation'],0,'Hydra develops outgrowths (buds) that detach as new individuals.');
+M('s7',2,'Fertilisation in human females normally occurs in the',['fallopian tube (oviduct)','uterus','vagina','ovary'],0,'The sperm and egg usually meet in the oviduct.');
+M('s7',1,'Pollination is the transfer of pollen from',['anther to stigma','stigma to ovary','ovary to anther','style to ovule'],0,'Pollen produced in the anther lands on the stigma.');
+M('s7',3,'Which method of contraception also helps prevent sexually transmitted infections?',['Condom','Oral pills','Copper-T','Surgical methods'],0,'Barrier methods like condoms prevent contact of body fluids.');
+S('s7',2,3,'What is the role of the placenta in humans?','The placenta is a disc-like tissue embedded in the uterine wall. It provides glucose and oxygen from the mother to the embryo through villi, and removes waste products like carbon dioxide and urea from the embryo to the mother’s blood.',['Disc embedded in uterus','Supplies nutrients and oxygen','Removes wastes']);
+M('s8',1,'When pure tall (TT) and pure dwarf (tt) pea plants are crossed, the phenotypic ratio in F₂ is',['3 tall : 1 dwarf','1 tall : 1 dwarf','all tall','9 : 3 : 3 : 1'],0,'F₁ is all Tt (tall); selfing gives TT : Tt : tt = 1 : 2 : 1, phenotypes 3 : 1.');
+M('s8',2,'The phenotypic ratio of a dihybrid cross in F₂ is',['9 : 3 : 3 : 1','3 : 1','1 : 2 : 1','1 : 1'],0,'Mendel got round-yellow : round-green : wrinkled-yellow : wrinkled-green = 9 : 3 : 3 : 1.');
+M('s8',3,'In humans, the sex of the child is determined by',['the sperm of the father','the egg of the mother','both equally by the egg','the environment'],0,'The mother gives only X; the father gives X or Y, so the sperm decides.');
+M('s8',0,'Humans have how many pairs of chromosomes?',['23','22','46','24'],0,'Humans have 23 pairs (46 chromosomes), of which one pair is the sex chromosomes.');
+M('s9',2,'A concave mirror has radius of curvature 20 cm. Its focal length is',['10 cm','20 cm','40 cm','5 cm'],0,'f = R/2 = 10 cm.');
+M('s9',1,'The image formed by a convex mirror is always',['virtual, erect and diminished','real and inverted','virtual and enlarged','real and diminished'],0,'A convex mirror always gives a virtual, erect, smaller image.');
+M('s9',3,'The refractive index of a medium is',['speed of light in vacuum / speed of light in the medium','speed in medium / speed in vacuum','sin r / sin i for any medium to air','always less than 1'],0,'n = c/v, and n ≥ 1.');
+M('s9',5,'The power of a convex lens of focal length 50 cm is',['+2 D','−2 D','+0.5 D','+50 D'],0,'P = 1/f (in metres) = 1/0.5 = +2 D.');
+S('s9',2,3,'An object is placed 10 cm in front of a concave mirror of focal length 15 cm. Find the image distance and nature of the image.','u = −10, f = −15. 1/v = 1/f − 1/u = −1/15 + 1/10 = 1/30 ⇒ v = +30 cm. The image is formed 30 cm behind the mirror: virtual, erect and magnified (m = −v/u = +3).',['Use sign convention u = −10, f = −15','Mirror formula gives v = +30 cm','Virtual, erect, enlarged (m = +3)']);
+M('s10',1,'Myopia (short-sightedness) is corrected using',['a concave lens','a convex lens','a cylindrical lens only','a plane mirror'],0,'A concave lens diverges rays so the image falls on the retina.');
+M('s10',0,'The least distance of distinct vision for a normal adult eye is about',['25 cm','10 cm','50 cm','1 m'],0,'The near point is about 25 cm.');
+M('s10',3,'Stars twinkle because of',['atmospheric refraction','reflection by moon','dispersion by prism','diffraction'],0,'The varying refractive index of the atmosphere makes the apparent position of stars flicker.');
+M('s10',2,'White light splits into seven colours when passing through a prism. This is called',['dispersion','scattering','reflection','interference'],0,'Different colours bend by different angles: dispersion.');
+M('s11',1,'The SI unit of resistance is',['ohm','volt','ampere','watt'],0,'R = V/I, measured in ohm (Ω).');
+M('s11',3,'Two resistors of 6 Ω and 3 Ω are connected in parallel. The equivalent resistance is',['2 Ω','9 Ω','4.5 Ω','18 Ω'],0,'1/R = 1/6 + 1/3 = 1/2, so R = 2 Ω.');
+M('s11',5,'A 4 Ω resistor is connected to a 12 V battery. The current is',['3 A','48 A','0.33 A','8 A'],0,'I = V/R = 12/4 = 3 A.');
+M('s11',4,'Electric power is given by',['P = VI','P = V/I','P = I/V','P = V + I'],0,'P = VI = I²R = V²/R.');
+M('s11',2,'The resistance of a wire of given material increases when',['its length increases','its area of cross-section increases','its length decreases','temperature falls (for metals)'],0,'R = ρl/A, so R is directly proportional to length.');
+S('s11',4,3,'An electric heater of 1 kW is used for 2 hours daily. Find the energy consumed in 30 days and the cost at ₹6 per kWh.','Energy per day = 1 kW × 2 h = 2 kWh. For 30 days = 60 kWh. Cost = 60 × 6 = ₹360.',['E = P × t per day = 2 kWh','30 days → 60 kWh','Cost ₹360']);
+M('s12',0,'Outside a bar magnet, magnetic field lines go from',['north pole to south pole','south pole to north pole','north to north','they do not have direction'],0,'Field lines emerge from the north pole and enter the south pole (and continue from S to N inside).');
+M('s12',3,'The direction of force on a current-carrying conductor in a magnetic field is given by',['Fleming’s left-hand rule','Fleming’s right-hand rule','Right-hand thumb rule','Ohm’s law'],0,'Left-hand rule: thumb = force, forefinger = field, middle finger = current.');
+M('s12',2,'The magnetic field inside a long current-carrying solenoid is',['uniform and parallel to the axis','zero','circular','non-uniform and random'],0,'Inside an ideal solenoid the field lines are parallel straight lines — a uniform field.');
+M('s12',4,'The frequency of AC supply in India is',['50 Hz','60 Hz','25 Hz','100 Hz'],0,'Domestic AC in India alternates at 50 Hz.');
+M('s12',4,'In domestic wiring, the colour of the earth wire insulation is',['green','red','black','blue'],0,'Live is red, neutral is black, earth is green.');
+M('s13',1,'According to the 10% law, the energy available at the next trophic level is about',['10% of the previous level','90% of the previous level','50%','100%'],0,'Only about 10% of energy is passed on; the rest is lost as heat and in life processes.');
+M('s13',2,'Ozone layer depletion is mainly caused by',['chlorofluorocarbons (CFCs)','carbon monoxide','nitrogen','methane only'],0,'CFCs release chlorine atoms in the stratosphere that break down ozone.');
+M('s13',3,'Which of these is biodegradable?',['Paper','Plastic','Glass','Aluminium foil'],0,'Paper is broken down by decomposers; plastic, glass and foil are not.');
+M('s13',0,'The ultimate source of energy for most ecosystems is',['the Sun','the soil','decomposers','water'],0,'Producers capture sunlight and convert it into chemical energy.');
+S('s13',1,3,'What is biological magnification? Why is it highest in top-level carnivores?','Biological magnification is the increase in concentration of harmful non-biodegradable chemicals (like pesticides) at each successive trophic level. Because these chemicals are not broken down or excreted, they accumulate, so top carnivores (e.g., birds of prey) carry the highest concentration.',['Definition: concentration increases along food chain','Non-biodegradable chemicals accumulate','Highest at top trophic level']);
+
+/* ===== SCIENCE: official CBSE Sample Question Paper 2025-26 – MCQs ===== */
+OM('SQP-S-1','s5',1,'Select the group in which all organisms have the same mode of nutrition.',['Cuscuta, yeast, legumes, leeches and tapeworm','Cactus, ticks, lice, leeches and cow','Cuscuta, ticks, lice, leeches and tapeworm','Cactus, grass, lice, lion and tapeworm'],2,'All of Cuscuta, ticks, lice, leeches and tapeworm are parasites (heterotrophs that feed on a host).');
+OM('SQP-S-2','s5',2,'Which option indicates the products formed after breakdown of glucose in our muscle cells when there is lack of oxygen?',['Ethanol + carbon dioxide + Energy','Lactic acid + Energy','Lactic acid + carbon monoxide + Energy','Carbon dioxide + Water + Energy'],1,'Muscle cells convert pyruvate to lactic acid in anaerobic conditions, releasing some energy.');
+OM('SQP-S-3','s6',1,'Which of the following is a correct combination of function and part of the brain?',['Posture and balance: Cerebrum','Salivation: Medulla in midbrain','Hunger: Pons in hindbrain','Blood pressure: Medulla in hindbrain'],3,'Medulla in the hindbrain controls involuntary actions like blood pressure, salivation and vomiting.');
+OM('SQP-S-4','s6',3,'The blood glucose level in a patient was very high. It may be due to inadequate secretion of:',['growth hormone from pituitary gland','oestrogen from ovary','insulin from pituitary gland','insulin from pancreas'],3,'Insulin from the pancreas lowers blood glucose; too little causes high blood sugar.');
+OM('SQP-S-5','s8',1,'In a cross between black furred rabbit (B) and white furred rabbit (b), all offspring had black fur. What can be inferred about the parent rabbits?',['BB × bb','Bb × Bb','Bb × bb','bb × bb'],0,'All-black offspring means the black parent is homozygous dominant (BB) and the white parent is bb.');
+OM('SQP-S-6','s13',2,'Which are the correct statements related to ozone? (i) Ozone layer helps in increasing the UV radiations reaching earth. (ii) Ozone is a deadly poison. (iii) Ozone layer shields the earth from UV radiations. (iv) Ozone layer prevents UV rays which cause skin cancer. (v) Ozone is formed with the help of chlorofluorocarbons.',['(i), (ii), (iii)','(ii), (iii), (iv)','(iii), (iv), (v)','(i), (iv), (v)'],1,'Ozone is poisonous at ground level, and in the stratosphere it blocks harmful UV. CFCs destroy ozone, they do not form it.');
+OM('SQP-S-7','s13',3,'Which of the following human activities has resulted in an increase of non-biodegradable substances?',['Organic farming','Increase in tree plantation','Use of plastic as packaging material','Composting of kitchen waste'],2,'Plastics are not broken down by decomposers, so their use adds non-biodegradable waste.');
+OAR('SQP-S-8','s8',0,'Tallness of a pea plant is controlled by an enzyme.','The gene for that enzyme makes proteins which help the plant to be tall.',0,'The gene codes for an enzyme (protein) that controls the amount of growth hormone, which determines height.');
+OAR('SQP-S-9','s13',1,'Vulture will always have the least amount of pesticides in a food chain.','Vulture occupies the last trophic level and it gets only 10% of energy of the previous trophic level.',3,'A is false: the top level has the MOST pesticide because of biological magnification. R is true.');
+OM('SQP-S-17','s1',5,'Which of the following equations represent redox reactions and what are the values for p and q? Eq 1: Fe₂O₃ + 2Al → Al₂O₃ + p Fe + heat; Eq 2: 2C₄H₁₀ + 13O₂ → 8CO₂ + q H₂O',['Only equation 1 is redox, p = 1 and q = 3','Both are redox, p = 2 and q = 4','Only equation 2 is redox, p = 2 and q = 10','Both are redox, p = 2 and q = 10'],3,'Eq 1: Al takes oxygen (oxidised) while Fe₂O₃ loses it (reduced), balancing gives p = 2. Eq 2: combustion is oxidation; balancing H gives q = 10.');
+OM('SQP-S-18','s2',1,'Which statements are correct? I. Aluminium oxide reacts with both dilute HCl and aqueous NaOH. II. Calcium oxide reacts with dilute HCl and aqueous NaOH. III. Zinc oxide reacts with both dilute HCl and aqueous NaOH. IV. Sulphur dioxide does not react with either dilute HCl or aqueous NaOH.',['I and II','I and III','II and IV','III and IV'],1,'Al₂O₃ and ZnO are amphoteric, reacting with both acid and base. CaO is basic; SO₂ is acidic and reacts with NaOH.');
+OM('SQP-S-19','s3',3,'An iron nail is added to test tubes P and Q containing aqueous copper(II) sulphate and aqueous silver nitrate respectively. Which observation is correct?',['P: blue coating, Q: no reaction','P: brown coating, Q: silver coating','No reaction in either tube','P: no reaction, Q: silver coating'],1,'Iron is more reactive than both copper and silver, so it displaces copper (brown deposit) and silver (silvery deposit).');
+OM('SQP-S-20','s2',0,'Methyl orange is added to dilute hydrochloric acid and to aqueous sodium hydroxide. What is the colour in each solution?',['Orange; Red','Red; Yellow','Red; Orange','Yellow; Red'],1,'Methyl orange is red in acid and yellow in base.');
+OM('SQP-S-21','s2',2,'Which of the following substances, dissolved in equal volume of water, will have the highest pH value?',['Sulphuric acid','Acetic acid','Magnesium hydroxide','Sodium hydroxide'],3,'NaOH is a strong base, so its solution has the highest pH.');
+OM('SQP-S-22','s2',1,'When excess carbon dioxide is passed through lime water, the milkiness disappears because',['water soluble calcium carbonate converts to water soluble calcium bicarbonate','insoluble calcium carbonate converts to water soluble calcium bicarbonate','water soluble calcium carbonate converts to insoluble calcium bicarbonate','insoluble calcium carbonate converts to insoluble calcium bicarbonate'],1,'CaCO₃ (milky, insoluble) + H₂O + CO₂ → Ca(HCO₃)₂ (soluble).');
+OM('SQP-S-23','s1',2,'In the reaction of aqueous barium chloride with aqueous sodium sulphate, the aqueous solution formed will be:',['BaCl₂','BaSO₄','Na₂SO₄','NaCl'],3,'BaSO₄ precipitates out; NaCl stays dissolved in the solution.');
+OAR('SQP-S-24','s4',2,'C₄H₈, C₄H₆ and C₄H₁₀ are members of the same homologous series.','C₄H₈, C₄H₆, C₃H₄, C₃H₆, C₂H₄, C₂H₂ are unsaturated hydrocarbons.',3,'A is false: they are an alkene, an alkyne and an alkane (different series). R is true.');
+OM('SQP-S-30','s9',1,'Which statements about reflection from curved surfaces are correct? I. Concave mirrors can produce both real and virtual images depending on object position. II. Convex mirrors always produce real, inverted images. III. In both concave and convex mirrors, 1/f = 1/v + 1/u.',['I and II','I, II and III','II and III','I and III'],3,'Convex mirrors always give virtual, erect images, so II is false. I and III are true.');
+/* ===== SOCIAL SCIENCE (own practice) ===== */
+M('hi1',0,'Frederic Sorrieu, who made a series of prints visualising a “world made up of Democratic and Social Republics”, was a',['French artist','German philosopher','Italian revolutionary','Austrian chancellor'],0,'Sorrieu, a French artist, produced this series in 1848.');
+M('hi1',1,'The Treaty of Vienna (1815) was drawn up by European powers to',['undo most changes brought by Napoleon and restore monarchies','create the German empire','give Italy independence','abolish monarchy in France'],0,'The conservative powers wanted to restore the old order in Europe after Napoleon’s defeat.');
+M('hi1',2,'Who was the chief minister of Prussia who led the process of German unification?',['Otto von Bismarck','Giuseppe Mazzini','Count Cavour','Metternich'],0,'Bismarck used Prussian army and bureaucracy, fighting wars with Austria, Denmark and France.');
+M('hi1',2,'Which of these founded the secret society “Young Italy”?',['Giuseppe Mazzini','Giuseppe Garibaldi','Victor Emmanuel II','Count Cavour'],0,'Mazzini founded Young Italy in Marseilles (1831) and Young Europe in Berne.');
+S('hi1',0,3,'Explain any three ways in which the French revolutionaries tried to create a sense of collective identity among the French people.','The ideas of la patrie and le citoyen emphasised a united community with equal rights under a constitution. A new French tricolour replaced the royal standard. The Estates General was renamed the National Assembly; new hymns were composed, oaths taken and martyrs commemorated. A centralised administration made uniform laws, with internal customs duties abolished and a uniform system of weights and measures. French became the common language of the nation.',['La patrie and le citoyen','Tricolour flag, National Assembly, hymns & oaths','Uniform laws, weights and measures; customs duties abolished','French as the common language (any 3)']);
+M('hi2',0,'The Jallianwala Bagh massacre took place on',['13 April 1919','30 January 1948','9 August 1942','12 March 1930'],0,'General Dyer ordered firing on a peaceful gathering at Amritsar on 13 April 1919.');
+M('hi2',2,'Gandhi began the Salt March (Dandi March) from',['Sabarmati Ashram','Champaran','Wardha','Bardoli'],0,'On 12 March 1930 Gandhi began with 78 volunteers from Sabarmati and reached Dandi on 6 April.');
+M('hi2',3,'The Poona Pact (1932) was signed between Gandhi and',['Dr B. R. Ambedkar','Jawaharlal Nehru','Lord Irwin','Mohammad Ali Jinnah'],0,'It gave the Depressed Classes reserved seats in provincial and central councils.');
+M('hi2',0,'The Rowlatt Act (1919)',['allowed detention of political prisoners without trial for two years','established the Simon Commission','introduced separate electorates','abolished salt tax'],0,'The Act gave the government enormous power to repress political activities.');
+M('hi2',4,'The Congress adopted the demand for “Purna Swaraj” at its Lahore session in',['December 1929','1920','1927','1931'],0,'The Lahore session under Jawaharlal Nehru declared Purna Swaraj; 26 January 1930 was celebrated as Independence Day.');
+M('hi2',5,'Which satyagraha of 1917 was in support of indigo peasants?',['Champaran','Kheda','Ahmedabad','Bardoli'],0,'In Champaran, Bihar, Gandhi inspired peasants oppressed by indigo planters.');
+S('hi2',2,3,'Why did Gandhiji decide to launch the Civil Disobedience Movement with the Salt March?','Salt was consumed by rich and poor alike and was one of the essential items of food; the tax on salt and the government monopoly over its production were seen as most oppressive. Gandhi found in salt a powerful symbol that could unite the nation. His demands (including abolition of the salt tax) were ignored by Irwin, so he began the Salt March, breaking the salt law at Dandi.',['Salt: essential for all','Salt tax/monopoly seen as oppressive','Symbol that could unite the nation','Demands ignored → Dandi']);
+M('hi3',0,'The Silk Routes were',['trade and cultural links between Asia, Europe and Northern Africa','a canal in China','roads built by the British','sea routes to America'],0,'Silk Routes connected distant parts of the world and carried goods, ideas and faiths.');
+M('hi3',1,'Which of these foods came to Europe from the Americas?',['Potato','Rice','Wheat','Sugarcane'],0,'Potatoes, maize, tomatoes, soya, groundnuts, sweet potatoes and chillies came from the Americas.');
+M('hi3',1,'The Irish potato famine took place in the',['mid-1840s','1750s','1920s','1960s'],0,'Ireland’s poor depended on potatoes; disease destroyed the crop and hundreds of thousands died.');
+M('hi3',1,'The most powerful weapon of the Spanish conquerors in the Americas was',['germs such as smallpox','guns','horses','ships only'],0,'Native Americans had no immunity to smallpox, which killed vast numbers.');
+M('hi5',0,'The first printing press in Europe was developed by',['Johann Gutenberg','Marco Polo','Martin Luther','Menocchio'],0,'Gutenberg developed the press in Strasbourg in the 1430s; the first book printed was the Bible.');
+M('hi5',1,'Who brought woodblock printing knowledge from China to Italy?',['Marco Polo','Gutenberg','Erasmus','Gandhi'],0,'Marco Polo returned in 1295 with this knowledge.');
+M('hi5',3,'“Gulamgiri” was written by',['Jyotiba Phule','Raja Ram Mohan Roy','Bankim Chandra','Gandhi'],0,'Jyotiba Phule wrote Gulamgiri (1871) on the injustices of the caste system.');
+M('hi5',3,'The Vernacular Press Act was passed in',['1878','1857','1905','1919'],0,'It gave the government extensive rights to censor reports in the vernacular press.');
+S('hi5',1,3,'How did print culture assist the growth of nationalism in India?','Print spread new ideas and made nationalist writings available widely. Newspapers criticised colonial misrule and reported on the actions of the government, promoting nationalist thinking. The colonial government tried to control it (Vernacular Press Act), but the reports of repression stirred more protest. Nationalist newspapers created a sense of shared identity among readers across regions.',['Spread of ideas','Newspapers criticised colonial rule','Repression led to more protest','Shared national identity']);
+M('ge1',0,'Resources which can be replenished in a short time are called',['renewable resources','non-renewable resources','stock','potential only'],0,'Examples: solar and wind energy, water, forests.');
+M('ge1',3,'Which soil is also called “regur” and is ideal for cotton?',['Black soil','Alluvial soil','Laterite soil','Red soil'],0,'Black soil is made of volcanic rocks and retains moisture; it suits cotton.');
+M('ge1',1,'Sustainable development means',['development without damaging the environment and without compromising the needs of future generations','rapid industrialisation','using only non-renewable resources','stopping all development'],0,'This is the Brundtland-style definition used in NCERT.');
+M('ge1',3,'Which soil is the most widespread in India and formed by silt deposited by rivers?',['Alluvial soil','Laterite soil','Arid soil','Forest soil'],0,'Alluvial soil is deposited by the Indus, Ganga and Brahmaputra systems and is very fertile.');
+M('ge2',1,'Project Tiger was launched in',['1973','1952','1986','2000'],0,'It is a well-known wildlife campaign to protect tigers.');
+M('ge2',2,'Sacred groves are examples of',['community conservation of nature','government plantation','mining areas','industrial zones'],0,'Communities protect these patches of forest as part of religious beliefs.');
+M('ge2',1,'Reserved forests are ___ of the total forest area of India (the largest share).',['more than half','one-fourth','less than 10%','about one-tenth only'],0,'Over half of the forest area is reserved forest, considered most valuable for conservation.');
+M('ge3',1,'The Bhakra Nangal Project is on the river',['Sutlej','Narmada','Mahanadi','Krishna'],0,'Bhakra Dam is on the Sutlej in Himachal Pradesh.');
+M('ge3',1,'Hirakud Dam is built on the river',['Mahanadi','Godavari','Tungabhadra','Kaveri'],0,'Hirakud in Odisha integrates water conservation with flood control.');
+M('ge3',2,'“Tankas” are traditional rainwater harvesting structures in',['Bikaner, Phalodi and Barmer (Rajasthan)','Meghalaya','Kerala','Assam'],0,'Tankas are underground tanks next to houses that store rooftop rainwater.');
+M('ge4',1,'Which of these is a Rabi crop?',['Wheat','Rice','Maize','Cotton'],0,'Rabi crops are sown in winter (October–December) and harvested in summer: wheat, barley, peas, gram.');
+M('ge4',1,'Which of these is a plantation crop?',['Tea','Wheat','Jowar','Bajra'],0,'Plantation farming involves one crop on a large area: tea, coffee, rubber, sugarcane, banana.');
+M('ge4',2,'The “Green Revolution” in India mainly increased production of',['wheat and rice','tea and coffee','cotton only','pulses only'],0,'HYV seeds with irrigation and fertilisers boosted wheat and rice, mainly in Punjab, Haryana and western U.P.');
+M('ge5',0,'Which iron ore has the highest iron content (about 70%)?',['Haematite','Magnetite','Siderite','Limonite'],1,'Magnetite has the highest iron content (about 70%); haematite is the most important in volume.');
+M('ge5',0,'Bauxite is the chief ore of',['aluminium','iron','copper','manganese'],0,'Odisha (Koraput) is the largest bauxite producing state.');
+M('ge5',2,'The Tarapur and Kalpakkam power stations are based on',['nuclear energy','thermal energy','wind energy','tidal energy'],0,'India’s nuclear power plants include Tarapur, Kalpakkam, Narora, Kakrapara.');
+M('ge5',1,'Which is the most abundant fossil fuel in India?',['Coal','Natural gas','Petroleum','Uranium'],0,'Coal is the most abundant fossil fuel and a main source of power.');
+M('ge6',1,'The first successfully established modern cotton textile mill (1854) was in',['Mumbai','Kolkata','Chennai','Ahmedabad'],0,'The first successful mill was set up in Mumbai.');
+M('ge6',1,'Jamshedpur is known for',['iron and steel industry','cotton textiles','software','sugar'],0,'TISCO, set up in Jamshedpur, is a major iron and steel plant.');
+M('ge6',2,'Which pollution results from industrial discharge of hot water into rivers?',['thermal pollution','noise pollution','soil erosion','air pollution only'],0,'Hot water from factories raises water temperature, harming aquatic life.');
+M('ge7',0,'Kandla is a ___ port in Gujarat.',['tidal','riverine','inland','artificial lake'],0,'Kandla was developed after Partition to reduce Mumbai’s load.');
+M('ge7',0,'Paradip port is in the state of',['Odisha','Goa','Kerala','West Bengal'],0,'Paradip is in Odisha on the east coast.');
+M('po1',0,'In Belgium, the Dutch-speaking community lives mostly in the',['Flemish region','Wallonia','Brussels only','German region'],0,'About 59% live in the Flemish region and speak Dutch.');
+M('po1',1,'The 1956 Act in Sri Lanka that recognised only Sinhala as the official language is called',['Sinhala Only Act','Federal Act','Tamil Charter','Citizenship Act'],0,'It ignored the Tamil language and alienated Sri Lankan Tamils.');
+M('po1',2,'Power shared among different levels of government, such as central and state, is called',['vertical division of power','horizontal division of power','community government','coalition'],0,'Vertical: between governments at different levels. Horizontal: among legislature, executive, judiciary.');
+M('po2',0,'Which of these subjects is in the Union List?',['Defence','Police','Agriculture','Irrigation'],0,'Defence, foreign affairs, banking, communications, currency are in the Union List.');
+M('po2',1,'India is an example of which type of federation?',['“holding together”','“coming together”','unitary','confederation'],0,'The Constitution created a union of states in which power is shared by the Centre with states that already existed.');
+M('po2',2,'Panchayati Raj was strengthened by the ___ Constitutional Amendment (1992).',['73rd','42nd','44th','61st'],0,'The 73rd and 74th Amendments made local-government elections compulsory and reserved seats for women.');
+M('po3',0,'Women’s representation in local governments in India is reserved to the extent of',['one-third of seats','half of seats','10% of seats','no reservation'],0,'Reservation of one-third seats for women in panchayats and municipalities.');
+M('po3',1,'Communalism is based on the belief that',['religion is the principal basis of social community','all religions are equal','state has no religion','religion has no role in life'],0,'Communalism uses religion in politics, believing different faiths cannot live as equal citizens.');
+M('po3',2,'Which of these is true about caste and politics?',['Parties choose candidates keeping caste in mind','Caste has disappeared from politics','Caste is the only factor that decides elections','Caste is never discussed'],0,'But elections are not decided by caste alone; people also look at performance and other factors.');
+M('po4',0,'The Anti-defection law was added to the Constitution through the ___ Amendment.',['52nd','73rd','61st','42nd'],0,'The 52nd Amendment (1985) disqualifies legislators who change party after election.');
+M('po4',1,'Which one is a national party of India?',['Bahujan Samaj Party','Telugu Desam Party','Shiv Sena','Akali Dal'],0,'BSP is recognised as a national party (as per NCERT). Others are state parties.');
+M('po4',2,'Which body registers political parties and gives them symbols in India?',['Election Commission of India','Supreme Court','Parliament','President'],0,'ECI regulates parties and elections.');
+M('po5',0,'A democratic government is better than others in terms of',['being accountable to the people','always faster decisions','higher economic growth always','no conflict'],0,'Democracy ensures legitimate, accountable and responsive government.');
+M('po5',1,'Which feature is often seen in democracies compared to dictatorships regarding economic growth?',['Dictatorships sometimes grow faster, but democracies are better at reducing inequality and conflicts','Democracies always have higher growth','There is no difference','Dictatorships reduce inequality'],0,'NCERT: small difference in growth rate; democracy’s strength lies elsewhere.');
+M('ec1',1,'Per capita income of a country is',['total income divided by total population','total income only','income of the richest','income of the poor'],0,'Per capita income = national income / population; it is an average and hides inequality.');
+M('ec1',1,'The Human Development Index is published by',['UNDP','WTO','IMF','World Bank only'],0,'UNDP’s HDI uses health, education and per capita income.');
+M('ec1',2,'Which state has the highest literacy and low infant mortality (as in NCERT)?',['Kerala','Bihar','Haryana','Rajasthan'],0,'Kerala has better public facilities (health, education, PDS).');
+M('ec2',0,'Which of these activities belongs to the secondary sector?',['Manufacturing cloth in a factory','Growing cotton','Banking','Teaching'],0,'The secondary sector processes natural products into other goods.');
+M('ec2',3,'MGNREGA 2005 guarantees ___ days of employment in a year to rural households.',['100','50','200','365'],0,'The Mahatma Gandhi National Rural Employment Guarantee Act guarantees 100 days of work.');
+M('ec2',2,'Workers in the unorganised sector',['lack job security and fixed working hours','get pensions','get paid leave','have written contracts always'],0,'The unorganised sector is outside government control with irregular jobs.');
+M('ec3',0,'Barter system requires',['double coincidence of wants','a bank','RBI','currency notes'],0,'Each party must have what the other wants.');
+M('ec3',1,'The Reserve Bank of India supervises banks and issues',['currency notes (except one-rupee notes)','coins','loans to farmers','fixed deposits'],0,'One-rupee notes and coins are issued by the Ministry of Finance; RBI issues other notes.');
+M('ec3',2,'Self-Help Groups (SHGs) mainly help the rural poor by',['providing collateral-free small loans','giving pensions','running banks','building roads'],0,'Members pool savings and take loans at reasonable interest without collateral.');
+M('ec4',0,'Globalisation is the process of',['rapid integration between countries','isolation of countries','decrease in trade','only cultural exchange'],0,'It happens through foreign trade and foreign investment by MNCs.');
+M('ec4',1,'An MNC is a company that',['owns or controls production in more than one country','is owned by the government','works only locally','makes only toys'],0,'MNCs set up offices and factories in regions where cheap labour and other resources are available.');
+
+/* ===== SOCIAL SCIENCE: official CBSE Sample Question Paper 2025-26 – MCQs ===== */
+OM('SQP-X-1','hi1',0,'Match the following (Col I: A Frederic Sorrieu, B Statue of Liberty, C Foreground in front of the Statue of Liberty, D Sorrieu’s utopian vision; Col II: 1 Torch of enlightenment, 2 Shattered remains of absolutist institutions, 3 Democratic and Social Republics, 4 French Artist). Choose the correct option.',['A-4, B-1, C-2, D-3','A-2, B-4, C-4, D-1','A-1, B-2, C-4, D-3','A-4, B-1, C-3, D-4'],0,'Sorrieu was a French artist; the Statue holds the torch of enlightenment; the foreground shows shattered absolutist institutions; his vision was of Democratic and Social Republics.');
+OM('SQP-X-3','hi3',0,'Thousands of people fled Europe for America in the 19th century due to –',['Widespread poverty and deadly diseases','Frequent famines and poor living conditions','Continuous wars and political instability','Harsh climate and repeated natural disasters'],0,'Widespread poverty and deadly diseases in Europe pushed people to migrate to America.');
+OM('SQP-X-4','hi5',0,'Louise-Sebastien Mercier proclaimed “Tremble, therefore, tyrants of the world! Tremble before the virtual writer!” Who are referred to as the tyrants in this context?',['Educated classes who wanted to change the society','Absolutist institutions like monarchy and church','Authors of the new books','Printing press'],1,'Mercier meant the despotic institutions like monarchy and church that feared the power of the printed word.');
+OM('SQP-X-10','ge1',1,'What is essential for resource development to contribute to overall development?',['The availability of resources alone is enough','The presence of foreign invaders and their governance','Technological development and institutional changes','Only human resources can contribute to development'],2,'Resources become useful only through technology and suitable institutions.');
+OM('SQP-X-11','ge1',3,'Classification of soils: Alluvial – ideal for sugarcane, paddy, wheat and other cereal and pulse crops; (?) – ideal for growing cotton; (?) – suitable for crops like cashew nut. Identify the appropriate option to fill in the boxes.',['Black soil, Red and Yellow soils','Laterite soil, Black soil','Red & Yellow soils & Black soil','Black soil & Laterite soil'],3,'Black soil is ideal for cotton; laterite soil suits cashew nut.');
+OM('SQP-X-12','ge2',0,'A total of 628 tigers died in India in five years due to natural causes and other reasons including poaching. Which is the most significant INDIRECT consequence of poaching on the tiger population?',['Reduction in the prey species, dwindling tiger’s food supply','Increase in human-wildlife conflicts in protected areas','Rise in the tiger population','Decrease in tourism revenue in national parks'],0,'Poaching of prey species reduces the food supply of tigers.');
+OM('SQP-X-13','ge2',1,'Based on the classification of forests, which statement would most likely apply to places like Jammu and Kashmir, Andhra Pradesh and Kerala?',['These places mostly have forests managed as reserved or protected forests for conservation','They rely on unclassed forests and local community management','They have forest resources and primarily focus on industrial development','There are no classified forests and management is left to private ownership'],0,'These states have a significant portion of their forests as reserved or protected forests.');
+OM('SQP-X-14','ge3',2,'Which one of the following states has made roof-top rainwater harvesting compulsory in India?',['Haryana','Punjab','Assam','Tamil Nadu'],3,'Tamil Nadu made roof-top rainwater harvesting structures compulsory for all houses.');
+OM('SQP-X-15','ge3',0,'Which statement best evaluates the overall goal of the Pradhan Mantri Krishi Sinchayee Yojana?',['Addressing negative ecological effects of large dams by reducing water usage','To provide better irrigation systems and sustainable water conservation practices for farmers','Shifting farmers from traditional crops to commercial, water-intensive crops','Preserve natural river flow and prevent fragmentation of aquatic ecosystems'],1,'PMKSY aims at better irrigation and sustainable water conservation for farmers.');
+OM('SQP-X-22','po2',0,'The Government of India plans to issue new currency notes to curb black money. The Government of one state opposes this. Can the state government stop the Union government?',['Yes, because currency is a subject of the State List','No, because currency is a subject of the Union List','Yes, because approval of both governments is necessary','No, because any such change must be approved by the local government also'],1,'Currency is in the Union List, so only the Union government can legislate on it.');
+OAR('SQP-X-23','po3',0,'Exclusive attention to caste can produce negative results in democracy.','It can divert attention from other important issues thus leading to tensions, conflicts and even violence.',0,'Focusing only on caste can sideline other issues like poverty and development, causing tension and conflict.');
+OM('SQP-X-29','ec2',2,'Underemployment is caused when –',['More workers are employed than actually required','Fewer workers are employed than actually required','Workers are paid more than their actual output','Jobs are given only to highly educated workers'],0,'More workers than required are engaged, so some add nothing to output (disguised unemployment).');
+OM('SQP-X-30','ec1',1,'What can be inferred about the limitations of using per capita income to compare well-being across countries?',['It shows how equally or unequally income is distributed','The only measure needed to understand development is per capita income','It gives a basic idea of economic well-being but hides the income inequality','It only reflects industrial growth and ignores other factors'],2,'Per capita income is an average and does not show how income is distributed.');
+OM('SQP-X-31','ec2',0,'Which example best demonstrates how the tertiary sector supports both the primary and secondary sectors?',['Farmers grow vegetables and sell them directly to consumers, with no transport or storage','A factory makes shoes from raw materials like leather, relying on transport and retail stores to distribute the shoes','A bakery bakes bread and uses delivery to send it to shops, without any direct involvement of raw materials','A company produces furniture from wood but does not require transport or retail services'],1,'Transport and trade (tertiary) link raw material producers and manufacturers to consumers.');
+OM('SQP-X-32','ec3',1,'Which one of the following issues currency notes in India?',['Finance Ministry','Reserve Bank of India','State Bank of India','Central Bank of India'],1,'In India, the Reserve Bank of India issues currency notes on behalf of the central government.');
+OM('SQP-X-33','ec3',0,'Person Z explains how the requirement of a double coincidence of wants in a barter system limits trade. Which justification will be used?',['It makes trade more complicated, as each person must have what the other wants, limiting the pool of potential trade partners','Barter allows trade to be conducted more efficiently since both parties already know what they need','It increases exchanges because each person can trade for exactly what they want','The system creates value for goods by ensuring both parties have a direct need for each other’s goods'],0,'Finding someone who wants what you have and has what you want is difficult, which limits trade.');
+/* ===== ENGLISH (own practice; literature facts from the NCERT texts) ===== */
+M('ep1',0,'In “A Letter to God”, Lencho wrote a letter to God asking for',['one hundred pesos','one thousand pesos','a new house','seeds'],0,'Lencho asked God for 100 pesos to sow his field again after the hailstorm.');
+M('ep1',1,'The postmaster sent Lencho only seventy pesos because',['he and his employees collected money, but could only raise seventy pesos','the post office kept thirty pesos as tax','Lencho had asked for seventy','he did not believe Lencho'],0,'The postmaster collected money from friends; Lencho then accused the post-office employees of stealing the rest.');
+AR('ep1',1,'Lencho’s faith in God was unshakable.','He wrote a letter to God to ask for money and was angry only when he got less than he asked.',0,'His faith was so strong that he expected God to answer exactly; the “missing” money made him blame the post-office men.');
+M('ep2',0,'Nelson Mandela’s speech “Long Walk to Freedom” was given at his',['inauguration as the first democratic President of South Africa','release from prison','retirement','Nobel prize function'],0,'The text describes his inauguration on 10 May 1994 in Pretoria.');
+M('ep2',1,'Mandela says the greatest of all the medals was the one for',['courage — the courage of ordinary people who fought apartheid','the Nobel Peace Prize','his university degree','his sporting success'],0,'He said courage is not the absence of fear but the triumph over it, and he saw it in ordinary people.');
+M('ep3',0,'In “His First Flight”, the young seagull was afraid to fly because',['he was scared of the height and of falling','he was injured','his mother told him not to','he had no wings'],0,'He was afraid, and it took hunger and the sight of his mother with food to make him jump.');
+M('ep3',1,'In “The Black Aeroplane”, the narrator was flying from France to',['England','Germany','Spain','Italy'],0,'The narrator flew from Paris to England and the black plane guided him through the storm.');
+M('ep4',0,'Anne Frank called her diary',['Kitty','Mary','Peggy','Dolly'],0,'Anne addressed her diary as “Kitty”.');
+M('ep4',1,'Anne Frank felt that the diary would be better than a friend because',['it was a friend she could confide in completely','it was a gift from Peter','it was expensive','it was her mother'],0,'She had no real friend to confide in, so she wrote to the diary.');
+M('ep5',0,'In “A Baker from Goa”, the traditional Goan bread-makers are known as',['pader','sahib','sarpanch','bhisti'],0,'The baker is called the “pader”; his visits were announced by the jingling of his bamboo.');
+M('ep5',1,'Coorg is home to ___ and the Kodavus are known for their ___.',['coffee estates; martial tradition','tea estates; weaving','spice markets; fishing','paddy fields; pottery'],0,'Kodavus are brave people with a martial tradition and Coorg is known for coffee.');
+M('ep6',0,'Mijbil the otter was brought from',['Iraq (Tigris marshes)','Egypt','India','Scotland'],0,'Gavin Maxwell got Mijbil from the marshes of southern Iraq and brought him to England.');
+M('ep7',0,'In “Madam Rides the Bus”, Valliammai is a girl of',['eight','twelve','fifteen','six'],0,'Valliammai (Valli) was an eight-year-old girl with a great curiosity about bus travel.');
+M('ep7',1,'Valli learnt that the bus fare for the trip to the nearby town was',['fifty paise each way (a rupee in all)','five rupees','free','ten paise'],0,'She saved coins for the fare; the story shows her independence and curiosity.');
+M('ep8',0,'In “The Sermon at Benares”, Kisa Gotami went to Buddha because',['her only son died and she wanted medicine to revive him','she wanted to join the sangha','her husband left her','she was ill'],0,'Buddha asked her to bring a mustard seed from a house where no one had died.');
+M('ep9',0,'In “The Proposal”, Lomov comes to Chubukov to',['ask for Natalya’s hand in marriage','buy land','borrow money','sell his dog'],0,'But the proposal gets sidetracked by quarrels over land and dogs.');
+M('ep9',1,'The play “The Proposal” is written by',['Anton Chekhov','Shakespeare','Oscar Wilde','Robert Frost'],0,'It is a one-act comedy by the Russian writer Anton Chekhov.');
+M('eq1',0,'In “Dust of Snow”, the bird that shook down the dust of snow was a',['crow','sparrow','hawk','cuckoo'],0,'The crow shook snow from a hemlock tree; the poet’s mood changed from sad to cheerful.');
+M('eq2',0,'In “Fire and Ice”, the poet says the world may end in fire or ice. “Fire” stands for',['desire','hatred','anger only','wealth'],0,'Fire = desire (and passion); ice = hatred. Both are destructive.');
+M('eq2',1,'The rhyme scheme of Frost’s “Fire and Ice” is',['abaabcbcb','aabbcc','abcabc','abab'],0,'Fire and Ice has 9 lines with rhyme scheme abaabcbcb.');
+M('eq3',0,'In “A Tiger in the Zoo”, the poet contrasts the tiger in the cage with the tiger',['in the wild','in a circus','in a dream','in a painting'],0,'The poem speaks about the freedom the tiger would have had and the confinement in a zoo.');
+M('eq4',0,'“How to Tell Wild Animals” is a poem that is',['humorous','tragic','patriotic','devotional'],0,'It is a funny poem by Carolyn Wells giving comic ways to identify animals.');
+M('eq5',0,'In “The Ball Poem”, the boy loses his',['ball','bat','kite','book'],0,'He learns the lesson that losing things is part of life and that responsibility is part of growing up.');
+M('eq6',0,'The poem “Amanda!” is about a child who',['is constantly told what to do and wants freedom','is a champion','loves to read','is lost'],0,'Amanda is nagged by adults; she dreams of being free like a mermaid or like Rapunzel.');
+M('eq7',0,'In “The Trees” by Adrienne Rich, the trees are shown as',['moving out of the forest into the house','dying in a forest fire','being cut by woodcutters','being watered'],0,'They symbolise nature’s wish to be free and a call for harmony.');
+M('eq8',0,'In “Fog”, Carl Sandburg compares the fog to',['a cat','a lion','a snake','a ghost'],0,'“The fog comes on little cat feet” is a metaphor.');
+M('eq9',0,'In “The Tale of Custard the Dragon”, who is the only brave one at the end?',['Custard the dragon','Belinda','Mustard the dog','Ink the kitten'],0,'Despite being called a coward, Custard fights the pirate and defeats him.');
+M('eq10',0,'In “For Anne Gregory”, the poet says that young men will love Anne for her',['yellow hair','character','wealth','intelligence'],0,'The poem suggests that “only God” can love her for herself alone.');
+M('ef1',0,'“A Triumph of Surgery” is a story about a dog named',['Tricki','Tommy','Bruno','Jack'],0,'Mrs Pumphrey overfed Tricki until he fell ill.');
+M('ef2',0,'In “The Thief’s Story”, the thief’s name is',['Hari Singh','Anil','Ram','Ravi'],0,'Hari Singh steals from Anil but is moved by Anil’s trust.');
+M('ef3',0,'In “The Midnight Visitor”, the secret agent is',['Ausable','Fowler','Max','Rick'],0,'Ausable outwits Max with clever thinking about the balcony and the room.');
+M('ef4',0,'In “A Question of Trust”, Horace Danby was a',['locksmith (and a thief for one job a year)','policeman','doctor','teacher'],0,'He made locks and robbed a safe once a year; the woman he trusted tricked him.');
+M('ef5',0,'“Footprints Without Feet” is a story of an invisible',['scientist Griffin','policeman','teacher','magician'],0,'Griffin discovers invisibility and uses it for selfish needs.');
+M('ef6',0,'“The Making of a Scientist” is about',['Richard Ebright','Richard Feynman','Isaac Newton','Albert Einstein'],0,'Richard Ebright collected butterflies as a boy and became a scientist.');
+M('ef7',0,'In “The Necklace”, Madame Loisel borrowed the necklace from',['Madame Forestier','her mother','her husband’s boss','a shopkeeper'],0,'She lost it, and replaced it at great cost; later she learnt that the original was an imitation.');
+M('ef8',0,'In “Bholi”, Bholi’s real name is',['Sulekha','Sarita','Radha','Kamla'],0,'Sulekha got the nickname Bholi; she finds courage through education.');
+M('ef9',0,'In “The Book That Saved the Earth”, the book is',['Mother Goose nursery rhymes','Pride and Prejudice','The Jungle Book','Mahabharata'],0,'The Martians were confused by the nursery rhyme “Old Mother Hubbard”.');
+M('ew1',0,'The best way to answer an unseen passage question is to',['read the passage first, then underline the line that answers the question','guess','copy the full passage','skip the passage and read only questions'],0,'Read the passage once, then locate evidence in the text for each answer.');
+M('ew2',0,'A formal letter ends with',['Yours faithfully / Yours sincerely','Love','Bye','Your friend'],0,'Use “Yours faithfully” when you don’t know the name; “Yours sincerely” if you do.');
+M('ew2',1,'An analytical paragraph is based on',['a chart, graph or table','a story','a poem','a letter'],0,'You describe what the data shows, compare and conclude, in about 100–120 words.');
+M('ew3',0,'Choose the correct form: “Neither of the boys ___ present.”',['was','were','are','have been'],0,'“Neither” takes a singular verb.');
+M('ew3',1,'Choose: “You ___ obey traffic rules.” (obligation)',['must','might','could','may'],0,'“Must” expresses strong obligation.');
+M('ew3',2,'Change into reported speech: He said, “I am tired.”',['He said that he was tired.','He said that I am tired.','He said that he is tired.','He told that he was tired.'],0,'In reported speech, present tense shifts to past tense and pronoun changes.');
+M('ew3',0,'“She has been working here since 2020.” The tense is',['present perfect continuous','simple past','past perfect','future perfect'],0,'has/have been + verb-ing = present perfect continuous.');
+M('ew3',3,'Identify the error: “He is more taller than his brother.”',['more taller','is','his','brother'],0,'“Taller” is already comparative; “more” is incorrect.');
+S('ew2',0,3,'You are Vedu, living in a rented house. Write a formal letter to the Municipal Commissioner about garbage not being collected for a week (about 100 words). Use a fictitious address.','A good answer has: sender’s address and date, receiver’s designation and address, subject line (“Complaint about irregular garbage collection”), salutation “Sir/Madam”, body in 2 paras (problem, effect on health, request for action) and a closing “Yours faithfully” with signature/name.',['Format: sender’s address, date, receiver, subject','Salutation and clear body paragraphs','Request for action','Complimentary close with name']);
+S('ep1',1,3,'Why did Lencho get angry with the post-office employees in “A Letter to God”?','Lencho expected God to send exactly the 100 pesos he had asked for. Since the envelope contained only 70 pesos, he was sure the post-office employees had stolen the rest. So he wrote another letter asking God not to send money through the mail, calling the post-office employees “a bunch of crooks”.',['Expected 100 pesos from God','Got only 70 pesos','Suspected post-office employees','Wrote another letter']);
+
+/* ===== HINDI Course A (own practice) ===== */
+M('hk1',0,'‘नेताजी का चश्मा’ पाठ के लेखक कौन हैं?',['स्वयं प्रकाश','प्रेमचंद','यशपाल','मन्नू भंडारी'],0,'यह कहानी स्वयं प्रकाश की लिखी हुई है।');
+M('hk1',1,'चश्मे वाला (कैप्टन) कौन था?',['एक देशभक्त, जो नेताजी की मूर्ति पर चश्मा लगाता था','एक नेता','एक सैनिक','एक मूर्तिकार'],0,'कैप्टन देशभक्ति से प्रेरित एक गरीब चश्मे बेचने वाला था, जो नेताजी की मूर्ति के लिए चश्मा बदलता रहता था।');
+M('hk2',0,'बालगोबिन भगत किसके भक्त थे?',['कबीर','तुलसी','सूर','मीरा'],0,'वे कबीर के भक्त थे और उन्हीं के आदर्शों पर चलते थे।');
+M('hk2',1,'‘बालगोबिन भगत’ पाठ के लेखक हैं',['रामवृक्ष बेनीपुरी','स्वयं प्रकाश','शिवपूजन सहाय','यशपाल'],0,'यह रेखाचित्र रामवृक्ष बेनीपुरी का है।');
+M('hk3',0,'‘लखनवी अंदाज़’ के लेखक कौन हैं?',['यशपाल','प्रेमचंद','भीष्म साहनी','जैनेंद्र'],0,'यह व्यंग्य यशपाल ने लिखा, जिसमें नवाबी दिखावे पर व्यंग्य है।');
+M('hk4',0,'‘एक कहानी यह भी’ की लेखिका कौन हैं?',['मन्नू भंडारी','महादेवी वर्मा','सुभद्रा कुमारी चौहान','कृष्णा सोबती'],0,'यह मन्नू भंडारी की आत्मकथात्मक रचना है।');
+M('hk5',0,'‘नौबतखाने में इबादत’ किसके जीवन पर आधारित है?',['उस्ताद बिस्मिल्ला खाँ','तानसेन','पं. रविशंकर','लता मंगेशकर'],0,'यह यतींद्र मिश्र द्वारा लिखा गया शहनाई वादक उस्ताद बिस्मिल्ला खाँ का व्यक्तिचित्र है।');
+M('hk6',0,'‘संस्कृति’ निबंध के लेखक कौन हैं?',['भदंत आनंद कौसल्यायन','यशपाल','महावीर प्रसाद द्विवेदी','हजारी प्रसाद द्विवेदी'],0,'इसमें सभ्यता और संस्कृति का अंतर समझाया गया है।');
+M('hq1',0,'सूरदास के पदों में किस रस की प्रधानता है?',['वात्सल्य और वियोग श्रृंगार (भ्रमरगीत में)','वीर रस','हास्य रस','अद्भुत रस'],0,'पाठ में उद्धव–गोपी संवाद (भ्रमरगीत) के पद हैं, जिनमें गोपियों की विरह-व्यथा है।');
+M('hq2',0,'‘राम-लक्ष्मण-परशुराम संवाद’ किस काव्य से लिया गया है?',['रामचरितमानस','गीतावली','विनय पत्रिका','कवितावली'],0,'यह तुलसीदास कृत रामचरितमानस के बालकांड का अंश है।');
+M('hq3',0,'‘आत्मकथ्य’ कविता के रचयिता हैं',['जयशंकर प्रसाद','निराला','दिनकर','पंत'],0,'प्रसाद ने इसमें अपनी जीवन-कथा के बारे में विनम्र भाव से लिखा है।');
+M('hq4',0,'‘उत्साह’ कविता में कवि बादल से क्या कहता है?',['गरजो और क्रांति लाओ','चुप रहो','बरसो मत','चले जाओ'],0,'कवि निराला बादलों का आह्वान करते हैं कि वे क्रांति का स्वर लेकर गरजें।');
+M('hq5',0,'‘यह दंतुरित मुसकान’ के कवि हैं',['नागार्जुन','निराला','त्रिलोचन','केदारनाथ अग्रवाल'],0,'कवि नागार्जुन ने नन्हे बच्चे की दाँतों वाली मुस्कान का वर्णन किया है।');
+M('hq6',0,'‘संगतकार’ कविता के कवि कौन हैं?',['मंगलेश डबराल','नागार्जुन','निराला','कुँवर नारायण'],0,'कविता में मुख्य गायक के साथ संगत करने वाले कलाकार की भूमिका का महत्व है।');
+M('hr1',0,'‘माता का अँचल’ के लेखक हैं',['शिवपूजन सहाय','हजारी प्रसाद द्विवेदी','यशपाल','प्रेमचंद'],0,'यह उपन्यास ‘देहाती दुनिया’ का अंश है।');
+M('hr2',0,'‘साना-साना हाथ जोड़ि’ यात्रा-वृत्तांत किसने लिखा?',['मधु कांकरिया','महादेवी वर्मा','रामवृक्ष बेनीपुरी','मन्नू भंडारी'],0,'लेखिका ने सिक्किम की यात्रा का वर्णन किया है।');
+M('hr3',0,'‘मैं क्यों लिखता हूँ?’ के लेखक कौन हैं?',['अज्ञेय','प्रेमचंद','यशपाल','जैनेंद्र'],0,'लेखक ने अपने भीतर की विवशता को लिखने का कारण बताया है।');
+M('hg1',0,'‘वह खेलता है और गाता है।’ यह वाक्य रचना की दृष्टि से किस प्रकार का है?',['संयुक्त वाक्य','सरल वाक्य','मिश्र वाक्य','प्रश्नवाचक'],0,'दो स्वतंत्र उपवाक्य समुच्चयबोधक ‘और’ से जुड़े हैं, इसलिए संयुक्त वाक्य।');
+M('hg1',1,'‘मुझसे चला नहीं जाता।’ यह कौन-सा वाच्य है?',['भाववाच्य','कर्तृवाच्य','कर्मवाच्य','कोई नहीं'],0,'वाक्य में क्रिया का मुख्य बल भाव (अक्षमता) पर है, कर्ता या कर्म पर नहीं।');
+M('hg1',1,'‘रमेश पत्र लिखता है।’ का कर्मवाच्य है',['रमेश द्वारा पत्र लिखा जाता है।','रमेश से पत्र लिखा नहीं जाता।','पत्र लिखता है रमेश।','रमेश पत्र लिख चुका है।'],0,'कर्मवाच्य में कर्म प्रधान होता है और कर्ता के साथ ‘द्वारा’ लगता है।');
+M('hg2',1,'‘मुख चंद्रमा के समान है।’ में कौन-सा अलंकार है?',['उपमा','रूपक','अतिशयोक्ति','मानवीकरण'],0,'‘समान’ वाचक शब्द है, इसलिए उपमा।');
+M('hg2',1,'‘चरण कमल बंदौं हरि राई’ में अलंकार है',['रूपक','उपमा','उत्प्रेक्षा','अनुप्रास'],0,'चरणों को कमल ही कहा गया है (अभेद), इसलिए रूपक।');
+M('hg2',1,'‘सिंधु सेज पर धरा वधू अब तनिक संकुचित बैठी सी।’ में अलंकार है',['मानवीकरण','अतिशयोक्ति','उपमा','यमक'],0,'धरा (पृथ्वी) को वधू की तरह कार्य करते दिखाया गया है, अतः मानवीकरण।');
+M('hg2',0,'‘वह दौड़ता है।’ में ‘दौड़ता है’ किस पद का भेद है?',['क्रिया','संज्ञा','विशेषण','सर्वनाम'],0,'यह कार्य को बताता है, इसलिए क्रिया है।');
+M('hg3',0,'अपठित गद्यांश के उत्तर लिखते समय सबसे पहले क्या करना चाहिए?',['गद्यांश को ध्यान से पढ़कर मूल भाव समझना','सीधे प्रश्न हल करना','केवल शीर्षक देखना','गद्यांश छोड़ देना'],0,'पहले भाव समझें, फिर प्रश्नों के उत्तर गद्यांश की भाषा में दें।');
+M('hg4',0,'औपचारिक पत्र के अंत में लिखा जाता है',['भवदीय / आपका आज्ञाकारी','तुम्हारा मित्र','सप्रेम','प्रिय'],0,'औपचारिक पत्र में ‘भवदीय’ जैसे शिष्ट समापन का प्रयोग होता है।');
+S('hg4',1,3,'अपने विद्यालय के प्रधानाचार्य को अवकाश के लिए प्रार्थना-पत्र लिखिए (काल्पनिक नाम का प्रयोग करें)।','सही उत्तर में: प्रेषक का नाम/कक्षा, दिनांक, सेवा में प्रधानाचार्य, विषय, संबोधन ‘माननीय महोदय’, कारण सहित अवकाश की प्रार्थना, ‘आपकी आज्ञाकारी शिष्या’, नाम एवं कक्षा।',['प्रारूप: सेवा में, दिनांक, विषय','स्पष्ट कारण व अवधि','विनम्र भाषा','अंत में नाम, कक्षा']);
+S('hq6',1,3,'‘संगतकार’ कविता में मुख्य गायक की सफलता में संगतकार की क्या भूमिका बताई गई है?','संगतकार मुख्य गायक के स्वर को सहारा देता है। जब गायक का स्वर बिखरने लगता है तो वह उसे संभाल लेता है और अपनी आवाज़ मिलाकर उसे ऊँचाई देता है। फिर भी वह अपनी आवाज़ को दबाकर रखता है, यही उसकी विनम्रता और मानवीयता है।',['स्वर को सहारा देना','स्वर बिखरने पर संभालना','अपनी आवाज़ दबाकर रखना (विनम्रता)']);
+/* ===== Mochi – Class 10 Planner – core (storage key kept as vedu_tracker_v1 so old progress still loads) ===== */
+var KEY='vedu_tracker_v1', S, SUB={}, CH={}, INT=[1,3,7,21];
+SUBJECTS.forEach(function(s){SUB[s.id]=s;s.chapters.forEach(function(c){CH[c.id]={c:c,s:s};});});
+QB.forEach(function(q,i){q.uid=q.id||('P'+i);});
+var QBY={};QB.forEach(function(q){QBY[q.uid]=q;});
+function pad(n){return n<10?'0'+n:''+n}
+function ds(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+function pd(s){var a=s.split('-');return new Date(+a[0],+a[1]-1,+a[2],12,0,0)}
+function today(){return ds(new Date())}
+function addD(s,n){var d=pd(s);d.setDate(d.getDate()+n);return ds(d)}
+function diff(a,b){return Math.round((pd(b)-pd(a))/864e5)}
+function wkStart(s){var d=pd(s);d.setDate(d.getDate()-((d.getDay()+6)%7));return ds(d)}
+var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function fmt(s,w){var d=pd(s);return (w===1?DOW[d.getDay()]+' ':'')+d.getDate()+' '+MON[d.getMonth()]+(w===2?' '+d.getFullYear():'')}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function tname(c,i){return CH[c].c.t[i].replace(/^~/,'')}
+function tschool(c,i){return /^~/.test(CH[c].c.t[i])}
+function def(){return {v:1,start:'2026-10-25',exam:'2027-02-15',pace:2,theme:'auto',topics:{},ch:{},days:{},mode:{},srs:{},qs:{},xp:0,goals:{},mocks:[],snaps:{},lastBackup:'',snap:null,shown:{},created:today()}}
+function load(){try{var r=localStorage.getItem(KEY);S=def();if(r){var o=JSON.parse(r);for(var k in o)S[k]=o[k];}}catch(e){S=def();}}
+var saveFail=false;
+function save(){recalcXP();snapshotWeek();try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){if(!saveFail){saveFail=true;toast('Could not save here (browser storage blocked). Use Export to keep a copy!');}}}
+function D(d){return S.days[d]||(S.days[d]={d:[]})}
+function TP(c,i){return S.topics[c+':'+i]||(S.topics[c+':'+i]={s:0,f:false,cd:[]})}
+function tstat(c,i){var t=S.topics[c+':'+i];return t?t.s:0}
+function twatch(c,i){var t=S.topics[c+':'+i];return (t&&t.w)||''}
+function watchedN(){var n=0;Object.keys(S.topics).forEach(function(k){if(S.topics[k].w)n++});return n}
+function watchedOn(d){var r=S.days[d];return (r&&r.wv)?r.wv.length:0}
+function watchedWeek(w){var n=0;for(var k=0;k<7;k++)n+=watchedOn(addD(w,k));return n}
+function unwatch(c,i){var t=S.topics[c+':'+i],k=c+':'+i;if(!t||!t.w)return;var r0=S.days[t.w];if(r0&&r0.wv){var e=r0.wv.filter(function(x){return x.k===k})[0];r0.wv=r0.wv.filter(function(x){return x.k!==k});subDayXP(t.w,e&&e.x!=null?e.x:3)}delete t.w}
+function toggleWatch(c,i){var t=TP(c,i),k=c+':'+i;if(t.w){unwatch(c,i)}else{t.w=today();var r=D(today());(r.wv=r.wv||[]).push({k:k,t:CH[c].c.n+' — '+tname(c,i),x:3});addXP(3)}}
+function tflag(c,i){var t=S.topics[c+':'+i];return !!(t&&t.f)}
+function CS(c){return S.ch[c]||(S.ch[c]={ex:0,r1:0,r2:0,qs:[]})}
+/* ---- progress ---- */
+function chProg(cid){var c=CH[cid].c,n=c.t.length,cov=0,str=0,f=0;for(var i=0;i<n;i++){var s=tstat(cid,i);if(s>=1)cov++;if(s>=2)str++;if(tflag(cid,i))f++;}return {n:n,cov:cov,str:str,f:f}}
+function subProg(sid){var n=0,cov=0,str=0,f=0,ch=0,chd=0;SUB[sid].chapters.forEach(function(c){if(c.bonus)return;var p=chProg(c.id);n+=p.n;cov+=p.cov;str+=p.str;f+=p.f;ch++;if(p.cov===p.n)chd++;});return {n:n,cov:cov,str:str,f:f,ch:ch,chd:chd}}
+function allProg(){var n=0,cov=0,str=0,f=0;SUBJECTS.forEach(function(s){var p=subProg(s.id);n+=p.n;cov+=p.cov;str+=p.str;f+=p.f;});return {n:n,cov:cov,str:str,f:f,pct:n?Math.round(cov*100/n):0}}
+function pct(a,b){return b?Math.round(a*100/b):0}
+/* ---- days / streak ---- */
+function dayStatus(d){var r=S.days[d];if(r&&r.ov)return r.ov;if(r&&r.d&&r.d.length)return 'studied';if(r&&r.rest)return 'rest';if(d===today())return 'today';if(pd(d).getDay()===0)return 'rest';return 'missed'}
+function stats(limit){var t=today(),lim=limit||t,cur=0,best=0,studied=0,missed=0,rest=0,frozen=0,used={},st={},lastBreak=null,d;
+ for(d=S.start;d<=lim;d=addD(d,1)){var s=dayStatus(d);
+  if(s==='studied'){studied++;cur++;if(cur>best)best=cur;}
+  else if(s==='rest'){rest++;}
+  else if(s==='missed'){var w=wkStart(d);if(!used[w]){used[w]=1;frozen++;s='frozen';}else{missed++;cur=0;lastBreak=d;}}
+  st[d]=s;}
+ return {cur:cur,best:best,studied:studied,missed:missed,rest:rest,frozen:frozen,st:st,lastBreak:lastBreak}}
+function level(){return Math.floor(Math.sqrt(S.xp/60))+1}
+function addXP(n){if(!n)return;S.xp+=n;var r=D(today());r.xp=(r.xp||0)+n;}
+function daysToExam(){return diff(today(),S.exam)}
+/* ---- topics ---- */
+function setCovered(c,i,on){var t=TP(c,i);if(on&&t.s===0){t.s=1;t.d=today();t.x=8;var r=D(today());r.tp=(r.tp||0)+1;addXP(8);}
+ else if(!on&&t.s>=1){var r2=S.days[t.d];if(r2){r2.tp=Math.max(0,(r2.tp||0)-1);}subDayXP(t.d,t.x==null?8:t.x);t.s=0;t.cd=[];t.f=false;delete t.d;delete t.x;}}
+function hasQ(c,i){return QB.some(function(q){return q.ch===c&&q.t===i})}
+function flagTopic(c,i){var t=TP(c,i);t.f=true;t.cd=[];if(t.s===2)t.s=1;}
+/* ---- planner ---- */
+var HARD={maths:0,sci:1,sst:2,eng:3,hin:4},REVC=20,WEAKC=20,CYC=25;
+function tmin(sub,tn){return /^~/.test(tn)?Math.round(sub.m*0.6):sub.m}
+function chunksFor(sub){var out=[];sub.chapters.forEach(function(c){if(c.bonus)return;var cur=[],mins=0;
+ c.t.forEach(function(tn,i){if(tstat(c.id,i)>=1)return;var m=tmin(sub,tn);if(cur.length&&(mins+m>50||cur.length>=3)){out.push({ch:c.id,sub:sub.id,ts:cur,m:Math.max(10,mins)});cur=[];mins=0;}cur.push(i);mins+=m;});
+ if(cur.length)out.push({ch:c.id,sub:sub.id,ts:cur,m:Math.max(10,mins)});});return out}
+function learnTask(ch){var c=CH[ch.ch].c;var names=ch.ts.map(function(i){return tname(ch.ch,i)});
+ return {k:'L:'+ch.ch+':'+ch.ts.join(','),kind:'learn',sub:ch.sub,ch:ch.ch,ts:ch.ts.slice(),m:ch.m,title:c.n+' — '+names.join(' + '),desc:'Learn: read the NCERT part, note 5 key points, try the NCERT questions.'}}
+function revTask(ch,kind,m){var c=CH[ch].c;return {k:'R:'+ch+':'+kind,kind:'rev',sub:CH[ch].s.id,ch:ch,r:kind,m:m||REVC,title:'Revise: '+c.n+(kind===1?' (first revisit)':' (second revisit)'),desc:'Skim your notes, redo 3 hard questions, then take the chapter quiz.'}}
+function weakTask(ch,t){return {k:'W:'+ch+':'+t,kind:'weak',sub:CH[ch].s.id,ch:ch,ts:[t],m:WEAKC,title:'Fix weak spot: '+tname(ch,t),desc:'Re-read this topic, write the key idea in your own words, then do its quiz questions.'}}
+function chapterFin(cid){var c=CH[cid].c,mx='';c.t.forEach(function(x,i){var t=S.topics[cid+':'+i];if(t&&t.d&&t.d>mx)mx=t.d;});return mx}
+function simulate(pace){
+ var t=today(),from=S.start>t?S.start:t,exam=S.exam,res={days:{},from:from,exam:exam,finalStart:null,learnEnd:null,warn:'',learnLeft:0,tooShort:false};
+ if(exam<=from){res.tooShort=true;return res;}
+ var span=diff(from,exam),fl=Math.min(25,Math.floor(span*0.3)),finalStart=addD(exam,-fl);res.finalStart=finalStart;
+ var Q=SUBJECTS.map(function(s){return {sub:s,q:chunksFor(s),pass:0}});
+ var sn=(S.snap&&S.snap.date===t)?S.snap:null,rem={};
+ SUBJECTS.forEach(function(s){s.chapters.forEach(function(c){if(c.bonus)return;var n=0;c.t.forEach(function(x,i){if(tstat(c.id,i)<1)n++;});rem[c.id]=n;});});
+ var touched={};
+ if(sn){sn.tasks.forEach(function(k){if(k.kind!=='learn')return;touched[k.ch]=1;Q.forEach(function(x){x.q=x.q.filter(function(c){return !(c.ch===k.ch&&c.ts.some(function(i){return k.ts.indexOf(i)>=0}))});});});}
+ // recompute rem after removing snapshot chunks
+ var remLeft={};Q.forEach(function(x){x.q.forEach(function(c){remLeft[c.ch]=(remLeft[c.ch]||0)+c.ts.length;});});
+ var revq=[];
+ SUBJECTS.forEach(function(s){s.chapters.forEach(function(c){if(c.bonus)return;var cs=CS(c.id);
+  if(rem[c.id]===0){var fin=chapterFin(c.id)||from;if(!cs.r1)revq.push({ch:c.id,r:1,due:addD(fin,7)});if(!cs.r2)revq.push({ch:c.id,r:2,due:addD(fin,21)});}
+  else if(!remLeft[c.id]&&touched[c.id]){if(!cs.r1)revq.push({ch:c.id,r:1,due:addD(t,7)});if(!cs.r2)revq.push({ch:c.id,r:2,due:addD(t,21)});}});});
+ var weak=[];SUBJECTS.forEach(function(s){s.chapters.forEach(function(c){if(c.bonus)return;c.t.forEach(function(x,i){var tp=S.topics[c.id+':'+i];if(tp&&tp.f&&tp.s>=1&&!(tp.fx&&diff(tp.fx,t)<3))weak.push([c.id,i]);});});});
+ var wp=0,cycle=null,cp=0,fcnt=0,left=0;
+ Q.forEach(function(x){left+=x.q.length;});
+ function pickQ(avoid){var b=null;Q.forEach(function(x){if(!x.q.length)return;var p=x.pass+(x.sub.id===avoid?1e5:0);if(!b||p<b.p)b={x:x,p:p};});return b&&b.x}
+ function budget(sun){return pace===1?(sun?25:45):(sun?45:90)}
+ function chapterCycle(){var arr=[];SUBJECTS.forEach(function(s){s.chapters.forEach(function(c){if(c.bonus)return;var f=chProg(c.id).f,cs=CS(c.id);arr.push({ch:c.id,w:s.w,pri:-f*10+(cs.r1?1:0)+(cs.r2?1:0)});});});
+  arr.sort(function(a,b){return a.pri-b.pri||b.w-a.w});
+  // interleave subjects by weight: round robin with weighted stride
+  var by={};SUBJECTS.forEach(function(s){by[s.id]={s:s,l:[],pass:0}});arr.forEach(function(a){by[CH[a.ch].s.id].l.push(a.ch)});
+  var out=[],more=true;while(more){more=false;var b=null;for(var k in by){var o=by[k];if(!o.l.length)continue;more=true;if(!b||o.pass<b.pass)b=o;}if(b){out.push(b.l.shift());b.pass+=CYC/b.s.w;}}return out}
+ function sortHard(l){return l.slice().sort(function(a,b){var o={rev:0,weak:1,learn:2,cyc:2,mock:3,pyq:3};var oa=o[a.kind]===undefined?2:o[a.kind],ob=o[b.kind]===undefined?2:o[b.kind];if(oa!==ob)return oa-ob;return (HARD[a.sub]||0)-(HARD[b.sub]||0)})}
+ var d,i;
+ for(d=from;d<exam;d=addD(d,1)){
+  var dow=pd(d).getDay(),sun=dow===0,dte=diff(d,exam),list=[],ph;
+  if(d===t&&sn){list=sn.tasks.slice();ph=sn.ph||'learn';res.days[d]={ph:ph,tasks:list};if(!left)res.learnEnd=res.learnEnd||d;continue;}
+  var B=budget(sun),used=0;
+  if(dte<=1){res.days[d]={ph:'eve',tasks:[{k:'E:'+d,kind:'eve',sub:'maths',m:20,title:'Light skim of formulas & key points — then relax and sleep early',desc:'No new topics today. Pack your bag, keep calm, trust your preparation.'}]};continue;}
+  var inFinal=d>=finalStart;
+  if(!left&&!res.learnEnd)res.learnEnd=d;
+  ph=inFinal?'final':(left?'learn':'revision');
+  // due revisions
+  if(!inFinal){var cap=sun||!left?B:Math.floor(B*0.4);var j=0;
+   while(j<revq.length&&used+REVC<=cap+0){if(revq[j].due<=d){var r=revq.splice(j,1)[0];list.push(revTask(r.ch,r.r));used+=REVC;}else j++;}}
+  if(inFinal){var due=revq.filter(function(r){return r.due<=d});}
+  // weak
+  if(weak.length&&used<B&&(!inFinal)){var w=weak.shift();list.push(weakTask(w[0],w[1]));used+=WEAKC;}
+  // learn
+  if(!sun&&left){var avoid=null,nl=0,maxL=pace===1?1:2;
+   while(left&&nl<maxL&&(nl===0||B-used>=18)){
+    var qx=pickQ(avoid);if(!qx)break;var ch=qx.q[0];
+    if(nl>0&&ch.m>(B-used)*1.4)break;
+    qx.q.shift();qx.pass+=ch.m/qx.sub.w;left--;nl++;list.push(learnTask(ch));used+=ch.m;avoid=qx.sub.id;
+    remLeft[ch.ch]-=ch.ts.length;
+    if(remLeft[ch.ch]<=0){var cs2=CS(ch.ch);if(!cs2.r1)revq.push({ch:ch.ch,r:1,due:addD(d,7)});if(!cs2.r2)revq.push({ch:ch.ch,r:2,due:addD(d,21)});}}}
+  // fill
+  if(inFinal){var slots=pace===1?1:(sun?1:2);if(list.some(function(x){return x.kind==='learn'}))slots=Math.max(1,slots-(pace===1?0:1));
+   var patt=['mock','weak','pyq'];
+   for(i=0;i<slots;i++){var kind=sun?'weak':patt[fcnt%3];fcnt++;
+    var sb=pickFinalSub(kind,fcnt);
+    if(kind==='mock')list.push({k:'M:'+d+':'+i,kind:'mock',sub:sb,m:45,title:'Timed mock: '+SUB[sb].name+' (practice paper, 45 min)',desc:'Set a timer, attempt a mix of MCQ, case-based and 3/5-mark answers from the Quiz section (Official sample-paper filter). Then log your marks in Me → Mocks.'});
+    else if(kind==='pyq')list.push({k:'Y:'+d+':'+i,kind:'pyq',sub:sb,m:45,title:'Sample-paper practice: '+SUB[sb].name,desc:'Quiz section → filter “Official sample paper” for this subject and do 10 questions. Check marking-scheme points.'});
+    else{var wk=null;if(weak.length){wk=weak.shift();}
+     if(wk)list.push(weakTask(wk[0],wk[1]));else list.push({k:'F:'+d+':'+i,kind:'weak',sub:sb,m:30,title:'Weak-topic fix: '+SUB[sb].name+' — revisit your weakest chapter',desc:'Pick the chapter with your lowest quiz score, re-read, redo mistakes.'});}}
+   used=B;}
+  else if(used+CYC<=B||!list.length){
+   if(!left){if(!cycle)cycle=chapterCycle();
+    var guard=0;while(used+CYC<=B||(!list.length&&guard===0)){var cc=cycle[cp%cycle.length];cp++;guard++;list.push({k:'V:'+cc+':'+d,kind:'cyc',sub:CH[cc].s.id,ch:cc,m:CYC,title:'Revise chapter: '+CH[cc].c.n,desc:'Notes → 5 key points → chapter quiz. Fix anything that feels shaky.'});used+=CYC;if(guard>6)break;}}
+   else if(sun){var g=0;while(used+CYC<=B||(!list.length&&g===0)){var rc=recentChapter(d,g);g++;if(!rc)break;list.push({k:'V:'+rc+':'+d,kind:'cyc',sub:CH[rc].s.id,ch:rc,m:CYC,title:'Sunday light revision: '+CH[rc].c.n,desc:'Easy recap of this week’s chapter — then rest, sing, act, enjoy! 🎶'});used+=CYC;if(g>3)break;}
+    if(!list.length)list.push({k:'S:'+d,kind:'rest',sub:'eng',m:20,title:'Rest day — optional 10-min quiz, then singing / acting practice 🎤',desc:'Sunday is your light day.'});}}
+  res.days[d]={ph:ph,tasks:sortHard(list)};
+ }
+ res.learnLeft=left;
+ if(left){res.warn='At this pace about '+left+' study blocks of new learning are still left when the final phase starts. Try a 2-hour day when you can — the plan will catch up.'}
+ return res;
+ function pickFinalSub(kind,n){var order=['maths','sci','sst','eng','maths','sci','hin','sst','maths','sci','eng'];return order[(n-1)%order.length]}
+ function recentChapter(dd,g){var best=[];SUBJECTS.forEach(function(s){s.chapters.forEach(function(c){if(c.bonus)return;var f=chapterFin(c.id);if(f&&diff(f,dd)<=10&&diff(f,dd)>=0)best.push(c.id)});});return best.length?best[g%best.length]:null}
+}
+/* today's tasks (stable snapshot) */
+function modeToday(){return S.mode[today()]||S.pace}
+function isDone(k){var r=S.days[today()];if(r&&r.d.some(function(x){return x.k===k.k}))return true;
+ if(k.kind==='learn')return k.ts.every(function(i){return tstat(k.ch,i)>=1});
+ if(k.kind==='rev'){var cs=CS(k.ch);return k.r===1?!!cs.r1:!!cs.r2}
+ return false}
+function todayTasks(){var t=today(),m=modeToday(),sn=S.snap;
+ if(t<S.start||t>=S.exam)return [];
+ if(!sn||sn.date!==t){var f=simulate(m).days[t];S.snap={date:t,mode:m,ph:f?f.ph:'learn',tasks:f?f.tasks:[]};}
+ else if(sn.mode!==m){var keepDone=sn.tasks.filter(isDone);var ph=sn.ph;S.snap=null;var f2=simulate(m).days[t];var nt=f2?f2.tasks.filter(function(x){return !keepDone.some(function(y){return y.k===x.k})}):[];
+   var want=Math.max(f2?f2.tasks.length:0,keepDone.length);S.snap={date:t,mode:m,ph:f2?f2.ph:ph,tasks:keepDone.concat(nt).slice(0,Math.max(want,keepDone.length))};}
+ return S.snap.tasks}
+/* ---- weekly snapshots ---- */
+function weekSnap(w){var t=today(),we=addD(w,6),lim=we<t?we:t,st=stats(lim),q=0,c=0,k,wdays=0,wmiss=0,cov=0,n=0,wt=0,xp=0,old=S.snaps[w]||{},cur=we>=t;
+ for(k=0;k<7;k++){var dd=addD(w,k),r=S.days[dd];if(r){q+=r.qa||0;c+=r.qc||0}if(dd>=S.start&&dd<=t){var s2=st.st[dd];if(s2==='studied')wdays++;if(s2==='missed')wmiss++}}
+ Object.keys(S.days).forEach(function(d){if(d<=we)xp+=Math.max(0,S.days[d].xp||0)});
+ SUBJECTS.forEach(function(sb){sb.chapters.forEach(function(ch){if(ch.bonus)return;ch.t.forEach(function(x,i){n++;var tp=S.topics[ch.id+':'+i];if(tp&&tp.s>=1&&(tp.d||'')<=we)cov++})})});
+ Object.keys(S.topics).forEach(function(kk){var w2=S.topics[kk].w;if(w2&&w2<=we)wt++});
+ var p=allProg();
+ return {w:w,pct:pct(cov,n),cov:cov,n:n,str:cur?p.str:(old.str||0),f:cur?p.f:(old.f||0),xp:xp,streak:st.cur,studied:wdays,missed:wmiss,qa:q,qc:c,wv:watchedWeek(w),wt:wt,upd:t}}
+function snapshotWeek(){var w=wkStart(today());S.snaps[w]=weekSnap(w)}
+function recalcSnaps(){var t=today(),w=wkStart(S.start<t?S.start:t);for(;w<=t;w=addD(w,7))S.snaps[w]=weekSnap(w)}
+function recalcXP(){var n=0;Object.keys(S.days).forEach(function(k){n+=Math.max(0,S.days[k].xp||0)});S.xp=n}
+function subDayXP(d,n){if(!n)return;var r=S.days[d]||S.days[today()];if(!r)return;r.xp=Math.max(0,(r.xp||0)-n);recalcXP()}
+function recalcAll(){var cnt={};Object.keys(S.topics).forEach(function(k){var t=S.topics[k];if(t.s>=1&&t.d)cnt[t.d]=(cnt[t.d]||0)+1});
+ Object.keys(cnt).forEach(function(d){D(d)});
+ Object.keys(S.days).forEach(function(d){var r=S.days[d];if(!r.d)r.d=[];r.tp=cnt[d]||0;r.min=r.d.reduce(function(a,x){return a+(+x.m||0)},0);
+  (r.zq||[]).forEach(function(z,i){if(!z.id)z.id='z'+d+'-'+i;if(z.qa==null){z.qa=z.t;z.qc=Math.floor(z.s)}});});
+ recalcXP();recalcSnaps()}
+/* ===== Mochi, toast, share, quiz engine, session ===== */
+function toast(m){var e=document.createElement('div');e.className='toast';e.textContent=m;document.body.appendChild(e);setTimeout(function(){e.remove()},2600)}
+function modal(html,btns){var m=document.createElement('div');m.className='modal';m.innerHTML='<div class="box">'+html+'<div class="row" style="margin-top:14px;justify-content:flex-end">'+btns.map(function(b,i){return '<button class="'+(b.c||'')+'" data-mb="'+i+'">'+esc(b.t)+'</button>'}).join('')+'</div></div>';
+ m.addEventListener('click',function(e){var b=e.target.closest('[data-mb]');if(!b)return;var h=btns[+b.dataset.mb];m.remove();if(h.f)h.f();});document.body.appendChild(m);return m}
+function confirmM(msg,yes,label){modal('<p>'+msg+'</p>',[{t:'Cancel'},{t:label||'Yes',c:'pri',f:yes}])}
+/* ---- Mochi ---- */
+function mochiSvg(mood){return '<svg class="mo '+(mood||'')+'" viewBox="0 0 100 100" aria-hidden="true"><g class="mo-all">'+
+ '<g class="mo-ear l"><ellipse cx="29" cy="27" rx="9" ry="15" fill="#ffc2dd" stroke="#ff5fae" stroke-width="2.5"/></g><g class="mo-ear r"><ellipse cx="71" cy="27" rx="9" ry="15" fill="#ffc2dd" stroke="#ff5fae" stroke-width="2.5"/></g>'+
+ '<g class="mo-body"><ellipse cx="50" cy="63" rx="34" ry="29" fill="#fff0f6" stroke="#ff5fae" stroke-width="3"/>'+
+ '<g class="mo-eyes"><ellipse class="mo-eye" cx="38" cy="58" rx="4" ry="5.5" fill="#3b2f2f"/><ellipse class="mo-eye" cx="62" cy="58" rx="4" ry="5.5" fill="#3b2f2f"/></g>'+
+ '<ellipse cx="30" cy="68" rx="6" ry="3.5" fill="#ff8fc0" opacity=".85"/><ellipse cx="70" cy="68" rx="6" ry="3.5" fill="#ff8fc0" opacity=".85"/>'+
+ '<path class="m-h" d="M43 67 Q50 75 57 67" stroke="#3b2f2f" stroke-width="2.6" fill="none" stroke-linecap="round"/><path class="m-s" d="M43 72 Q50 65 57 72" stroke="#3b2f2f" stroke-width="2.6" fill="none" stroke-linecap="round"/>'+
+ '<g class="mo-arm"><ellipse cx="86" cy="64" rx="6" ry="9" fill="#fff0f6" stroke="#ff5fae" stroke-width="2.5"/></g></g>'+
+ '<g class="mo-sp"><path d="M12 30l2.5 6 6 2.5-6 2.5-2.5 6-2.5-6-6-2.5 6-2.5z" fill="#ffc94d"/><path d="M88 14l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#ff4fa3"/><path d="M92 46l1.6 4 4 1.6-4 1.6-1.6 4-1.6-4-4-1.6 4-1.6z" fill="#ffc94d"/><path d="M6 62l1.6 4 4 1.6-4 1.6-1.6 4-1.6-4-4-1.6 4-1.6z" fill="#ff4fa3"/></g>'+
+ '</g></svg>'}
+var MSG={
+ session:['You showed up and did the work — that is the whole magic, Vedu! 🌟','Session done! Your brain just got a little stronger 💪','That focus was lovely. Time for some singing? 🎤'],
+ quiz_good:['Wow, brilliant score! I did a little dance just now 💃','You really know this! Tell someone — you earned it 🎉'],
+ quiz_ok:['Nice effort! Every question you try makes it stick better 🌱','Good going! The ones you missed will come back to say hi in a day or two — easy wins later.'],
+ quiz_low:['That one was tricky, and trying counts a lot. The mistakes are now in your revision queue — we will beat them together 🤝','Not yet — but “not yet” is very different from “never”. Come back to it tomorrow, I believe in you 💛'],
+ wrong:['Oops! That is okay — now you know it 💛','Close one! Read the answer, and it will stick next time 🌱'],
+ right:['Yes!! ✨','Nailed it! 🎉','Great thinking! 🌟'],
+ streak:['{n} days in a row! You are on fire 🔥','{n}-day streak! Look at you go 🚀'],
+ comeback:['Welcome back! A comeback is the strongest kind of streak. Here is a bonus for you 🎁','You came back — that takes real courage. Bonus XP for you 💛'],
+ welcome:['Hi Vedu! I am Mochi 🍡 Ready when you are — even 10 minutes counts.','Hello! One small step today is plenty 🌸'],
+ rest:['Rest is part of the plan. Hydrate, sing, act, enjoy 🎶'],
+ goal:['You hit your own goal! That is proper self-discipline 🏆'],
+ wrapmin:['Ten minutes is a real win. Seriously. 🌈']};
+function pickMsg(k,n){var a=MSG[k]||MSG.welcome;var i=(S.xp+(n||0)+today().length+(S.snap?S.snap.tasks.length:0))%a.length;return a[i].replace('{n}',n||'')}
+function mochiBox(mood,txt,extra){return '<div class="mochi">'+mochiSvg(mood)+'<div class="bubble">'+esc(txt)+(extra||'')+'</div></div>'}
+function mochiReact(root,mood){var el=(root||document).querySelector('svg.mo');if(!el)return;el.setAttribute('class','mo');void el.getBoundingClientRect();
+ if(mood==='wrong'){el.setAttribute('class','mo sad');setTimeout(function(){el.setAttribute('class','mo enc');setTimeout(function(){el.setAttribute('class','mo')},1500)},1400)}
+ else{el.setAttribute('class','mo cheer');setTimeout(function(){el.setAttribute('class','mo')},1900)}}
+/* ---- share ---- */
+function doShare(text){if(navigator.share){navigator.share({text:text}).catch(function(){})}
+ else if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){toast('Copied! Paste it into a chat to share 🎉')},function(){showText(text)})}
+ else showText(text)}
+function showText(text){modal('<h3>Copy this message</h3><textarea readonly rows="6" class="full" onclick="this.select()">'+esc(text)+'</textarea>',[{t:'Close',c:'pri'}])}
+function winText(parts){var st=stats();var a=['Mochi 🍡 · Vedu — '+fmt(today(),2)+':'].concat(parts);if(st.cur>0)a.push(st.cur+'-day streak 🔥');return '🎉 '+a.join(' ')}
+function todayQuizBits(){var r=S.days[today()],o=[];if(r&&r.wv&&r.wv.length)o.push('watched '+r.wv.length+' video'+(r.wv.length>1?'s':''));if(r&&r.zq)r.zq.slice(-2).forEach(function(z){o.push(z.s+'/'+z.t+' in '+z.n+' quiz')});return o}
+function summaryText(){var p=allProg(),st=stats();var out='🍡 Mochi — Vedu’s CBSE Class 10 update — '+fmt(today(),2)+'\n';
+ out+='• Syllabus covered: '+p.pct+'% ('+p.cov+'/'+p.n+' topics), strong: '+p.str+', needs work: '+p.f+'\n';
+ SUBJECTS.forEach(function(s){var q=subProg(s.id);out+='   '+s.emoji+' '+s.name.split(' (')[0]+': '+pct(q.cov,q.n)+'%\n'});
+ out+='• Streak: '+st.cur+' days 🔥 (best '+st.best+')\n• Days studied: '+st.studied+' · Missed: '+st.missed+' · Rest: '+st.rest+(st.frozen?' · Freeze used: '+st.frozen:'')+'\n';
+ var tot=0,cor=0;Object.keys(S.days).forEach(function(d){tot+=S.days[d].qa||0;cor+=S.days[d].qc||0});
+ out+='• Videos watched: '+watchedN()+' topic'+(watchedN()===1?'':'s')+' in total ('+watchedWeek(wkStart(today()))+' this week, '+watchedOn(today())+' today)\n';
+ if(tot)out+='• Quiz accuracy: '+pct(cor,tot)+'% ('+tot+' answered)\n';
+ if(S.mocks.length){var m=S.mocks[S.mocks.length-1];out+='• Latest mock: '+m.name+' '+m.m+'/'+m.t+'\n'}
+ out+='• Days to boards: '+Math.max(0,daysToExam())+' (tentative date '+fmt(S.exam,2)+')';return out}
+/* ---- quiz engine ---- */
+var QZ=null,OVN=null;
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function dueQs(){var t=today(),o=[];Object.keys(S.srs).forEach(function(u){if(S.srs[u].due<=t&&QBY[u])o.push(QBY[u])});return o}
+function matchQ(q,f){if(f.sub&&CH[q.ch].s.id!==f.sub)return false;if(f.ch&&q.ch!==f.ch)return false;if(f.src==='sqp'&&q.src!=='sqp2526')return false;if(f.src==='own'&&q.src!=='own')return false;
+ if(f.ty&&q.ty!==f.ty)return false;if(f.mk&&q.mk!==+f.mk)return false;if(f.flag&&!(q.t!=null&&tflag(q.ch,q.t)))return false;return true}
+function pickQs(f,n){var pool=QB.filter(function(q){return matchQ(q,f)});var sc=function(q){var s=S.qs[q.uid];return (!s?0:(s.w?1:2))+Math.random()*0.9};
+ pool.sort(function(a,b){return sc(a)-sc(b)});return pool.slice(0,n)}
+function ovOpen(h){var o=document.getElementById('ov');o.hidden=false;o.innerHTML='<div class="in">'+h+'</div>';o.scrollTop=0}
+function ovClose(){var o=document.getElementById('ov');o.hidden=true;o.innerHTML='';QZ=null;render()}
+function startQuiz(o){if(!o.qs.length){toast('No questions for that choice yet');return}QZ={qs:o.qs,i:0,res:[],title:o.title||'Quiz',done:o.done||null,kind:o.kind||'quiz',locked:false};showQ()}
+function showQ(){var q=QZ.qs[QZ.i],n=QZ.qs.length;var tyN={mcq:'MCQ',ar:'Assertion–Reason',case:'Case-based',short:'Short answer'}[q.ty];
+ var h='<div class="row"><b class="grow">'+esc(QZ.title)+' · '+(QZ.i+1)+'/'+n+'</b><button data-a="qstop">Stop</button></div><div class="bar thin"><i class="b" style="width:'+Math.round(QZ.i*100/n)+'%"></i></div>';
+ h+='<div class="mochi" id="qm">'+mochiSvg('')+'<div class="bubble small">'+esc(q.ty==='short'?'Say your answer out loud or jot it down first — then check!':'Take your time. One try per question — that is how it sticks.')+'</div></div>';
+ h+='<div class="card"><span class="chip">'+tyN+'</span><span class="chip">'+q.mk+' mark'+(q.mk>1?'s':'')+'</span>'+(q.src==='sqp2526'?'<span class="chip ok">🏛️ Official CBSE sample paper</span>':'<span class="chip off">✏️ Practice</span>')+'<span class="chip">'+esc(CH[q.ch].c.n)+'</span>';
+ if(q.cs)h+='<div class="case">'+esc(q.cs)+'</div>';h+='<div class="q">'+esc(q.q)+'</div>';
+ if(q.ty==='short'){h+='<button class="pri full" data-a="qshow">Show model answer</button><div id="qfb"></div>'}
+ else{var ord=(q.src==='own'&&q.ty!=='ar')?shuffle([0,1,2,3].slice(0,q.o.length)):q.o.map(function(x,i){return i});QZ.ord=ord;
+  ord.forEach(function(oi,k){h+='<button class="opt" data-a="qopt" data-k="'+k+'"><span class="l">'+'ABCD'[k]+'</span><span>'+esc(q.o[oi])+'</span></button>'});h+='<div id="qfb"></div>';}
+ h+='</div>';QZ.locked=false;ovOpen(h)}
+function srcLine(q){return q.src==='sqp2526'?'<div class="src">Source: CBSE Sample Question Paper 2025-26 ('+esc(q.id)+'), cbseacademic.nic.in — official question and marking scheme'+(q.id.indexOf('SQP-M-')===0&&/1[6-9]/.test(q.id)?'':'')+'.</div>':'<div class="src">Source: self-written practice question in CBSE board style (not from a past paper).</div>'}
+function recordAnswer(q,c){var t=today(),st=S.qs[q.uid]||(S.qs[q.uid]={n:0,w:0}),r=D(t);st.n++;r.qa=(r.qa||0)+1;if(c===1)r.qc=(r.qc||0)+1;
+ var xpq=r.xq||0,gain=0;
+ if(c===1){if(!st.x||diff(st.x,t)>=3){gain=2;st.x=t}}else if((r.xe||0)<15){gain=1;r.xe=(r.xe||0)+1}
+ if(xpq+gain>60)gain=Math.max(0,60-xpq);r.xq=xpq+gain;addXP(gain);if(QZ)QZ.xa=(QZ.xa||0)+gain;
+ var sr=S.srs[q.uid];
+ if(c<1){S.srs[q.uid]={b:0,due:addD(t,INT[0])};st.w++;if(c===0&&q.t!=null)flagTopic(q.ch,q.t);}
+ else if(sr&&sr.due<=t&&sr.l!==t){var b=sr.b+1;if(b>=INT.length)delete S.srs[q.uid];else S.srs[q.uid]={b:b,due:addD(t,INT[b]),l:t};}
+ if(c===1&&q.t!=null){var tp=TP(q.ch,q.t);if(tp.s>=1){if(tp.cd.indexOf(t)<0)tp.cd.push(t);if(tp.cd.length>=2){tp.s=2;tp.f=false;}}}
+ save();return gain}
+function answered(c,q,extra){QZ.res.push({q:q,c:c});var g=recordAnswer(q,c);var fb=document.getElementById('qfb');var last=QZ.i>=QZ.qs.length-1;
+ var msg=c===1?pickMsg('right',QZ.i):pickMsg('wrong',QZ.i);
+ fb.innerHTML='<div class="fb '+(c===1?'ok':'bad')+'"><b>'+(c===1?'✅ Correct!':(c===0.5?'🟡 Partly there':'❌ Not quite'))+(g?' +'+g+' XP':'')+'</b><div>'+(extra||'')+'</div><div class="mute small" style="margin-top:6px">'+esc(msg)+'</div>'+srcLine(q)+(c<1?'<div class="small" style="margin-top:6px">📌 Added to your revision queue — it will come back in 1 day.'+(c===0&&q.t!=null?' Topic flagged ⭐ Needs work.':'')+'</div>':'')+'</div><button class="pri full" data-a="qnext">'+(last?'See my score':'Next question →')+'</button>';
+ mochiReact(document.getElementById('qm'),c===1?'right':(c===0.5?'right':'wrong'));fb.scrollIntoView({behavior:'smooth',block:'nearest'})}
+function qOpt(k){if(QZ.locked)return;QZ.locked=true;var q=QZ.qs[QZ.i],oi=QZ.ord[k],ok=oi===q.a;var btns=document.querySelectorAll('.opt');
+ QZ.ord.forEach(function(o,kk){if(o===q.a)btns[kk].classList.add('ok');});if(!ok)btns[k].classList.add('bad');btns.forEach(function(b){b.disabled=true});
+ answered(ok?1:0,q,'<b>Answer: '+esc(q.o[q.a])+'</b><br>'+esc(q.e))}
+function qShow(){if(QZ.locked)return;var q=QZ.qs[QZ.i];QZ.locked=true;document.querySelector('[data-a=qshow]').remove();
+ var fb=document.getElementById('qfb');fb.innerHTML='<div class="fb ok"><b>Model answer</b><div style="white-space:pre-wrap">'+esc(q.m)+'</div><b class="small">CBSE marking points ('+q.mk+' mark'+(q.mk>1?'s':'')+'):</b><ul class="pts">'+q.p.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul></div><div class="center"><b>How did you do?</b></div><div class="row"><button class="ok grow" data-a="qself" data-c="1">Got it ✅</button><button class="grow" data-a="qself" data-c="0.5">Partly 🟡</button><button class="grow" data-a="qself" data-c="0">Not yet ❌</button></div><div id="qfb2"></div>'}
+function qSelf(c){if(QZ.selfDone)return;QZ.selfDone=true;var q=QZ.qs[QZ.i];QZ.res.push({q:q,c:c});var g=recordAnswer(q,c);
+ document.querySelectorAll('[data-a=qself]').forEach(function(b){b.disabled=true});var last=QZ.i>=QZ.qs.length-1;
+ document.getElementById('qfb2').innerHTML='<div class="fb '+(c===1?'ok':'bad')+'">'+(g?'+'+g+' XP · ':'')+esc(c===1?pickMsg('right',QZ.i):pickMsg('wrong',QZ.i))+srcLine(q)+(c<1?'<div class="small">📌 Added to your revision queue (back in 1 day).</div>':'')+'</div><button class="pri full" data-a="qnext">'+(last?'See my score':'Next question →')+'</button>';
+ mochiReact(document.getElementById('qm'),c>0?'right':'wrong')}
+function qNext(){QZ.selfDone=false;if(QZ.i<QZ.qs.length-1){QZ.i++;showQ()}else quizEnd()}
+function quizEnd(){var res=QZ.res,tot=res.length,sc=0;res.forEach(function(r){sc+=r.c});var t=today(),by={},zid='z'+Date.now()+Math.floor(Math.random()*1000);
+ res.forEach(function(r){var b=by[r.q.ch]||(by[r.q.ch]={s:0,t:0});b.s+=r.c;b.t++});
+ Object.keys(by).forEach(function(ch){var cs=CS(ch);cs.qs.push({d:t,s:by[ch].s,t:by[ch].t,z:zid});if(cs.qs.length>20)cs.qs.shift()});
+ var r=D(t);r.zq=r.zq||[];var sn=SUBJECTS.filter(function(s){return res.every(function(x){return CH[x.q.ch].s.id===s.id})})[0];
+ var name=sn?sn.name.split(' (')[0]:'Mixed';var z={id:zid,s:Math.round(sc*10)/10,t:tot,n:name,qa:tot,qc:res.filter(function(x){return x.c===1}).length};r.zq.push(z);
+ var p=sc/tot,kind=p>=0.8?'quiz_good':(p>=0.5?'quiz_ok':'quiz_low');var bonus=p>=0.8?5:0;addXP(bonus);z.xa=QZ.xa||0;z.x=z.xa+bonus;save();
+ var flagged={};res.forEach(function(x){if(x.c===0&&x.q.t!=null)flagged[x.q.ch+':'+x.q.t]=1});
+ var h='<div class="center"><h1>'+z.s+' / '+tot+'</h1><div class="mute">'+(p>=0.8?'Excellent! 🌟':p>=0.5?'Good effort! 🌱':'Brave try! 💛')+(bonus?' · +5 XP bonus':'')+'</div></div>'+mochiBox(p>=0.5?'cheer':'enc',pickMsg(kind,tot));
+ var fl=Object.keys(flagged);if(fl.length)h+='<div class="card"><b>⭐ Flagged as “Needs work”:</b><ul class="pts">'+fl.map(function(k){var a=k.split(':');return '<li>'+esc(tname(a[0],+a[1]))+' <span class="mute">('+esc(CH[a[0]].c.n)+')</span></li>'}).join('')+'</ul><div class="mute small">They will return in your revision queue and in extra “weak spot” slots.</div></div>';
+ h+='<button class="pri big" data-a="qdone">Done</button><div style="height:10px"></div><button class="full" data-a="winq">Share my win 🎉</button>';
+ var cb=QZ.done;QZ.res=res;QZ.fin=true;QZ.cb=cb;ovOpen(h);setTimeout(function(){mochiReact(document.getElementById('ov'),p>=0.5?'right':'wrong')},200);window._lastQ=z;
+ var st=stats();if(p>=0.8&&false){}}
+/* ---- completing tasks / session ---- */
+function logDone(key,title,sub,min){var t=today(),r=D(t);if(r.d.some(function(x){return x.k===key}))return null;var first=r.d.length===0,ev={first:first};
+ if(first){var pre=stats();var st0=pre;var yb=st0.lastBreak&&!Object.keys(st0.st).some(function(d){return d>st0.lastBreak&&st0.st[d]==='studied'});if(yb&&st0.cur===0){ev.comeback=true;addXP(20);}}
+ var ent={k:key,t:title,s:sub,m:min,x:(ev.comeback?20:0)};r.d.push(ent);ev.e=ent;r.min=(r.min||0)+min;
+ if(first){var s2=stats();ev.streak=s2.cur;if([3,5,7,10,14,21,30,50,75,100].indexOf(s2.cur)>=0)ev.milestone=s2.cur;}
+ return ev}
+function completeTask(k){var m=k.m;var ev=logDone(k.k,k.title,k.sub,m);var xp=0;
+ if(k.kind==='learn'){k.ts.forEach(function(i){setCovered(k.ch,i,true)});xp=15}
+ else if(k.kind==='rev'){var cs=CS(k.ch);if(k.r===1)cs.r1=1;else cs.r2=1;xp=10}
+ else if(k.kind==='cyc'){var c2=CS(k.ch);if(!c2.r1)c2.r1=1;else c2.r2=1;xp=10}
+ else if(k.kind==='weak'){if(k.ts){TP(k.ch,k.ts[0]).fx=today()}xp=10}
+ else xp=10;
+ if(ev){addXP(xp);if(ev.e)ev.e.x=(ev.e.x||0)+xp}save();checkGoals();return ev}
+function checkGoals(){var w=wkStart(today());(S.goals[w]||[]).forEach(function(g){if(!g.x&&goalProg(g).done){g.x=1;addXP(25);toast('🏆 Goal reached: '+goalLabel(g)+' (+25 XP)')}});save()}
+function goalProg(g){var w=wkStart(today()),v=0,k;for(k=0;k<7;k++){var r=S.days[addD(w,k)];if(!r)continue;if(g.type==='topics')v+=r.tp||0;else if(g.type==='quiz')v+=r.qa||0;else if(g.type==='days'&&dayStatus(addD(w,k))==='studied')v++}
+ if(g.type==='custom')return {v:g.dn?1:0,n:1,done:!!g.dn};return {v:v,n:g.n,done:v>=g.n}}
+function goalLabel(g){return g.type==='topics'?'Cover '+g.n+' topics':g.type==='quiz'?'Answer '+g.n+' quiz questions':g.type==='days'?'Study on '+g.n+' days':g.txt}
+var SES=null;
+function startSession(mini){var tasks=todayTasks().filter(function(k){return !isDone(k)});var steps=[];var due=dueQs();
+ if(mini){var qs=due.length?shuffle(due).slice(0,5):pickQs({flag:true},5);if(qs.length<5)qs=qs.concat(pickQs({},5-qs.length));steps.push({t:'quiz',qs:qs.slice(0,5),title:'10-minute mini session'});steps.push({t:'minlog'});}
+ else{if(due.length)steps.push({t:'quiz',qs:shuffle(due).slice(0,modeToday()===1?4:6),title:'Revision warm-up'});
+  tasks.forEach(function(k){steps.push({t:'task',k:k})});
+  steps.push({t:'recap'});}
+ steps.push({t:'wrap'});SES={steps:steps,i:-1,ev:null,learned:[],mini:!!mini,doneN:0};sesNext()}
+function sesNext(){SES.i++;var s=SES.steps[SES.i];if(!s){ovClose();return}
+ if(s.t==='quiz'){startQuiz({qs:s.qs,title:s.title,done:sesNext,kind:'ses'})}
+ else if(s.t==='task')showTaskStep(s.k);
+ else if(s.t==='minlog'){var ev=logDone('MIN','10-minute mini session','maths',10);if(ev){addXP(10);if(ev.e)ev.e.x=(ev.e.x||0)+10;SES.ev=ev}save();checkGoals();sesNext()}
+ else if(s.t==='recap'){var chs={};SES.learned.forEach(function(k){chs[k.ch]=1});var ids=Object.keys(chs);var qs=[];ids.forEach(function(c){qs=qs.concat(pickQs({ch:c},3))});qs=shuffle(qs).slice(0,5);
+  if(qs.length)startQuiz({qs:qs,title:'Recap quiz',done:sesNext,kind:'ses'});else sesNext()}
+ else wrapSession()}
+function showTaskStep(k){var s=SUB[k.sub];var h='<div class="row"><b class="grow">Step: '+esc(s.emoji+' '+s.name.split(' (')[0])+'</b><button data-a="qstop">Stop</button></div>'+mochiBox('','Do just this one thing. I will wait here 🍡');
+ h+='<div class="card" style="border-left:8px solid '+s.color+'"><h2>'+esc(k.title)+'</h2><div class="mute">≈ '+k.m+' min</div><p>'+esc(k.desc)+'</p>';
+ if(k.ts)h+='<ul class="pts">'+k.ts.map(function(i){return '<li>'+esc(tname(k.ch,i))+'</li>'}).join('')+'</ul>';h+='</div>';
+ if(k.kind==='mock'||k.kind==='pyq')h+='<button class="full" data-a="startMockQ" data-sub="'+k.sub+'">Open 10 official-sample / practice questions</button><div style="height:8px"></div><button class="full" data-a="logMockGo">Log a mock score (Me → Mocks)</button><div style="height:8px"></div>';
+ h+='<button class="ok big" data-a="sesDone">I finished this ✅</button><div style="height:10px"></div><button class="full" data-a="sesSkip">Skip for now (it will be rescheduled)</button>';
+ SES.cur=k;ovOpen(h)}
+function wrapSession(){var ev=SES.ev;var st=stats();var t=today();var did=(S.days[t]&&S.days[t].d.length)||0;
+ addXP(did?10:0);save();var kind=ev&&ev.milestone?'streak':(ev&&ev.comeback?'comeback':(SES.mini?'wrapmin':'session'));var msg=pickMsg(kind,ev&&ev.milestone||st.cur);if(ev&&ev.comeback)msg=pickMsg('comeback');
+ var h='<div class="center"><div style="font-size:3rem">🎉</div><h1>'+(did?'Session complete!':'Nothing done yet')+'</h1><div class="mute">'+(did?'XP: '+S.xp+' · Level '+level()+' · Streak '+st.cur+' 🔥':'No worries — even 10 minutes counts tomorrow too.')+'</div></div>'+mochiBox(did?'cheer':'',msg);
+ if(ev&&ev.comeback)h+='<div class="fb ok">🎁 Comeback bonus +20 XP</div>';
+ h+='<button class="pri big" data-a="sesFin">Back to home</button><div style="height:10px"></div>'+(did?'<button class="full" data-a="winS">Share my win 🎉</button>':'');ovOpen(h);setTimeout(function(){mochiReact(document.getElementById('ov'),'right')},200)}
+/* ===== Views & actions ===== */
+var UI={sh:null,logAll:false,tab:'today',seg:{learn:'syl',me:'prog'},openSub:null,openCh:null,cal:null,pw:0,qf:{sub:'',ch:'',src:'all',ty:'',mk:'',flag:false},showGoal:false,gtype:'topics',gn:3};
+var PHN={learn:'Learn',revision:'Revision',final:'Mocks & fixes',eve:'Exam eve'};
+function bar(c,s){return '<div class="bar"><i class="a" style="width:'+c+'%"></i><i class="b" style="width:'+s+'%"></i></div>'}
+function seg(g,items){return '<div class="seg">'+items.map(function(i){return '<button data-a="seg" data-g="'+g+'" data-v="'+i[0]+'" class="'+(UI.seg[g]===i[0]?'on':'')+'">'+i[1]+'</button>'}).join('')+'</div>'}
+function subjChip(k){var s=SUB[k.sub];return '<span class="chip" style="border-color:'+s.color+'">'+s.emoji+' '+esc(s.name.split(' (')[0])+'</span>'}
+/* ---- Today ---- */
+function vToday(){var t=today(),st=stats(),p=allProg(),dte=daysToExam(),h='',m=modeToday();
+ var due=dueQs().length;
+ if(t<S.start){return '<h1>Hi Vedu 👋</h1>'+mochiBox('',pickMsg('welcome'))+'<div class="card">Your plan starts on <b>'+fmt(S.start,2)+'</b>.</div>'}
+ if(t>=S.exam)return '<h1>Exam time! 🍀</h1>'+mochiBox('cheer','You have prepared. Deep breaths — you’ve got this, Vedu!')
+ var tasks=todayTasks(),dn=tasks.filter(isDone).length,sun=pd(t).getDay()===0;
+ var greet=st.cur>=2?'Day '+st.cur+' of your streak 🔥':(!stats().studied?pickMsg('welcome'):(st.cur===0&&st.lastBreak?pickMsg('comeback'):pickMsg('session')));
+ h+='<div class="mute small" style="font-weight:800;letter-spacing:.5px">🍡 MOCHI</div><h1>Hi Vedu 👋</h1>'+mochiBox(dn&&dn===tasks.length?'cheer':'',dn===tasks.length&&tasks.length?pickMsg('session'):(sun?pickMsg('rest'):greet));
+ h+='<div class="stats"><div class="stat">🔥 Streak<b>'+st.cur+' day'+(st.cur===1?'':'s')+'</b><span class="mute small">best '+st.best+' · 🧊 weekly freeze</span></div><div class="stat">📚 Syllabus covered<b>'+p.pct+'%</b><span class="mute small">'+p.cov+'/'+p.n+' topics</span></div><div class="stat">⏳ Days to boards<b>'+dte+'</b><span class="mute small">tentative '+fmt(S.exam,2)+'</span></div><div class="stat">⭐ Level '+level()+'<b>'+S.xp+' XP</b><span class="mute small">effort + correct answers</span></div></div>';
+ if(needBackup())h+='<div class="warn">📦 <b>Back up your progress.</b> Tap Export so nothing gets lost if the phone is cleared.<div style="margin-top:8px"><button data-a="export" class="pri">Export backup</button></div></div>';
+ h+='<div class="card"><div class="row"><b class="grow">Today I can study for</b><div class="seg" style="margin:0;min-width:150px"><button data-a="mode" data-v="1" class="'+(m===1?'on':'')+'">1 hour</button><button data-a="mode" data-v="2" class="'+(m===2?'on':'')+'">2 hours</button></div></div>';
+ h+='<div class="mute small" style="margin:6px 0 10px">'+(m===1?'One focused task (~45 min) + 15 min recap/quiz.':'Two focused tasks + 15 min recap/quiz.')+(sun?' Sunday = light revision + rest.':'')+'</div>';
+ h+='<button class="pri big" data-a="session">▶ Start today’s session</button><div style="height:8px"></div>';
+ h+='<button class="full" data-a="mini">Bad day? Just do 10 minutes 🌈</button>';
+ if(due)h+='<div class="mute small center" style="margin-top:8px">📌 '+due+' question'+(due>1?'s':'')+' due in your revision queue (about 10–15 min max)</div>';h+='</div>';
+ h+='<h2>Today’s tasks <span class="mute small">'+dn+'/'+tasks.length+' done</span></h2>';
+ if(!tasks.length)h+='<div class="card">No tasks today — rest well 🎶</div>';
+ tasks.forEach(function(k,i){var d=isDone(k),s=SUB[k.sub];h+='<div class="task'+(d?' done':'')+'" style="--c:'+s.color+'"><div class="t"><b>'+(d?'✅ ':'')+esc(k.title)+'</b><span class="mute small">'+s.emoji+' '+esc(s.name.split(' (')[0])+' · ≈'+k.m+' min</span></div>'+(d?'<button class="pen" data-a="dayedit" data-d="'+t+'" aria-label="Edit">✏️</button>':'<button class="ok" data-a="doneTask" data-i="'+i+'">Done</button>')+'</div>'});
+ var dd=S.days[t];if(dd&&dd.d.length&&!tasks.length)h+='';
+ h+=watchCard();
+ h+=goalsCard();
+ h+='<h2>This week</h2>'+weekStrip();
+ var ph=S.snap&&S.snap.ph;h+='<div class="mute small center" style="margin-top:8px">Phase now: <b>'+(PHN[ph]||'Learn')+'</b> · see Learn → Plan for the full timetable</div>';
+ return h}
+function watchCard(){var t=today(),r=S.days[t],l=(r&&r.wv)||[];var h='<div class="card"><div class="row"><b class="grow">▶ Videos watched today: '+l.length+'</b><span class="mute small">'+watchedN()+' in total</span><button class="pen" data-a="dayedit" data-d="'+t+'" aria-label="Edit today">✏️</button></div>';
+ if(l.length)h+='<ul class="pts">'+l.map(function(x){return '<li>'+esc(x.t)+'</li>'}).join('')+'</ul>';else h+='<div class="mute small">Watched a lesson video? Tap “▶ Watched video” on the topic in Learn → Syllabus.</div>';return h+'</div>'}
+function needBackup(){var any=S.xp>0;return any&&(!S.lastBackup||diff(S.lastBackup,today())>=7)}
+function weekStrip(){var t=today(),w=wkStart(t),st=stats(),o='<div class="weekrow">';for(var k=0;k<7;k++){var d=addD(w,k),s=st.st[d]||(d>t?'':(d<S.start?'':'x'));o+='<div class="'+(s==='studied'?'studied':s==='missed'?'missed':'')+(d===t?' today':'')+'">'+DOW[pd(d).getDay()]+'<br><b>'+pd(d).getDate()+'</b><br>'+(s==='studied'?'✓':s==='missed'?'·':s==='rest'?'😴':s==='frozen'?'🧊':'')+'</div>'}return o+'</div>'}
+function goalsCard(){var w=wkStart(today()),gs=S.goals[w]||[];var h='<div class="card"><h3>🎯 My goals this week</h3>';
+ if(!gs.length)h+='<div class="mute small">Set 1–3 small goals you choose yourself.</div>';
+ gs.forEach(function(g){var p=goalProg(g);h+='<div class="row" style="margin:6px 0"><div class="grow"><b>'+(p.done?'🏆 ':'')+esc(goalLabel(g))+'</b>'+(g.type==='custom'?'':'<div class="bar thin"><i class="b" style="width:'+Math.min(100,pct(p.v,p.n))+'%"></i></div><span class="mute small">'+p.v+'/'+p.n+'</span>')+'</div>'+(g.type==='custom'&&!g.dn?'<button data-a="gdone" data-id="'+g.id+'">Done</button>':'')+'<button data-a="gdel" data-id="'+g.id+'" aria-label="Remove goal">✕</button></div>'});
+ if(UI.showGoal){h+='<label>Goal type</label><select data-c="gtype"><option value="topics"'+(UI.gtype==='topics'?' selected':'')+'>Cover topics</option><option value="quiz"'+(UI.gtype==='quiz'?' selected':'')+'>Answer quiz questions</option><option value="days"'+(UI.gtype==='days'?' selected':'')+'>Study on days</option><option value="custom"'+(UI.gtype==='custom'?' selected':'')+'>My own goal (words)</option></select>';
+  if(UI.gtype==='custom')h+='<label>My goal</label><input id="gtxt" maxlength="60" placeholder="e.g. Finish trigonometry notes" class="full">';else h+='<label>How many?</label><input id="gn" type="number" min="1" max="99" value="'+UI.gn+'" style="width:100px">';
+  h+='<div class="row" style="margin-top:10px"><button class="pri" data-a="gadd">Add goal</button><button data-a="gcancel">Cancel</button></div>'}
+ else if(gs.length<4)h+='<button class="full" data-a="gshow">+ Add a goal</button>';return h+'</div>'}
+/* ---- Learn ---- */
+function vLearn(){var h='<h1>Learn</h1>'+seg('learn',[['syl','Syllabus'],['quiz','Quizzes'],['plan','Plan']]);
+ return h+({syl:vSyl,quiz:vQuiz,plan:vPlan}[UI.seg.learn])()}
+function vSyl(){var p=allProg(),h='<div class="card"><div class="row"><b class="grow">Overall: '+p.pct+'% covered</b><span class="mute small">💪 '+p.str+' strong · ⭐ '+p.f+' need work</span></div>'+bar(p.pct,pct(p.str,p.n))+'<div class="mute small">Tap a topic box when you have learned it. Strong is earned through quizzes on different days.</div></div>';
+ SUBJECTS.forEach(function(s){var q=subProg(s.id),open=UI.openSub===s.id;
+  h+='<button class="acc" data-a="osub" data-id="'+s.id+'" style="border-left:8px solid '+s.color+'"><div class="row"><b class="grow" style="font-size:1.1rem">'+s.emoji+' '+esc(s.name)+'</b><span>'+pct(q.cov,q.n)+'%</span></div>'+bar(pct(q.cov,q.n),pct(q.str,q.n))+'<span class="mute small">'+q.chd+'/'+q.ch+' chapters · '+q.cov+'/'+q.n+' topics'+(q.f?' · ⭐ '+q.f:'')+'</span></button>';
+  if(open){var grp='';s.chapters.forEach(function(c){if(c.g!==grp){grp=c.g;h+='<div class="mute" style="margin:10px 4px 2px;font-weight:700">'+esc(grp)+'</div>'}
+   var cp=chProg(c.id),co=UI.openCh===c.id;h+='<button class="acc" style="min-height:56px;margin-left:10px;width:calc(100% - 10px)" data-a="och" data-id="'+c.id+'"><div class="row"><b class="grow">'+esc(c.n)+(c.bonus?' <span class="chip off">School-assessed</span>':'')+'</b><span class="small">'+cp.cov+'/'+cp.n+'</span></div>'+bar(pct(cp.cov,cp.n),pct(cp.str,cp.n))+'</button>';
+   if(co)h+=chapterBody(c)});}});
+ return h}
+function chapterBody(c){var cs=CS(c.id),h='<div class="card" style="margin-left:10px">';
+ c.t.forEach(function(tn,i){var tp=S.topics[c.id+':'+i]||{s:0,f:false,cd:[]};var lab=tp.s===2?'💪 Strong':tp.s===1?(tp.f?'⭐ Needs work':'✅ Covered'):(tp.f?'⭐ Needs work':'Not started');
+  h+='<div class="row" style="flex-wrap:nowrap"><button class="topic s'+tp.s+(tp.f?' f':'')+'" data-a="topic" data-c="'+c.id+'" data-i="'+i+'"><span class="bx">'+(tp.s?'✓':'')+'</span><span class="tn">'+esc(tname(c.id,i))+(tschool(c.id,i)?' <span class="chip off">school</span>':'')+'<br><span class="mute small">'+lab+(tp.ed?' · ✏️ edited '+fmt(tp.ed):'')+(tp.s===1&&hasQ(c.id,i)?' · strong after correct answers on 2 days ('+tp.cd.length+'/2)':'')+'</span></span></button><button class="star'+(tp.f?' on':'')+'" data-a="flag" data-c="'+c.id+'" data-i="'+i+'" aria-label="Needs work flag">⭐</button><button class="pen" data-a="tpEdit" data-c="'+c.id+'" data-i="'+i+'" aria-label="Edit topic">✏️</button></div><button class="vid'+(tp.w?' on':'')+'" data-a="watch" data-c="'+c.id+'" data-i="'+i+'">'+(tp.w?'▶ Watched video ✓ · '+fmt(tp.w):'▶ Watched video')+'</button>';
+  if(tp.s===1&&!hasQ(c.id,i))h+='<button class="small" data-a="strong" data-c="'+c.id+'" data-i="'+i+'" style="min-height:44px">Mark this topic Strong 💪 (no quiz questions for it yet)</button>';});
+ h+='<div style="margin-top:8px"><button class="tick'+(cs.ex?' on':'')+'" data-a="ctick" data-c="'+c.id+'" data-k="ex">'+(cs.ex?'✅':'⬜')+' NCERT exercises done</button><button class="tick'+(cs.r1?' on':'')+'" data-a="ctick" data-c="'+c.id+'" data-k="r1">'+(cs.r1?'✅':'⬜')+' Revised once</button><button class="tick'+(cs.r2?' on':'')+'" data-a="ctick" data-c="'+c.id+'" data-k="r2">'+(cs.r2?'✅':'⬜')+' Revised twice</button></div>';
+ var nq=QB.filter(function(q){return q.ch===c.id}).length;var last=cs.qs.length?cs.qs[cs.qs.length-1]:null;
+ h+=nq?'<button class="pri full" style="margin-top:10px" data-a="chq" data-c="'+c.id+'">Chapter quick quiz ('+Math.min(5,nq)+' of '+nq+' questions)</button>'+(last?'<div class="mute small">Last score: '+last.s+'/'+last.t+' on '+fmt(last.d)+'</div>':''):'<div class="mute small" style="margin-top:8px">No quiz questions for this chapter yet (school-assessed / workbook).</div>';
+ return h+'</div>'}
+function vQuiz(){var f=UI.qf,h='',due=dueQs().length;
+ var counts={};SUBJECTS.forEach(function(s){counts[s.id]=[0,0]});QB.forEach(function(q){var c=counts[CH[q.ch].s.id];c[0]++;if(q.src==='sqp2526')c[1]++});
+ h+='<div class="card"><h3>📌 Revision queue</h3><div>'+due+' question'+(due===1?'':'s')+' due today. Missed questions return after 1, 3, 7 and 21 days.</div><button class="pri full" style="margin-top:8px" data-a="srsq"'+(due?'':' disabled')+'>Practise due questions ('+Math.min(due,8)+')</button></div>';
+ h+='<div class="card"><h3>Build a quiz</h3><label>Subject</label><select data-c="qsub"><option value="">All subjects</option>'+SUBJECTS.map(function(s){return '<option value="'+s.id+'"'+(f.sub===s.id?' selected':'')+'>'+s.emoji+' '+esc(s.name.split(' (')[0])+' ('+counts[s.id][0]+')</option>'}).join('')+'</select>';
+ if(f.sub){h+='<label>Chapter</label><select data-c="qch"><option value="">Whole subject</option>'+SUB[f.sub].chapters.filter(function(c){return QB.some(function(q){return q.ch===c.id})}).map(function(c){return '<option value="'+c.id+'"'+(f.ch===c.id?' selected':'')+'>'+esc(c.n)+'</option>'}).join('')+'</select>'}
+ h+='<label>Question source</label><select data-c="qsrc"><option value="all">All questions</option><option value="sqp"'+(f.src==='sqp'?' selected':'')+'>🏛️ Official CBSE sample paper 2025-26 (tagged)</option><option value="own"'+(f.src==='own'?' selected':'')+'>✏️ Practice questions (self-written)</option></select>';
+ h+='<label>Type</label><select data-c="qty"><option value="">All types</option><option value="mcq"'+(f.ty==='mcq'?' selected':'')+'>MCQ</option><option value="ar"'+(f.ty==='ar'?' selected':'')+'>Assertion–Reason</option><option value="case"'+(f.ty==='case'?' selected':'')+'>Case-based</option><option value="short"'+(f.ty==='short'?' selected':'')+'>Short / long answer</option></select>';
+ h+='<label>Marks</label><select data-c="qmk"><option value="">Any</option><option value="1"'+(f.mk==='1'?' selected':'')+'>1 mark</option><option value="3"'+(f.mk==='3'?' selected':'')+'>3 marks</option><option value="5"'+(f.mk==='5'?' selected':'')+'>5 marks</option></select>';
+ h+='<button class="tick'+(f.flag?' on':'')+'" data-a="qflag" style="margin-top:10px">'+(f.flag?'✅':'⬜')+' Only my ⭐ needs-work topics</button>';
+ var n=QB.filter(function(q){return matchQ(q,f)}).length;
+ h+='<div class="mute small" style="margin:8px 0">'+n+' matching question'+(n===1?'':'s')+'</div><button class="pri big" data-a="qgo"'+(n?'':' disabled')+'>Start quiz (up to 10)</button></div>';
+ h+='<div class="card"><h3>Question bank</h3><table class="t"><tr><th>Subject</th><th>Questions</th><th>🏛️ Official sample</th></tr>'+SUBJECTS.map(function(s){return '<tr><td>'+s.emoji+' '+esc(s.name.split(' (')[0])+'</td><td>'+counts[s.id][0]+'</td><td>'+counts[s.id][1]+'</td></tr>'}).join('')+'</table><div class="mute small" style="margin-top:8px">🏛️ = taken from the official CBSE Sample Question Paper 2025-26 with its marking scheme. <b>No 2023/2024/2025 board-exam papers are included</b> — verified past-paper answers weren’t available, so nothing is invented. Everything else is self-written practice in board style.</div></div>';
+ var any=SUBJECTS.some(function(s){return s.chapters.some(function(c){return S.ch[c.id]&&S.ch[c.id].qs.length})});
+ if(any){h+='<div class="card"><h3>My chapter scores</h3>';SUBJECTS.forEach(function(s){s.chapters.forEach(function(c){var cs=S.ch[c.id];if(!cs||!cs.qs.length)return;var tt=0,ss=0;cs.qs.forEach(function(x){tt+=x.t;ss+=x.s});h+='<div class="row" style="margin:4px 0"><span class="grow small">'+s.emoji+' '+esc(c.n)+'</span><b>'+pct(ss,tt)+'%</b><span class="mute small">('+cs.qs.length+')</span></div>'})});h+='</div>'}
+ return h}
+function vPlan(){var sim=simulate(S.pace),h='<div class="card"><h3>📅 Timetable</h3>';
+ if(sim.tooShort)return h+'The exam date is on or before the start. Fix it in Me → Settings.</div>';
+ var le=sim.learnEnd;h+='<div>From <b>'+fmt(sim.from,2)+'</b> to the exam on <b>'+fmt(S.exam,2)+'</b> (tentative).</div>';
+ var tot=diff(sim.from,S.exam),fs0=diff(sim.from,sim.finalStart),a=le?Math.max(0,Math.min(fs0,diff(sim.from,le))):fs0,b=Math.max(0,diff(sim.from,sim.finalStart)-a),c=tot-a-b;
+ h+='<div style="display:flex;height:22px;border-radius:10px;overflow:hidden;margin:10px 0;font-size:.7rem;color:#1c0612;font-weight:700"><div style="width:'+pct(a,tot)+'%;background:#ff4fa3;text-align:center">Learn</div><div style="width:'+pct(b,tot)+'%;background:#ff9acb;text-align:center">Revise</div><div style="width:'+pct(c,tot)+'%;background:#c58bff;text-align:center">Mocks</div></div>';
+ h+='<ul class="pts"><li><b>Learn</b> (with revisits ~1 and ~3 weeks after each chapter): '+(le?'until about '+fmt(le):'not finished before the final phase')+'</li><li><b>Revision</b> cycles: '+(b>0?'until '+fmt(addD(sim.finalStart,-1)):'none needed beyond revisits')+'</li><li><b>Mocks, sample papers &amp; weak-topic fixing</b>: '+fmt(sim.finalStart)+' → '+fmt(addD(S.exam,-1))+'</li></ul>';
+ h+='<div class="mute small">Forecast uses your usual study time ('+(S.pace===1?'1 hour':'2 hours')+'/day, Sundays light). Never more than 2 hours a day. Skipped days simply move tasks forward.</div>';
+ if(sim.warn)h+='<div class="warn">'+esc(sim.warn)+'</div>';h+='</div>';
+ var w=addD(wkStart(today()),UI.pw*7);h+='<div class="row"><button data-a="pw" data-v="-1">◀</button><b class="grow center">Week of '+fmt(w)+'</b><button data-a="pw" data-v="1">▶</button></div>';
+ var t=today(),st=stats();
+ for(var k=0;k<7;k++){var d=addD(w,k),r=S.days[d],pl=d===t?{ph:S.snap&&S.snap.ph,tasks:todayTasks()}:sim.days[d];
+  h+='<div class="card"><div class="row"><b class="grow">'+fmt(d,1)+(d===t?' · today':'')+'</b>'+(st.st[d]?'<span class="chip '+(st.st[d]==='studied'?'ok':st.st[d]==='missed'?'bad':'')+'">'+({studied:'Studied',missed:'Missed',rest:'Rest',frozen:'Freeze 🧊',today:'Today'}[st.st[d]])+'</span>':'')+(pl&&pl.ph?'<span class="chip off">'+PHN[pl.ph]+'</span>':'')+(d<=t&&d>=S.start?'<button class="pen" data-a="dayedit" data-d="'+d+'" aria-label="Edit day">✏️</button>':'')+'</div>';
+  if(d<t){if(r&&r.d.length)r.d.forEach(function(x){h+='<div class="small">✅ '+esc(x.t)+'</div>'});else if(d>=S.start)h+='<div class="mute small">Nothing logged — those tasks have moved forward in the plan.</div>'}
+  else if(pl)pl.tasks.forEach(function(x){h+='<div class="small" style="border-left:5px solid '+SUB[x.sub].color+';padding-left:8px;margin:4px 0">'+(d===t&&isDone(x)?'✅ ':'')+esc(x.title)+' <span class="mute">≈'+x.m+'m</span></div>'});
+  else h+='<div class="mute small">Outside the plan.</div>';h+='</div>'}
+ return h}
+/* ---- Me ---- */
+function vMe(){var h='<h1>Me</h1>'+seg('me',[['prog','Progress'],['mock','Mocks'],['set','Settings']]);return h+({prog:vProg,mock:vMock,set:vSet}[UI.seg.me])()}
+function vProg(){var st=stats(),p=allProg(),h='';
+ h+='<div class="stats"><div class="stat">🔥 Streak<b>'+st.cur+'</b><span class="mute small">best '+st.best+'</span></div><div class="stat">✅ Studied days<b>'+st.studied+'</b></div><div class="stat">📉 Missed days<b>'+st.missed+'</b><span class="mute small">rest '+st.rest+' · freezes '+st.frozen+'</span></div><div class="stat">📚 Covered<b>'+p.pct+'%</b><span class="mute small">'+p.str+' strong</span></div><div class="stat">▶ Videos watched<b>'+watchedN()+'</b><span class="mute small">'+watchedWeek(wkStart(today()))+' this week</span></div></div>';
+ h+='<div class="card"><button class="pri full" data-a="shareAll">Share my progress 📤</button><div class="mute small" style="margin-top:6px">Opens your phone’s share sheet (or copies the text). Nothing is sent unless you choose to.</div></div>';
+ var cm=UI.cal||today().slice(0,7),y=+cm.slice(0,4),mo=+cm.slice(5)-1,first=new Date(y,mo,1,12),dim=new Date(y,mo+1,0,12).getDate(),off=(first.getDay()+6)%7;
+ h+='<div class="card"><div class="row"><button data-a="cal" data-v="-1">◀</button><b class="grow center">'+MON[mo]+' '+y+'</b><button data-a="cal" data-v="1">▶</button></div><div class="cal" style="margin-top:8px">'+['M','T','W','T','F','S','S'].map(function(x){return '<div class="h">'+x+'</div>'}).join('');
+ for(var i=0;i<off;i++)h+='<div></div>';var t=today();
+ for(var d=1;d<=dim;d++){var ds1=y+'-'+pad(mo+1)+'-'+pad(d),s=st.st[ds1];var cls=s||(ds1<S.start?'pre':'fut');if(ds1===t)cls+=' today';h+='<button class="'+cls+'" data-a="calday" data-d="'+ds1+'"'+(ds1>t||ds1<S.start?' disabled':'')+'>'+d+'</button>'}
+ h+='</div><div class="legend" style="margin-top:8px"><span><i class="dot" style="background:var(--ok)"></i>Studied</span><span><i class="dot" style="background:var(--badbg);border:1px solid var(--bad)"></i>Missed</span><span><i class="dot" style="background:var(--chip)"></i>Rest</span><span><i class="dot" style="background:#cfe8ff"></i>Freeze 🧊</span></div><div class="mute small">Tap any day to fix it: Studied, Missed or Rest, and edit what was logged. Days auto-mark as Missed only if nothing was done; Sundays count as rest.</div></div>';
+ h+='<div class="card"><h3>📈 Progress history (weekly)</h3><table class="t"><tr><th>Week</th><th>Covered</th><th>Study</th><th>Quiz</th><th>▶</th><th>XP</th></tr>';
+ Object.keys(S.snaps).sort().reverse().slice(0,12).forEach(function(k){var x=S.snaps[k];h+='<tr><td>'+fmt(k)+'</td><td>'+x.pct+'%</td><td>'+x.studied+'✓ '+x.missed+'✗</td><td>'+(x.qa?pct(x.qc,x.qa)+'%':'–')+'</td><td>'+(x.wv||0)+'</td><td>'+x.xp+'</td></tr>'});
+ h+='</table><div class="mute small">Saved automatically; the latest row updates until the week ends.</div></div>';
+ h+='<div class="card"><h3>🗓️ Daily log</h3><div class="mute small" style="margin-bottom:6px">Tap a day to fix anything: what you studied, videos, quiz scores, or Studied / Missed / Rest.</div>';
+ var all=Object.keys(S.days).filter(function(k){var r=S.days[k];return r.d.length||r.qa||r.ov||(r.wv&&r.wv.length)||(r.zq&&r.zq.length)}).sort().reverse(),ks=UI.logAll?all:all.slice(0,14);
+ if(!ks.length)h+='<div class="mute">Nothing yet — your first session will show up here.</div>';
+ ks.forEach(function(k){var r=S.days[k],ss=st.st[k]||dayStatus(k);h+='<button class="dayrow" data-a="dayedit" data-d="'+k+'"><div class="row"><b class="grow">'+fmt(k,1)+'</b><span class="chip '+(ss==='studied'?'ok':ss==='missed'?'bad':'')+'">'+stLabel(ss)+'</span>'+edTag(r)+'</div><div class="mute small" style="font-weight:400">'+(r.min||0)+' min'+(r.qa?' · '+r.qc+'/'+r.qa+' right':'')+(r.wv&&r.wv.length?' · ▶ '+r.wv.length:'')+(r.xp?' · +'+r.xp+' XP':'')+'</div>'+r.d.map(function(x){return '<div class="small" style="font-weight:400">✅ '+esc(x.t)+'</div>'}).join('')+(r.wv&&r.wv.length?'<div class="small" style="font-weight:400">▶ '+r.wv.map(function(z){return esc(z.t)}).join('; ')+'</div>':'')+(r.zq&&r.zq.length?'<div class="small" style="font-weight:400">📝 '+r.zq.map(function(z){return z.s+'/'+z.t+' '+esc(z.n)}).join(', ')+'</div>':'')+'</button>'});
+ if(all.length>14)h+='<button class="full" data-a="logAll">'+(UI.logAll?'Show fewer days':'Show older days ('+(all.length-14)+')')+'</button>';
+ return h+'</div>'}
+function vMock(){var h='<div class="card"><h3>Log a mock test</h3><label>Test name</label><input id="mn" class="full" maxlength="40" placeholder="e.g. Maths sample paper 1"><label>Subject</label><select id="ms" class="full">'+SUBJECTS.map(function(s){return '<option value="'+s.id+'">'+s.emoji+' '+esc(s.name.split(' (')[0])+'</option>'}).join('')+'<option value="mix">Mixed</option></select><div class="row"><div><label>Marks</label><input id="mm" type="number" min="0" step="0.5" style="width:110px"></div><div><label>Total</label><input id="mt" type="number" min="1" value="80" style="width:110px"></div></div><label>Date</label><input id="md" type="date" value="'+today()+'"><div style="margin-top:12px"><button class="pri full" data-a="addMock">Save mock</button></div></div>';
+ if(S.mocks.length){h+='<div class="card"><h3>Scores (%)</h3><div class="chart">'+S.mocks.map(function(m){var p=pct(m.m,m.t),col=m.s==='mix'?'#888':SUB[m.s].color;return '<div class="c"><span>'+p+'</span><i style="height:'+Math.max(3,p*1.1)+'px;background:'+col+'"></i></div>'}).join('')+'</div><div class="mute small">Oldest → newest</div><table class="t" style="margin-top:8px">'+S.mocks.slice().reverse().map(function(m){return '<tr><td>'+esc(m.name)+'<br><span class="mute small">'+(m.s==='mix'?'Mixed':SUB[m.s].name.split(' (')[0])+' · '+fmt(m.d,2)+'</span>'+edTag(m)+'</td><td><b>'+m.m+'/'+m.t+'</b></td><td style="white-space:nowrap"><button class="pen" style="width:46px" data-a="mockEdit" data-id="'+m.id+'" aria-label="Edit">✏️</button> <button class="pen" style="width:46px" data-a="delMock" data-id="'+m.id+'" aria-label="Delete">🗑</button></td></tr>'}).join('')+'</table></div>'}
+ else h+='<div class="card mute">No mocks logged yet.</div>';return h}
+function vSet(){var h='<div class="card"><h3>Dates</h3><label>Exam date (first board paper)</label><input type="date" id="sx" value="'+S.exam+'" data-c="exam"><div class="warn small" style="margin-top:8px">⚠️ <b>Tentative.</b> CBSE had not announced the Class 10 board-exam date sheet when this app was made (25 Oct 2026). 15 Feb 2027 is an assumption based on the usual mid-February start. Update it here once the official date sheet is out — the plan will re-shape itself.</div><label>Plan start date</label><input type="date" id="ss" value="'+S.start+'" data-c="start"></div>';
+ h+='<div class="card"><h3>Usual study time</h3><div class="seg"><button data-a="pace" data-v="1" class="'+(S.pace===1?'on':'')+'">1 hour</button><button data-a="pace" data-v="2" class="'+(S.pace===2?'on':'')+'">2 hours</button></div><div class="mute small">Used for the long-range timetable. You can still switch today between 1h and 2h on the Today screen.</div></div>';
+  h+='<div class="card"><h3>📦 Backup</h3><div class="mute small">All your progress lives only on this device/browser. Last backup: '+(S.lastBackup?fmt(S.lastBackup,2):'never')+'</div><div style="margin:8px 0"><button class="pri full" data-a="export">Export backup (JSON)</button></div><button class="full" data-a="import">Import backup</button><input type="file" id="impf" accept="application/json,.json" hidden></div>';
+ h+='<div class="card"><h3>About</h3><div class="mute small">Syllabus: CBSE Class 10 (2026-27) — Maths (Standard), Science, Social Science, English (Language &amp; Literature), Hindi Course A. Hindi Course B and school-assessed items may differ; bonus chapters are optional. Questions tagged 🏛️ come from the official CBSE Sample Question Paper 2025-26 (older paper pattern) with the official marking scheme; a few answers were worked out from that text. Other questions are self-written practice. The timetable is an estimate — adjust as you go. Sharing is always manual: Vedu taps Share.</div></div>';
+ h+='<div class="card"><h3>Reset</h3><button class="full" style="color:var(--bad);border-color:var(--bad)" data-a="reset">Reset everything…</button></div>';return h}
+/* ===== Editing: tap anything to fix it ===== */
+function edMark(o){o.ed=today()}
+function edTag(o){return o&&o.ed?'<span class="chip ed">✏️ edited '+fmt(o.ed)+'</span>':''}
+function entXP(e){if(e.x!=null)return e.x;var p=(e.k||'')[0];return p==='L'?15:10}
+function refresh(){render();if(UI.sh)renderSh()}
+function committed(d){if(d){var r=S.days[d];if(r)edMark(r)}recalcAll();save();refresh()}
+function openSh(o){UI.sh=o;renderSh()}
+function closeSh(){var b=UI.sh&&UI.sh.back;UI.sh=b||null;if(b){renderSh()}else{var e=document.getElementById('sh');if(e)e.remove();render()}}
+function renderSh(){var e=document.getElementById('sh');if(!UI.sh){if(e)e.remove();return}
+ if(!e){e=document.createElement('div');e.id='sh';e.className='sheet';document.body.appendChild(e)}
+ var h=({day:shDay,topic:shTopic,mock:shMock})[UI.sh.t]();var k=e.scrollTop;e.innerHTML='<div class="in">'+h+'</div>';e.scrollTop=k}
+function stLabel(s){return {studied:'Studied ✅',missed:'Missed ❌',rest:'Rest 😴',frozen:'Freeze 🧊',today:'Today'}[s]||''}
+function shDay(){var d=UI.sh.d,r=S.days[d]||{d:[]},st=stats(),cs=st.st[d]||dayStatus(d),ed=UI.sh.edit||'',ov=r.ov||'auto';
+ var h='<div class="row"><b class="grow" style="font-size:1.25rem">'+fmt(d,1)+' '+pd(d).getFullYear()+'</b><button class="pri" data-a="shClose">Done</button></div>';
+ h+='<div class="row" style="margin:6px 0"><span class="chip '+(cs==='studied'?'ok':cs==='missed'?'bad':'')+'">'+stLabel(cs)+'</span>'+edTag(r)+'</div>';
+ h+='<div class="card"><h3>This day counts as…</h3><div class="seg">'+[['studied','Studied'],['missed','Missed'],['rest','Rest'],['auto','Auto']].map(function(x){return '<button data-a="shSt" data-v="'+x[0]+'" class="'+(ov===x[0]?'on':'')+'">'+x[1]+'</button>'}).join('')+'</div>'+
+  '<div class="mute small">Auto = Studied if you logged something, otherwise Missed (Sundays are Rest).'+(cs==='frozen'?' 🧊 The first miss each week is forgiven by your free freeze.':'')+'</div></div>';
+ h+='<div class="card"><h3>📚 What I studied</h3>';
+ if(!r.d.length)h+='<div class="mute small">Nothing logged.</div>';
+ r.d.forEach(function(x,i){var key='d'+i;
+  if(ed===key)h+='<div class="edf"><label>What I studied</label><input id="ed_t" class="full" maxlength="120" value="'+esc(x.t)+'"><label>Minutes</label><input id="ed_m" type="number" min="0" max="600" value="'+(+x.m||0)+'" style="width:110px"><div class="row" style="margin-top:10px"><button class="pri" data-a="shSave" data-v="'+key+'">Save</button><button data-a="shCancel">Cancel</button></div></div>';
+  else h+='<div class="erow"><div class="grow"><b>'+esc(x.t)+'</b><div class="mute small">'+(+x.m||0)+' min · +'+entXP(x)+' XP</div>'+edTag(x)+'</div><button class="pen" data-a="shEd" data-v="'+key+'" aria-label="Edit">✏️</button><button class="pen" data-a="shDel" data-v="'+key+'" aria-label="Delete">🗑</button></div>'});
+ if(ed==='add')h+='<div class="edf"><label>What did you study?</label><input id="ed_t" class="full" maxlength="120" placeholder="e.g. Maths — Trigonometry"><label>Minutes</label><input id="ed_m" type="number" min="0" max="600" value="30" style="width:110px"><div class="row" style="margin-top:10px"><button class="pri" data-a="shSave" data-v="add">Add</button><button data-a="shCancel">Cancel</button></div></div>';
+ else h+='<button class="full" style="margin-top:8px" data-a="shEd" data-v="add">➕ Add something I studied</button>';
+ h+='</div>';
+ var wv=r.wv||[];if(wv.length){h+='<div class="card"><h3>▶ Videos watched</h3>';wv.forEach(function(x,i){h+='<div class="erow"><div class="grow"><b>'+esc(x.t)+'</b><div class="mute small">+'+(x.x==null?3:x.x)+' XP</div></div><button class="pen" data-a="shVid" data-v="'+i+'" aria-label="Edit video">✏️</button><button class="pen" data-a="shDel" data-v="w'+i+'" aria-label="Delete">🗑</button></div>'});h+='</div>'}
+ var zq=r.zq||[];if(zq.length){h+='<div class="card"><h3>📝 Quizzes</h3>';zq.forEach(function(z,i){var key='z'+i;
+  if(ed===key)h+='<div class="edf"><b>'+esc(z.n)+' quiz</b><div class="row"><div><label>Score</label><input id="ed_s" type="number" min="0" step="0.5" value="'+z.s+'" style="width:100px"></div><div><label>Out of</label><input id="ed_q" type="number" min="1" value="'+z.t+'" style="width:100px"></div></div><div class="row" style="margin-top:10px"><button class="pri" data-a="shSave" data-v="'+key+'">Save</button><button data-a="shCancel">Cancel</button></div></div>';
+  else h+='<div class="erow"><div class="grow"><b>'+z.s+' / '+z.t+'</b> · '+esc(z.n)+'<div class="mute small">'+pct(z.s,z.t)+'%</div>'+edTag(z)+'</div><button class="pen" data-a="shEd" data-v="'+key+'" aria-label="Edit">✏️</button><button class="pen" data-a="shDel" data-v="'+key+'" aria-label="Delete">🗑</button></div>'});h+='</div>'}
+ h+='<div class="mute small center">Questions answered: '+(r.qa||0)+' · correct: '+(r.qc||0)+' · XP today: '+(r.xp||0)+'</div>';
+ return h}
+function delLog(d,i,undo){var r=S.days[d],e=r.d[i];if(!e)return;r.d.splice(i,1);subDayXP(d,entXP(e));
+ if(undo){var p=(e.k||'').split(':');if(p[0]==='L'&&CH[p[1]]){(p[2]||'').split(',').forEach(function(x){if(x!=='')setCovered(p[1],+x,false)})}else if(p[0]==='R'&&CH[p[1]]){var c=CS(p[1]);if(p[2]==='1')c.r1=0;else c.r2=0}}
+ committed(d);toast('Deleted')}
+function delVid(d,i){var r=S.days[d],e=(r.wv||[])[i];if(!e)return;var p=e.k.split(':');var t=S.topics[e.k];if(t&&t.w===d)delete t.w;r.wv.splice(i,1);subDayXP(d,e.x==null?3:e.x);if(t)edMark(t);committed(d);toast('Deleted')}
+function delQuiz(d,i){var r=S.days[d],z=(r.zq||[])[i];if(!z)return;r.zq.splice(i,1);r.qa=Math.max(0,(r.qa||0)-(z.qa==null?z.t:z.qa));r.qc=Math.max(0,(r.qc||0)-(z.qc==null?Math.floor(z.s):z.qc));if(z.xa)r.xq=Math.max(0,(r.xq||0)-z.xa);
+ Object.keys(S.ch).forEach(function(c){S.ch[c].qs=S.ch[c].qs.filter(function(e){return e.z!==z.id})});subDayXP(d,z.x||0);committed(d);toast('Deleted')}
+function shSave(key){var d=UI.sh.d,r=D(d),v=function(id){return document.getElementById(id)&&document.getElementById(id).value};
+ if(key==='add'||key[0]==='d'){var t=(v('ed_t')||'').trim().slice(0,120),m=Math.max(0,Math.min(600,Math.round(+v('ed_m')||0)));if(!t){toast('Please write what you studied');return}
+  if(key==='add'){r.d.push({k:'MAN:'+Date.now(),t:t,s:'',m:m,x:0,ed:today()})}else{var e=r.d[+key.slice(1)];e.t=t;e.m=m;edMark(e)}}
+ else if(key[0]==='z'){var z=r.zq[+key.slice(1)],s2=parseFloat(v('ed_s')),t2=parseInt(v('ed_q'),10);if(isNaN(s2)||isNaN(t2)||t2<1||s2<0||s2>t2){toast('Score must be between 0 and the total');return}
+  var oS=z.s,oT=z.t,oqa=z.qa==null?z.t:z.qa,oqc=z.qc==null?Math.floor(z.s):z.qc;z.s=s2;z.t=t2;z.qa=t2;z.qc=Math.floor(s2);r.qa=Math.max(0,(r.qa||0)+z.qa-oqa);r.qc=Math.max(0,(r.qc||0)+z.qc-oqc);
+  Object.keys(S.ch).forEach(function(c){S.ch[c].qs.forEach(function(e){if(e.z===z.id){e.t=Math.max(1,Math.round(e.t*t2/oT));e.s=Math.min(e.t,Math.round((oS?e.s*s2/oS:s2*e.t/t2)*10)/10)}})});edMark(z)}
+ UI.sh.edit='';committed(d);toast('Saved ✏️')}
+function shDelAsk(key){var d=UI.sh.d,r=S.days[d],i=+key.slice(1);
+ if(key[0]==='d'){var e=r.d[i],p=(e.k||'').split(':'),canU=(p[0]==='L'||p[0]==='R');
+  var b=[{t:'Cancel'},{t:canU?'Delete entry only':'Delete',c:canU?'':'pri',f:function(){delLog(d,i,false)}}];if(canU)b.push({t:p[0]==='L'?'Delete + un-cover topics':'Delete + undo revision',c:'pri',f:function(){delLog(d,i,true)}});
+  modal('<h3>Delete this entry?</h3><p><b>'+esc(e.t)+'</b> on '+fmt(d,2)+' will be removed, along with the XP it gave.'+(canU?' You can also un-tick what it marked as done.':'')+'</p>',b)}
+ else if(key[0]==='w'){var w=r.wv[i];confirmM('Delete the video tick <b>'+esc(w.t)+'</b>? Its XP is removed too.',function(){delVid(d,i)},'Delete')}
+ else{var z=r.zq[i];confirmM('Delete the quiz score <b>'+z.s+' / '+z.t+'</b> ('+esc(z.n)+') from '+fmt(d,2)+'? Accuracy, chapter scores and XP will update. (Your revision queue and ⭐ stars stay.)',function(){delQuiz(d,i)},'Delete')}}
+/* topic sheet */
+function setTopicStatus(c,i,v){var tp=TP(c,i);
+ if(v==='0'){setCovered(c,i,false);tp.f=false;tp.cd=[]}
+ else if(v==='1'){if(tp.s===0)setCovered(c,i,true);tp.s=1;tp.f=false;tp.cd=[]}
+ else if(v==='2'){if(tp.s===0)setCovered(c,i,true);tp.s=2;tp.f=false}
+ else{tp.f=true;tp.cd=[];if(tp.s===2)tp.s=1}
+ edMark(tp)}
+function shTopic(){var c=UI.sh.c,i=UI.sh.i,tp=S.topics[c+':'+i]||{s:0,f:false,cd:[]},cur=tp.f?'f':String(tp.s),t=today();
+ var h='<div class="row"><b class="grow" style="font-size:1.15rem">'+esc(tname(c,i))+'</b><button class="pri" data-a="shClose">Done</button></div><div class="mute small">'+esc(CH[c].c.n)+'</div><div style="margin:6px 0">'+edTag(tp)+'</div>';
+ h+='<div class="card"><h3>Status</h3><div class="seg" style="flex-wrap:wrap">'+[['0','Not started'],['1','Covered ✅'],['2','Strong 💪'],['f','Needs work ⭐']].map(function(x){return '<button data-a="tpSet" data-v="'+x[0]+'" class="'+(cur===x[0]?'on':'')+'" style="min-width:45%">'+x[1]+'</button>'}).join('')+'</div></div>';
+ h+='<div class="card"><h3>Dates</h3>';
+ if(tp.s>=1)h+='<label>Covered on</label><input id="tp_d" type="date" max="'+t+'" value="'+(tp.d||t)+'">';else h+='<div class="mute small">Pick “Covered” above to set a covered date.</div>';
+ h+='<label>Video</label><button class="vid'+(tp.w?' on':'')+'" style="margin:0" data-a="tpWatch">'+(tp.w?'▶ Watched ✓ — tap to remove':'▶ Mark as watched today')+'</button>';
+ if(tp.w)h+='<label>Watched on</label><input id="tp_w" type="date" max="'+t+'" value="'+tp.w+'">';
+ if(tp.s>=1||tp.w)h+='<div style="margin-top:12px"><button class="pri full" data-a="tpDates">Save dates</button></div>';
+ return h+'</div>'}
+function moveCover(c,i,nd){var t=TP(c,i);if(!t.d||t.d===nd)return;var x=t.x==null?8:t.x,od=t.d;var ro=S.days[od];if(ro)ro.tp=Math.max(0,(ro.tp||0)-1);subDayXP(od,x);var rn=D(nd);rn.tp=(rn.tp||0)+1;rn.xp=(rn.xp||0)+x;t.d=nd;t.x=x;recalcXP();edMark(t)}
+function moveWatch(c,i,nd){var t=TP(c,i),k=c+':'+i,od=t.w;if(!od||od===nd)return;var ro=S.days[od],e=null;if(ro&&ro.wv){e=ro.wv.filter(function(x){return x.k===k})[0];ro.wv=ro.wv.filter(function(x){return x.k!==k})}var x=e&&e.x!=null?e.x:3;subDayXP(od,x);var rn=D(nd);(rn.wv=rn.wv||[]).push({k:k,t:e?e.t:CH[c].c.n+' — '+tname(c,i),x:x});rn.xp=(rn.xp||0)+x;t.w=nd;recalcXP();edMark(t)}
+/* mock sheet */
+function shMock(){var m=S.mocks.filter(function(x){return x.id===UI.sh.id})[0];if(!m){return '<button class="pri" data-a="shClose">Back</button>'}
+ var h='<div class="row"><b class="grow" style="font-size:1.2rem">Edit mock test</b><button data-a="shClose">Cancel</button></div><div style="margin:6px 0">'+edTag(m)+'</div><div class="card"><label>Test name</label><input id="mn2" class="full" maxlength="40" value="'+esc(m.name)+'"><label>Subject</label><select id="ms2" class="full">'+SUBJECTS.map(function(s){return '<option value="'+s.id+'"'+(m.s===s.id?' selected':'')+'>'+s.emoji+' '+esc(s.name.split(' (')[0])+'</option>'}).join('')+'<option value="mix"'+(m.s==='mix'?' selected':'')+'>Mixed</option></select><div class="row"><div><label>Marks</label><input id="mm2" type="number" min="0" step="0.5" value="'+m.m+'" style="width:110px"></div><div><label>Total</label><input id="mt2" type="number" min="1" value="'+m.t+'" style="width:110px"></div></div><label>Date</label><input id="md2" type="date" max="'+today()+'" value="'+m.d+'"><div class="row" style="margin-top:14px"><button class="pri grow" data-a="mockSave">Save changes</button><button data-a="mockDel" style="color:var(--bad);border-color:var(--bad)">🗑 Delete</button></div></div>';return h}
+/* ---- render & events ---- */
+function applyTheme(){}
+function render(){var y=window.scrollY,h;applyTheme();
+ h={today:vToday,learn:vLearn,me:vMe}[UI.tab]();
+ document.getElementById('app').innerHTML=h;
+ document.getElementById('nav').innerHTML=[['today','🏠','Today'],['learn','📖','Learn'],['me','🌟','Me']].map(function(x){return '<button data-a="tab" data-v="'+x[0]+'" class="'+(UI.tab===x[0]?'on':'')+'"><span class="ic">'+x[1]+'</span>'+x[2]+'</button>'}).join('');
+ window.scrollTo(0,y)}
+function exportData(){var o=JSON.stringify({app:'mochi',exported:new Date().toISOString(),data:S},null,1);var b=new Blob([o],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='mochi-progress-'+today()+'.json';document.body.appendChild(a);a.click();setTimeout(function(){a.remove();URL.revokeObjectURL(a.href)},500);S.lastBackup=today();save();toast('Backup saved ✅ Keep the file somewhere safe');render()}
+function importData(txt){try{var o=JSON.parse(txt);var d=o.data||o;if(!d||typeof d!=='object'||!d.topics||!d.days)throw 0;confirmM('Replace ALL current progress with this backup?',function(){S=def();for(var k in d)S[k]=d[k];save();render();toast('Backup restored ✅')},'Restore')}catch(e){toast('That file does not look like a Mochi backup')}}
+var ACT={
+ tab:function(d){UI.tab=d.v;render();window.scrollTo(0,0)},
+ seg:function(d){UI.seg[d.g]=d.v;render()},
+ mode:function(d){S.mode[today()]=+d.v;save();render()},
+ pace:function(d){S.pace=+d.v;S.snap=null;save();render()},
+ session:function(){startSession(false)},mini:function(){startSession(true)},
+ doneTask:function(d){var k=todayTasks()[+d.i];var ev=completeTask(k);render();if(ev&&ev.comeback)toast('🎁 Comeback bonus +20 XP!');if(ev&&ev.milestone)modal('<div class="mochi">'+mochiSvg('cheer')+'<div class="bubble">'+esc(pickMsg('streak',ev.milestone))+'</div></div>',[{t:'Close'},{t:'Share my win 🎉',c:'pri',f:function(){doShare(winText(['hit a '+ev.milestone+'-day study streak!']))}}]);else toast('Nice! +XP ⭐')},
+ sesDone:function(){var k=SES.cur,ev=completeTask(k);if(ev)SES.ev=ev.milestone||ev.comeback||!SES.ev?ev:SES.ev;SES.learned.push(k);sesNext()},
+ sesSkip:function(){sesNext()},sesFin:function(){SES=null;ovClose()},
+ startMockQ:function(d){startQuiz({qs:pickQs({sub:d.sub,src:'sqp'},10).concat(pickQs({sub:d.sub,src:'own'},10)).slice(0,10),title:'Practice paper',done:function(){showTaskStep(SES.cur)}})},
+ logMockGo:function(){SES=null;ovClose();UI.tab='me';UI.seg.me='mock';render()},
+ qstop:function(){if(QZ&&QZ.res.length&&!QZ.fin)quizEnd();else{SES=null;ovClose()}},
+ qopt:function(d){qOpt(+d.k)},qshow:qShow,qself:function(d){qSelf(+d.c)},qnext:qNext,
+ qdone:function(){var cb=QZ&&QZ.cb;if(cb){QZ=null;cb()}else ovClose()},
+ winq:function(){var z=window._lastQ;doShare(winText(['finished a quiz — '+z.s+'/'+z.t+' in '+z.n+'!']))},
+ winS:function(){var b=todayQuizBits();doShare(winText(["finished today's session ✅"].concat(b)))},
+ osub:function(d){UI.openSub=UI.openSub===d.id?null:d.id;UI.openCh=null;render()},
+ och:function(d){UI.openCh=UI.openCh===d.id?null:d.id;render()},
+ topic:function(d){var tp=TP(d.c,+d.i);if(tp.s>=1){confirmM('Mark <b>'+esc(tname(d.c,+d.i))+'</b> as not started? Its covered date and XP will be removed. (Use ✏️ to change it to another status instead.)',function(){setCovered(d.c,+d.i,false);recalcAll();save();refresh()},'Yes, remove')}else{setCovered(d.c,+d.i,true);save();render()}},
+ watch:function(d){var tp=TP(d.c,+d.i);if(tp.w){confirmM('Remove the “watched video” tick for <b>'+esc(tname(d.c,+d.i))+'</b>?',function(){unwatch(d.c,+d.i);recalcAll();save();refresh()},'Remove')}else{toggleWatch(d.c,+d.i);save();render()}},
+ logAll:function(){UI.logAll=!UI.logAll;render()},
+ shClose:closeSh,shCancel:function(){UI.sh.edit='';renderSh()},
+ shSt:function(d){var day=UI.sh.d,r=D(day);if(d.v==='auto'){delete r.ov;delete r.rest}else r.ov=d.v;committed(day);toast('Day marked '+(d.v==='auto'?'Auto':d.v))},
+ shEd:function(d){UI.sh.edit=d.v;renderSh()},shSave:function(d){shSave(d.v)},shDel:function(d){shDelAsk(d.v)},
+ shVid:function(d){var e=S.days[UI.sh.d].wv[+d.v],p=e.k.split(':');openSh({t:'topic',c:p[0],i:+p[1],back:UI.sh})},
+ tpEdit:function(d){openSh({t:'topic',c:d.c,i:+d.i})},
+ tpSet:function(d){setTopicStatus(UI.sh.c,UI.sh.i,d.v);committed();toast('Saved ✏️')},
+ tpWatch:function(){var tp=TP(UI.sh.c,UI.sh.i);if(tp.w)unwatch(UI.sh.c,UI.sh.i);else toggleWatch(UI.sh.c,UI.sh.i);edMark(tp);committed()},
+ tpDates:function(){var c=UI.sh.c,i=UI.sh.i,tp=TP(c,i),t=today(),a=document.getElementById('tp_d'),b=document.getElementById('tp_w');
+  var okd=function(x){return /^\d{4}-\d{2}-\d{2}$/.test(x)&&x<=t&&x>='2020-01-01'};
+  if(a&&!okd(a.value)||b&&!okd(b.value)){toast('Please pick a valid date (not in the future)');return}
+  if(a&&tp.s>=1)moveCover(c,i,a.value);if(b&&tp.w)moveWatch(c,i,b.value);committed();toast('Dates saved ✏️')},
+ mockEdit:function(d){openSh({t:'mock',id:d.id})},
+ mockSave:function(){var m=S.mocks.filter(function(x){return x.id===UI.sh.id})[0],g=function(id){return document.getElementById(id).value};if(!m)return;
+  var n=g('mn2').trim().slice(0,40),mk=parseFloat(g('mm2')),t=parseFloat(g('mt2')),d=g('md2');
+  if(!n||isNaN(mk)||isNaN(t)||t<=0||mk<0||mk>t||!d){toast('Please fill name, date, marks and total (marks ≤ total)');return}
+  m.name=n;m.s=g('ms2');m.m=mk;m.t=t;m.d=d;edMark(m);S.mocks.sort(function(a,b){return a.d<b.d?-1:a.d>b.d?1:0});committed();closeSh();toast('Mock updated ✏️')},
+ mockDel:function(){ACT.delMock({id:UI.sh.id})},
+ delMock:function(d){var m=S.mocks.filter(function(x){return x.id===d.id})[0];if(!m)return;confirmM('Delete the mock <b>'+esc(m.name)+'</b> ('+m.m+'/'+m.t+', '+fmt(m.d,2)+')? Your scores chart, share summary and XP will update.',function(){S.mocks=S.mocks.filter(function(x){return x.id!==d.id});subDayXP(m.xd||m.d,10);recalcAll();save();if(UI.sh&&UI.sh.t==='mock')closeSh();else refresh()},'Delete')},
+ flag:function(d){var tp=TP(d.c,+d.i);tp.f=!tp.f;save();render()},
+ strong:function(d){var tp=TP(d.c,+d.i);tp.s=2;tp.f=false;save();render()},
+ ctick:function(d){var cs=CS(d.c);cs[d.k]=cs[d.k]?0:1;if(cs[d.k])addXP(5);save();render()},
+ chq:function(d){startQuiz({qs:pickQs({ch:d.c},5),title:CH[d.c].c.n})},
+ srsq:function(){startQuiz({qs:shuffle(dueQs()).slice(0,8),title:'Revision queue'})},
+ qflag:function(){UI.qf.flag=!UI.qf.flag;render()},
+ qgo:function(){startQuiz({qs:pickQs(UI.qf,10),title:'Quiz'})},
+ pw:function(d){UI.pw+=+d.v;render()},
+ cal:function(d){var cm=UI.cal||today().slice(0,7),y=+cm.slice(0,4),m=+cm.slice(5)-1+(+d.v);var dt=new Date(y,m,1);UI.cal=dt.getFullYear()+'-'+pad(dt.getMonth()+1);render()},
+ calday:function(d){openSh({t:'day',d:d.d})},
+ dayedit:function(d){if(d.d>today()||d.d<S.start){toast('That day is outside your plan');return}openSh({t:'day',d:d.d})},
+ shareAll:function(){doShare(summaryText())},
+ gshow:function(){UI.showGoal=true;render()},gcancel:function(){UI.showGoal=false;render()},
+ gadd:function(){var w=wkStart(today()),g={id:'g'+Date.now(),type:UI.gtype};if(UI.gtype==='custom'){g.txt=(document.getElementById('gtxt').value||'').trim().slice(0,60);if(!g.txt){toast('Write your goal first');return}}else{g.n=Math.max(1,Math.min(99,+document.getElementById('gn').value||1))}
+  (S.goals[w]=S.goals[w]||[]).push(g);UI.showGoal=false;save();render()},
+ gdel:function(d){var w=wkStart(today());S.goals[w]=(S.goals[w]||[]).filter(function(g){return g.id!==d.id});save();render()},
+ gdone:function(d){var w=wkStart(today());(S.goals[w]||[]).forEach(function(g){if(g.id===d.id)g.dn=1});checkGoals();render()},
+ addMock:function(){var n=document.getElementById('mn').value.trim().slice(0,40),m=parseFloat(document.getElementById('mm').value),t=parseFloat(document.getElementById('mt').value),d=document.getElementById('md').value||today();
+  if(!n||isNaN(m)||isNaN(t)||t<=0||m<0||m>t){toast('Please fill name, marks and total (marks ≤ total)');return}S.mocks.push({id:'m'+Date.now(),xd:today(),name:n,s:document.getElementById('ms').value,m:m,t:t,d:d});S.mocks.sort(function(a,b){return a.d<b.d?-1:1});addXP(10);save();render();modal('<div class="mochi">'+mochiSvg('cheer')+'<div class="bubble">'+esc(pct(m,t)>=70?pickMsg('quiz_good'):pickMsg('quiz_ok'))+'</div></div>',[{t:'Close'},{t:'Share my win 🎉',c:'pri',f:function(){doShare(winText(['scored '+m+'/'+t+' in '+n+'.']))}}])},
+ 
+ export:exportData,import:function(){document.getElementById('impf').click()},
+ reset:function(){confirmM('This erases <b>all</b> progress, quiz scores, streaks and mocks on this device. Export a backup first if unsure. Really reset?',function(){localStorage.removeItem(KEY);S=def();save();UI.openSub=null;UI.openCh=null;render();toast('Everything reset')},'Yes, reset')}
+};
+document.addEventListener('click',function(e){var el=e.target.closest('[data-a]');if(!el||el.disabled)return;var h=ACT[el.dataset.a];if(h)h(el.dataset,el,e)});
+document.addEventListener('change',function(e){var el=e.target,c=el.dataset&&el.dataset.c;
+ if(el.id==='impf'&&el.files[0]){var f=new FileReader();f.onload=function(){importData(f.result)};f.readAsText(el.files[0]);el.value='';return}
+ if(!c)return;var v=el.value;
+ if(c==='qsub'){UI.qf.sub=v;UI.qf.ch=''}else if(c==='qch')UI.qf.ch=v;else if(c==='qsrc')UI.qf.src=v;else if(c==='qty')UI.qf.ty=v;else if(c==='qmk')UI.qf.mk=v;
+ else if(c==='gtype'){UI.gtype=v}
+ else if(c==='exam'){if(v&&v>S.start){S.exam=v;S.snap=null;save()}else toast('Exam date must be after the start date')}
+ else if(c==='start'){if(v&&v<S.exam){S.start=v;S.snap=null;save()}else toast('Start must be before the exam date')}
+ render()});
+window.addEventListener('error',function(e){window.__errs=(window.__errs||[]);window.__errs.push(String(e.message))});
+load();recalcAll();save();render();
+</script></body></html>
