@@ -126,6 +126,7 @@ details summary{min-height:44px;display:flex;align-items:center;cursor:pointer;f
 /* ---- v2 ---- */
 .cd{background:linear-gradient(135deg,#2a1020,#1a1217);border:2px solid var(--pri);border-radius:20px;padding:14px;margin:12px 0;box-shadow:var(--sh)}
 .cdn{font-size:2.4rem;font-weight:800;color:var(--pri);line-height:1.1}.cdn span{font-size:1rem;color:var(--ink);font-weight:600;margin-left:6px}
+.cdrow{display:flex;gap:10px}.cdt{flex:1 1 0;min-width:0;border:2px solid var(--line);border-radius:16px;padding:10px 8px;text-align:center;background:rgba(0,0,0,.18)}.cdt.hot{border-color:var(--pri)}.cdl{font-weight:800;font-size:.85rem}.cdn2{font-size:2.2rem;font-weight:800;color:var(--pri);line-height:1.15}.cdu{font-size:.85rem;font-weight:600}.cdd{font-size:.72rem;color:var(--mute);margin-top:2px}.drow{display:flex;gap:10px}.drow>div{flex:1 1 0;min-width:0}.drow input{width:100%;min-height:46px}
 .bk{border:2px solid var(--pri);background:#2a1020;border-radius:18px;padding:14px;margin:12px 0}
 .warn{color:var(--warn)}
 .tagp{margin:10px 0 4px;padding:10px;border-radius:14px;background:var(--soft);border:1px dashed var(--pri2)}
@@ -693,7 +694,7 @@ function tname(c,i){return CH[c].c.t[i].replace(/^~/,'')}
 function tschool(c,i){return /^~/.test(CH[c].c.t[i])}
 function def(){return {v:1,start:'2026-10-25',exam:'2027-02-15',pre:'2026-11-23',preSel:{},preMod:{},hindi:'A',pause:null,pace:2,theme:'auto',topics:{},ch:{},days:{},mode:{},srs:{},qs:{},xp:0,goals:{},mocks:[],snaps:{},lastBackup:'',snap:null,shown:{},created:today(),mistakes:[],flagQ:{},sync:true,hw:[],v2:0}}
 function load(){try{var r=localStorage.getItem(KEY);S=def();if(r){var o=JSON.parse(r);for(var k in o)S[k]=o[k];}}catch(e){S=def();}fixS();applyHindi()}
-function fixS(){if(!S.preSel)S.preSel={};if(!S.preMod)S.preMod={};if(!S.hindi)S.hindi='A';if(S.pre===undefined)S.pre='2026-11-23';if(!Array.isArray(S.mistakes))S.mistakes=[];if(!S.flagQ||typeof S.flagQ!=='object')S.flagQ={};if(S.sync===undefined)S.sync=true;if(!Array.isArray(S.hw))S.hw=[];if(!S.mocks)S.mocks=[];if(!S.v2){S.snap=null;S.v2=1}}
+function fixS(){if(!S.preSel)S.preSel={};if(!S.preMod)S.preMod={};if(!S.hindi)S.hindi='A';if(S.pre===undefined||(!S.pre&&!S.preOff))S.pre='2026-11-23';if(!Array.isArray(S.mistakes))S.mistakes=[];if(!S.flagQ||typeof S.flagQ!=='object')S.flagQ={};if(S.sync===undefined)S.sync=true;if(!Array.isArray(S.hw))S.hw=[];if(!S.mocks)S.mocks=[];if(!S.v2){S.snap=null;S.v2=1}}
 var saveFail=false;
 function save(){recalcXP();snapshotWeek();try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){if(!saveFail){saveFail=true;toast('Could not save here (browser storage blocked). Use Export to keep a copy!');}}}
 function D(d){return S.days[d]||(S.days[d]={d:[]})}
@@ -1016,7 +1017,7 @@ function vToday(){var t=today(),st=stats(),p=allProg(),dte=daysToExam(),h='',m=m
  var tasks=todayTasks(),dn=tasks.filter(isDone).length,sun=pd(t).getDay()===0;
  var greet=st.cur>=2?'Day '+st.cur+' of your streak 🔥':(!stats().studied?pickMsg('welcome'):(st.cur===0&&st.lastBreak?pickMsg('comeback'):pickMsg('session')));
  h+='<div class="mute small" style="font-weight:800;letter-spacing:.5px">🍡 MOCHI</div><h1>Hi Vedika 👋</h1>'+mochiBox(dn&&dn===tasks.length?'cheer':'',dn===tasks.length&&tasks.length?pickMsg('session'):(sun?pickMsg('rest'):greet));
- h+='<div class="stats"><div class="stat">🔥 Streak<b>'+st.cur+' day'+(st.cur===1?'':'s')+'</b><span class="mute small">best '+st.best+' · 🧊 weekly freeze</span></div><div class="stat">📚 Syllabus covered<b>'+p.pct+'%</b><span class="mute small">'+p.cov+'/'+p.n+' topics</span></div>'+preStat()+'<div class="stat">⏳ Days to boards<b>'+dte+'</b><span class="mute small">tentative '+fmt(S.exam,2)+'</span></div><div class="stat">⭐ Level '+level()+'<b>'+S.xp+' XP</b><span class="mute small">effort + correct answers</span></div></div>';
+ h+='<div class="stats"><div class="stat">🔥 Streak<b>'+st.cur+' day'+(st.cur===1?'':'s')+'</b><span class="mute small">best '+st.best+' · 🧊 weekly freeze</span></div><div class="stat">📚 Syllabus covered<b>'+p.pct+'%</b><span class="mute small">'+p.cov+'/'+p.n+' topics</span></div>'+preStat()+'<div class="stat">⭐ Level '+level()+'<b>'+S.xp+' XP</b><span class="mute small">effort + correct answers</span></div></div>';
  h+=resumeCard();
  if(needBackup())h+='<div class="warn">📦 <b>Back up your progress.</b> Tap Export so nothing gets lost if the phone is cleared.<div style="margin-top:8px"><button data-a="export" class="pri">Export backup</button></div></div>';
  h+='<div class="card"><div class="row"><b class="grow">Today I can study for</b><div class="seg" style="margin:0;min-width:150px"><button data-a="mode" data-v="1" class="'+(m===1?'on':'')+'">1 hour</button><button data-a="mode" data-v="2" class="'+(m===2?'on':'')+'">2 hours</button></div></div>';
@@ -1079,7 +1080,7 @@ function vQuiz(){var f=UI.qf,h='',due=dueQs().length;
  return h}
 function vPlan(){var sim=simulate(S.pace),h='<div class="card"><h3>📅 Timetable</h3>';
  if(sim.tooShort)return h+'The exam date is on or before the start. Fix it in Me → Settings.</div>';
- h=preSummary(sim)+h;
+ h='<div class="cd" style="padding:12px">'+dualCd()+'</div>'+preSummary(sim)+h;
  var le=sim.learnEnd;h+='<div>From <b>'+fmt(sim.from,2)+'</b> to the exam on <b>'+fmt(S.exam,2)+'</b> (tentative).</div>';
  var tot=diff(sim.from,S.exam),fs0=diff(sim.from,sim.finalStart),a=le?Math.max(0,Math.min(fs0,diff(sim.from,le))):fs0,b=Math.max(0,diff(sim.from,sim.finalStart)-a),c=tot-a-b;
  h+='<div style="display:flex;height:22px;border-radius:10px;overflow:hidden;margin:10px 0;font-size:.7rem;color:#1c0612;font-weight:700"><div style="width:'+pct(a,tot)+'%;background:#ff4fa3;text-align:center">Learn</div><div style="width:'+pct(b,tot)+'%;background:#ff9acb;text-align:center">Revise</div><div style="width:'+pct(c,tot)+'%;background:#c58bff;text-align:center">Mocks</div></div>';
@@ -1116,7 +1117,7 @@ function vProg(){var st=stats(),p=allProg(),h='';
 function vMock(){var h='<div class="card"><h3>Log a mock test</h3><label>Test name</label><input id="mn" class="full" maxlength="40" placeholder="e.g. Maths sample paper 1"><label>Subject</label><select id="ms" class="full">'+SUBJECTS.map(function(s){return '<option value="'+s.id+'">'+s.emoji+' '+esc(s.name.split(' (')[0])+'</option>'}).join('')+'<option value="mix">Mixed</option></select><div class="row"><div><label>Marks</label><input id="mm" type="number" min="0" step="0.5" style="width:110px"></div><div><label>Total</label><input id="mt" type="number" min="1" value="80" style="width:110px"></div></div><label>Date</label><input id="md" type="date" value="'+today()+'"><div style="margin-top:12px"><button class="pri full" data-a="addMock">Save mock</button></div></div>';
  if(S.mocks.length){h+='<div class="card"><h3>Scores (%)</h3><div class="chart">'+S.mocks.map(function(m){var p=pct(m.m,m.t),col=m.s==='mix'?'#888':SUB[m.s].color;return '<div class="c"><span>'+p+'</span><i style="height:'+Math.max(3,p*1.1)+'px;background:'+col+'"></i></div>'}).join('')+'</div><div class="mute small">Oldest → newest</div><table class="t" style="margin-top:8px">'+S.mocks.slice().reverse().map(function(m){return '<tr><td>'+esc(m.name)+'<br><span class="mute small">'+(m.s==='mix'?'Mixed':SUB[m.s].name.split(' (')[0])+' · '+fmt(m.d,2)+'</span>'+edTag(m)+'</td><td><b>'+m.m+'/'+m.t+'</b></td><td style="white-space:nowrap"><button class="pen" style="width:46px" data-a="mockEdit" data-id="'+m.id+'" aria-label="Edit">✏️</button> <button class="pen" style="width:46px" data-a="delMock" data-id="'+m.id+'" aria-label="Delete">🗑</button></td></tr>'}).join('')+'</table></div>'}
  else h+='<div class="card mute">No mocks logged yet.</div>';return h}
-function vSet(){var h='<div class="card"><h3>Dates</h3><label>Exam date (first board paper)</label><input type="date" id="sx" value="'+S.exam+'" data-c="exam"><div class="warn small" style="margin-top:8px">⚠️ <b>Tentative.</b> CBSE had not announced the Class 10 board-exam date sheet when this app was made (25 Oct 2026). 15 Feb 2027 is an assumption based on the usual mid-February start. Update it here once the official date sheet is out — the plan will re-shape itself.</div><label>Pre-board exams start</label><input type="date" id="sp" value="'+(S.pre||'')+'" data-c="pre"><div class="warn small" style="margin-top:8px">⚠️ <b>Tentative.</b> The school has not shared the pre-board date sheet or syllabus yet. 23 Nov 2026 is the expected start. Change it here when the school confirms (clear it to switch the pre-board phase off). Pick the pre-board chapters in Learn → Pre-boards.</div><label>Plan start date</label><input type="date" id="ss" value="'+S.start+'" data-c="start"></div>';
+function vSet(){var h='<div class="card"><h3>Dates</h3>'+dualCd()+'<div class="drow"><div><label>🎯 Pre-boards start</label><input type="date" id="sp" value="'+(S.pre||'')+'" data-c="pre"></div><div><label>🎓 Boards (first paper)</label><input type="date" id="sx" value="'+S.exam+'" data-c="exam"></div></div><div class="warn small" style="margin-top:8px">⚠️ <b>Tentative.</b> The school has not shared the pre-board date sheet or syllabus yet; 23 Nov 2026 is the expected start. CBSE had not announced the Class 10 board date sheet when this app was made (25 Oct 2026); 15 Feb 2027 is an assumption. Change either date here and the plan re-shapes itself. Clearing the pre-board date switches the pre-board phase off. Pick the pre-board chapters in Learn → Pre-boards.</div><label>Plan start date</label><input type="date" id="ss" value="'+S.start+'" data-c="start"></div>';
  h+='<div class="card"><h3>Usual study time</h3><div class="seg"><button data-a="pace" data-v="1" class="'+(S.pace===1?'on':'')+'">1 hour</button><button data-a="pace" data-v="2" class="'+(S.pace===2?'on':'')+'">2 hours</button></div><div class="mute small">Used for the long-range timetable. You can still switch today between 1h and 2h on the Today screen.</div></div>';
   h+='<div class="card"><h3>🪔 Hindi course</h3><div class="seg"><button data-a="hindi" data-v="A" class="'+(S.hindi!=='B'?'on':'')+'">Course A</button><button data-a="hindi" data-v="B" class="'+(S.hindi==='B'?'on':'')+'">Course B</button></div><div class="mute small">Course A (code 002): Kshitij, Kritika. Course B (code 085): Sparsh, Sanchayan. Default is A — switch if your school teaches B.</div></div>';
   h+='<div class="card"><h3>📦 Backup</h3><div class="mute small">All your progress lives only on this device/browser. Last backup: '+(S.lastBackup?fmt(S.lastBackup,2):'never')+'</div><div style="margin:8px 0"><button class="pri full" data-a="export">Export backup (JSON)</button></div><button class="full" data-a="import">Import backup</button><input type="file" id="impf" accept="application/json,.json" hidden></div>';
@@ -1272,7 +1273,7 @@ document.addEventListener('change',function(e){var el=e.target,c=el.dataset&&el.
  if(c==='qsub'){UI.qf.sub=v;UI.qf.ch=''}else if(c==='qch')UI.qf.ch=v;else if(c==='qsrc')UI.qf.src=v;else if(c==='qty')UI.qf.ty=v;else if(c==='qmk')UI.qf.mk=v;
  else if(c==='gtype'){UI.gtype=v}
  else if(c==='exam'){if(v&&v>S.start){S.exam=v;S.snap=null;save()}else toast('Exam date must be after the start date')}
- else if(c==='pre'){if(!v){S.pre='';S.snap=null;save()}else if(v>S.start&&v<S.exam){S.pre=v;S.snap=null;save()}else toast('Pre-board date must be between the start and the exam date')}
+ else if(c==='pre'){if(!v){S.pre='';S.preOff=true;S.snap=null;save()}else if(v>S.start&&v<S.exam){S.pre=v;S.preOff=false;S.snap=null;save()}else toast('Pre-board date must be between the start and the exam date')}
  else if(c==='start'){if(v&&v<S.exam){S.start=v;S.snap=null;save()}else toast('Start must be before the exam date')}
  render()});
 window.addEventListener('error',function(e){window.__errs=(window.__errs||[]);window.__errs.push(String(e.message))});
@@ -1436,10 +1437,12 @@ function showTaskStep(k){var s=SUB[k.sub];var h='<div class="row"><b class="grow
 var completeTask0=completeTask;completeTask=function(k){var ev=completeTask0(k);if(ev&&k.kind==='hw'){S.hw.push({d:today(),sub:k.sub});save()}return ev};
 /* ---- Today ---- */
 function weekLabel(d){if(!S.pre||!(S.pre>d&&S.pre<S.exam)||S.sync===false)return '';var k=diff(d,S.pre);return k>21?'w1':k>14?'w2':k>7?'w3':'w4'}
-function countdownCard(){var t=today(),n=daysToExam(),w=weekLabel(t),h='<div class="cd">';
- if(S.pre&&S.pre>t&&S.pre<S.exam){var k=diff(t,S.pre);h+='<div class="mute small">🎯 PRE-BOARDS · tentative '+fmt(S.pre,2)+'</div><div class="cdn">'+k+'<span> day'+(k===1?'':'s')+' to go</span></div>';if(w)h+='<div class="chip">'+esc(PHN[w])+'</div>';
-  var p=preProgress();h+='<div class="mute small" style="margin-top:6px">Pre-board syllabus covered: '+pct(p.cov,p.n)+'%</div>'+bar(pct(p.cov,p.n),0)}
- else h+='<div class="mute small">🎓 BOARDS · tentative '+fmt(S.exam,2)+'</div><div class="cdn">'+n+'<span> days to go</span></div>';
+function dualCd(){var t=today(),ok=S.pre&&S.pre<S.exam,n=ok?diff(t,S.pre):0,b=diff(t,S.exam);
+ var L=function(ic,nm,num,unit,dt,hot){return '<div class="cdt'+(hot?' hot':'')+'"><div class="cdl">'+ic+' '+nm+'</div><div class="cdn2">'+num+'</div><div class="cdu">'+unit+'</div><div class="cdd">'+dt+'</div></div>'};
+ var pt=ok?(n>0?L('🎯','Pre-boards',n,'day'+(n===1?'':'s')+' left',fmt(S.pre,2)+' (tentative)',1):(n===0?L('🎯','Pre-boards','Today','all the best!',fmt(S.pre,2),1):L('🎯','Pre-boards','Started','since '+fmt(S.pre,2),'',1))):L('🎯','Pre-boards','—','not set','Me → Settings → Dates',1);
+ return '<div class="cdrow">'+pt+L('🎓','Boards',Math.max(0,b),'day'+(b===1?'':'s')+' left',fmt(S.exam,2)+' (tentative)',0)+'</div>'}
+function countdownCard(){var t=today(),w=weekLabel(t),h='<div class="cd" style="padding:12px">'+dualCd();
+ if(S.pre&&S.pre>t&&S.pre<S.exam){if(w)h+='<div class="chip">'+esc(PHN[w])+'</div>';var p=preProgress();h+='<div class="mute small" style="margin-top:6px">Pre-board syllabus covered: '+pct(p.cov,p.n)+'%</div>'+bar(pct(p.cov,p.n),0)}
  return h+'</div>'}
 function vToday(){var t=today(),st=stats(),p=allProg(),dte=daysToExam(),h='',m=modeToday();
  if(t<S.start){return '<h1>Hi Vedika 👋</h1>'+mochiBox('',pickMsg('welcome'))+'<div class="card">Your plan starts on <b>'+fmt(S.start,2)+'</b>.</div>'}
@@ -1462,7 +1465,7 @@ function vToday(){var t=today(),st=stats(),p=allProg(),dte=daysToExam(),h='',m=m
    if(next>=0)h+='<button class="full" data-a="sessionAll">Do all of today’s tasks in one longer session</button>'}
   h+='<div class="card"><div class="row"><b class="grow">I can study for</b><div class="seg" style="margin:0;min-width:150px"><button data-a="mode" data-v="1" class="'+(m===1?'on':'')+'">1 hour</button><button data-a="mode" data-v="2" class="'+(m===2?'on':'')+'">2 hours</button></div></div><div class="mute small" style="margin-top:6px">'+(sun?'Sunday is your lighter day: light revision, then rest. ':'Sunday is always your lighter day. ')+'Each session is 25 minutes; the 2-minute minimum counts as a study day.</div></div>';
   h+='<button class="full" data-a="sick" style="margin:6px 0">🤒 Not feeling well today</button>'}
- h+='<div class="stats"><div class="stat">🔥 Streak<b>'+st.cur+' day'+(st.cur===1?'':'s')+'</b><span class="mute small">best '+st.best+' · 🧊 weekly freeze</span></div><div class="stat">📚 Syllabus covered<b>'+p.pct+'%</b><span class="mute small">'+p.cov+'/'+p.n+' topics</span></div><div class="stat">⏳ Days to boards<b>'+dte+'</b><span class="mute small">tentative '+fmt(S.exam,2)+'</span></div><div class="stat">⭐ Level '+level()+'<b>'+S.xp+' XP</b><span class="mute small">effort + correct answers</span></div></div>';
+ h+='<div class="stats"><div class="stat">🔥 Streak<b>'+st.cur+' day'+(st.cur===1?'':'s')+'</b><span class="mute small">best '+st.best+' · 🧊 weekly freeze</span></div><div class="stat">📚 Syllabus covered<b>'+p.pct+'%</b><span class="mute small">'+p.cov+'/'+p.n+' topics</span></div><div class="stat">⭐ Level '+level()+'<b>'+S.xp+' XP</b><span class="mute small">effort + correct answers</span></div></div>';
  h+=watchCard();h+=goalsCard();
  h+='<h2>This week</h2>'+weekStrip();
  var ph=S.snap&&S.snap.ph;h+='<div class="mute small center" style="margin-top:8px">Phase now: <b>'+(PHN[ph]||'Learn')+'</b> · see Learn → Plan for the full timetable</div>';
@@ -1671,7 +1674,7 @@ var vToday0=vToday;vToday=function(){var h=vToday0(),c=dpTodayCard();if(!c)retur
  return i<0?h+c:h.slice(0,i)+c+h.slice(i)};
 function dpRange(){return [S.start,(S.pre&&S.pre<S.exam)?S.pre:DP_END]}
 function vDaily(){var t=today(),R=dpRange(),a=R[0],e=R[1],d=UI.dd||t;if(d<a)d=a;if(d>e)d=e;UI.dd=d;
- var sims={1:simulate(1),2:simulate(2)},st=stats(),h='';
+ var sims={1:simulate(1),2:simulate(2)},st=stats(),h='<div class="cd" style="padding:12px">'+dualCd()+'</div>';
  h+='<div class="card"><h3>📋 Daily plan</h3><div class="small">Every day has a 1-hour plan, a 2-hour plan, revision and a 5-question quiz. Tap Done as you finish things — your streak, missed days and progress update by themselves.</div></div>';
  h+='<div class="row"><button data-a="dpStep" data-v="-1" aria-label="Previous day"'+(d<=a?' disabled':'')+'>◀</button><b class="grow center" style="font-size:1.15rem">'+fmt(d,1)+(d===t?' · today':'')+'</b><button data-a="dpStep" data-v="1" aria-label="Next day"'+(d>=e?' disabled':'')+'>▶</button></div>';
  if(d!==t&&t>=a&&t<=e)h+='<button class="full" style="margin:8px 0" data-a="dpGo" data-d="'+t+'">Jump to today</button>';
