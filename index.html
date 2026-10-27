@@ -109,6 +109,7 @@ details summary{min-height:44px;display:flex;align-items:center;cursor:pointer;f
 .pen{height:48px;padding:0;font-size:1.25rem;border-radius:14px}
 .sheet{position:fixed;inset:0;background:var(--bg);z-index:70;overflow:auto;padding:12px;-webkit-overflow-scrolling:touch}.sheet .in{max-width:720px;margin:0 auto;padding-bottom:60px}
 .erow{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}.erow .grow{min-width:0;overflow-wrap:anywhere}
+.stb{display:inline-block;padding:3px 10px;border-radius:999px;font-size:.78rem;font-weight:800;margin:2px 4px 2px 0;color:#1a0b12}.stb.none{background:#9a9aa6}.stb.work{background:linear-gradient(90deg,#ff8a5c,#ff6fb1)}.stb.strong{background:#6ee7b0}.stb.ok{background:#ffd1e6}
 .chip.ed{background:#3a1430;color:#ffc2e0;border-color:var(--pri)}
 .dayrow{width:100%;text-align:left;display:block;min-height:56px;border-radius:16px;margin:8px 0;padding:10px 12px;background:var(--card)}
 .edf{background:var(--chip);border-radius:14px;padding:10px;margin:8px 0}
@@ -694,7 +695,7 @@ function tname(c,i){return CH[c].c.t[i].replace(/^~/,'')}
 function tschool(c,i){return /^~/.test(CH[c].c.t[i])}
 function def(){return {v:1,start:'2026-10-25',exam:'2027-02-15',pre:'2026-11-23',preSel:{},preMod:{},hindi:'A',pause:null,pace:2,theme:'auto',topics:{},ch:{},days:{},mode:{},srs:{},qs:{},xp:0,goals:{},mocks:[],snaps:{},lastBackup:'',snap:null,shown:{},created:today(),mistakes:[],flagQ:{},sync:true,hw:[],v2:0}}
 function load(){try{var r=localStorage.getItem(KEY);S=def();if(r){var o=JSON.parse(r);for(var k in o)S[k]=o[k];}}catch(e){S=def();}fixS();applyHindi()}
-function fixS(){if(!S.preSel)S.preSel={};if(!S.preMod)S.preMod={};if(!S.hindi)S.hindi='A';if(S.pre===undefined||(!S.pre&&!S.preOff))S.pre='2026-11-23';if(!Array.isArray(S.mistakes))S.mistakes=[];if(!S.flagQ||typeof S.flagQ!=='object')S.flagQ={};if(S.sync===undefined)S.sync=true;if(!Array.isArray(S.hw))S.hw=[];if(!S.mocks)S.mocks=[];if(!S.v2){S.snap=null;S.v2=1}}
+function fixS(){if(!S.preSel)S.preSel={};if(!S.preMod)S.preMod={};if(!S.hindi)S.hindi='A';if(S.pre===undefined||(!S.pre&&!S.preOff))S.pre='2026-11-23';if(!Array.isArray(S.mistakes))S.mistakes=[];if(!S.flagQ||typeof S.flagQ!=='object')S.flagQ={};if(S.sync===undefined)S.sync=true;if(!Array.isArray(S.hw))S.hw=[];if(!S.mocks)S.mocks=[];if(!S.v2){S.snap=null;S.v2=1}if(!S.pf1){S.pf1=1;S.preSel={};S.preMod={};S.sync=true;S.snap=null}}
 var saveFail=false;
 function save(){recalcXP();snapshotWeek();try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){if(!saveFail){saveFail=true;toast('Could not save here (browser storage blocked). Use Export to keep a copy!');}}}
 function D(d){return S.days[d]||(S.days[d]={d:[]})}
@@ -738,14 +739,14 @@ function chunksFor(sub){var out=[];sub.chapters.forEach(function(c){if(c.bonus)r
  if(cur.length)out.push({ch:c.id,sub:sub.id,ts:cur,m:Math.max(10,mins)});});return out}
 function learnTask(ch){var c=CH[ch.ch].c;var names=ch.ts.map(function(i){return tname(ch.ch,i)});
  return {k:'L:'+ch.ch+':'+ch.ts.join(','),kind:'learn',sub:ch.sub,ch:ch.ch,ts:ch.ts.slice(),m:ch.m,title:c.n+' — '+names.join(' + '),desc:'Learn: read the NCERT part, note 5 key points, try the NCERT questions.'}}
-function revTask(ch,kind,m){var c=CH[ch].c;return {k:'R:'+ch+':'+kind,kind:'rev',sub:CH[ch].s.id,ch:ch,r:kind,m:m||REVC,title:'Revise: '+c.n+(kind===1?' (first revisit)':' (second revisit)'),desc:'Skim your notes, redo 3 hard questions, then take the chapter quiz.'}}
+function revTask(ch,kind,m){var c=CH[ch].c;return {k:'R:'+ch+':'+kind+(kind===3?':'+today():''),kind:'rev',sub:CH[ch].s.id,ch:ch,r:kind,m:m||REVC,title:'Revise: '+c.n+(kind===3?' (needs work ⭐)':kind===1?' (first revisit)':' (second revisit)'),desc:'Skim your notes, redo 3 hard questions, then take the chapter quiz.'}}
 function weakTask(ch,t){return {k:'W:'+ch+':'+t,kind:'weak',sub:CH[ch].s.id,ch:ch,ts:[t],m:WEAKC,title:'Fix weak spot: '+tname(ch,t),desc:'Re-read this topic, write the key idea in your own words, then do its quiz questions.'}}
 function chapterFin(cid){var c=CH[cid].c,mx='';c.t.forEach(function(x,i){var t=S.topics[cid+':'+i];if(t&&t.d&&t.d>mx)mx=t.d;});return mx}
 function simulate(pace){var preOn=!!(S.pre&&S.sync!==false&&S.pre>(S.start>today()?S.start:today())&&S.pre<S.exam),preD=S.pre,inPre=false,leftPre=0,cyclePre=null,cpP=0,pqn=0;
  var t=today(),from=S.start>t?S.start:t,exam=S.exam,res={days:{},from:from,exam:exam,finalStart:null,learnEnd:null,warn:'',learnLeft:0,tooShort:false};
  if(exam<=from){res.tooShort=true;return res;}
  var span=diff(from,exam),fl=Math.min(25,Math.floor(span*0.3)),finalStart=addD(exam,-fl);res.finalStart=finalStart;
- var Q=SUBJECTS.map(function(s){var q=chunksFor(s);q.forEach(function(c){c.pre=isPre(c.ch)});if(preOn)q=q.filter(function(c){return c.pre}).concat(q.filter(function(c){return !c.pre}));var wn=0;s.chapters.forEach(function(c){c.t.forEach(function(x,i){if(tflag(c.id,i))wn++})});return {sub:s,q:q,pass:-wn*6+(HARD[s.id]||0)*0.2}});
+ var Q=SUBJECTS.map(function(s){var q=chunksFor(s);q.forEach(function(c){c.pre=isPre(c.ch);var fc=0;c.ts.forEach(function(i){if(tflag(c.ch,i))fc++});c.wk=(chStatus(c.ch)==='work'?100:0)+fc});q.sort(function(a,b){return b.wk-a.wk});if(preOn)q=q.filter(function(c){return c.pre}).concat(q.filter(function(c){return !c.pre}));var wn=0;s.chapters.forEach(function(c){c.t.forEach(function(x,i){if(tflag(c.id,i))wn++})});return {sub:s,q:q,pass:-wn*6+(HARD[s.id]||0)*0.2}});
  var sn=(S.snap&&S.snap.date===t)?S.snap:null,rem={};
  SUBJECTS.forEach(function(s){s.chapters.forEach(function(c){if(c.bonus)return;var n=0;c.t.forEach(function(x,i){if(tstat(c.id,i)<1)n++;});rem[c.id]=n;});});
  var touched={};
@@ -756,9 +757,10 @@ function simulate(pace){var preOn=!!(S.pre&&S.sync!==false&&S.pre>(S.start>today
  SUBJECTS.forEach(function(s){s.chapters.forEach(function(c){if(c.bonus)return;var cs=CS(c.id);
   if(rem[c.id]===0){var fin=chapterFin(c.id)||from;if(!cs.r1)revq.push({ch:c.id,r:1,due:addD(fin,7)});if(!cs.r2)revq.push({ch:c.id,r:2,due:addD(fin,21)});}
   else if(!remLeft[c.id]&&touched[c.id]){if(!cs.r1)revq.push({ch:c.id,r:1,due:addD(t,7)});if(!cs.r2)revq.push({ch:c.id,r:2,due:addD(t,21)});}});});
+ SUBJECTS.forEach(function(s){s.chapters.forEach(function(c){if(c.bonus||chStatus(c.id)!=='work')return;var cs=S.ch[c.id]||{};if(revq.some(function(x){return x.ch===c.id&&x.r===3}))return;var due=cs.nwr?addD(cs.nwr,3):addD(t,1);if(due<addD(t,1))due=addD(t,1);revq.unshift({ch:c.id,r:3,due:due})})});
  var weak=[];SUBJECTS.forEach(function(s){s.chapters.forEach(function(c){if(c.bonus)return;c.t.forEach(function(x,i){var tp=S.topics[c.id+':'+i];if(tp&&tp.f&&tp.s>=1&&!(tp.fx&&diff(tp.fx,t)<3))weak.push([c.id,i]);});});});
  var wp=0,cycle=null,cp=0,fcnt=0,left=0;
- Q.forEach(function(x){left+=x.q.length;x.q.forEach(function(c){if(c.pre)leftPre++})});res.preOn=preOn;res.leftPre0=leftPre;
+ Q.forEach(function(x){left+=x.q.length;x.q.forEach(function(c){if(c.pre)leftPre++})});res.preOn=preOn;res.leftPre0=leftPre;res.pace=pace;
  function pickQ(avoid){var b=null;Q.forEach(function(x){if(!x.q.length)return;if(inPre&&!x.q[0].pre)return;var p=x.pass+(x.sub.id===avoid?1e5:0);if(!b||p<b.p)b={x:x,p:p};});return b&&b.x}
  function budget(sun){return pace===1?(sun?25:45):(sun?45:90)}
  function chapterCycle(onlyPre){var arr=[];SUBJECTS.forEach(function(s){s.chapters.forEach(function(c){if(c.bonus)return;if(onlyPre&&!isPre(c.id))return;var f=chProg(c.id).f,cs=CS(c.id);arr.push({ch:c.id,w:s.w,pri:-f*10+(cs.r1?1:0)+(cs.r2?1:0)});});});
@@ -774,19 +776,19 @@ function simulate(pace){var preOn=!!(S.pre&&S.sync!==false&&S.pre>(S.start>today
   var B=budget(sun),used=0;
   if(dte<=1){res.days[d]={ph:'eve',tasks:[{k:'E:'+d,kind:'eve',sub:'maths',m:20,title:'Light skim of formulas & key points — then relax and sleep early',desc:'No new topics today. Pack your bag, keep calm, trust your preparation.'}]};continue;}
   var inFinal=d>=finalStart;
-  var kpre=inPre?diff(d,preD):0,wk=inPre?(kpre>21?1:kpre>14?2:kpre>7?3:4):0,paperDay=inPre&&!sun&&((wk===3&&(14-kpre)%2===0)||wk===4);
+  var kpre=inPre?diff(d,preD):0,wk=inPre?(kpre>21?1:kpre>14?2:kpre>7?3:4):0,lm=inPre&&leftPre>0&&(wk===2||wk===3||(wk===4&&kpre>=4)),paperDay=inPre&&!sun&&((wk===3&&(lm?(14-kpre)%3===2:(14-kpre)%2===0))||(wk===4&&(!lm||kpre%2===0)));
   if(!left&&!res.learnEnd)res.learnEnd=d;
   var noL=inPre?!leftPre:!left;ph=inFinal?'final':(inPre?('w'+wk):(left?'learn':'revision'));
   // due revisions
-  if(!inFinal&&!paperDay){var cap=sun||noL?B:Math.floor(B*(wk===2?0.7:wk>=3?1:0.4));var j=0;
+  if(!inFinal&&!paperDay){var cap=sun||noL?B:Math.floor(B*(lm?0.4:wk===2?0.7:wk>=3?1:0.4));var j=0;
    while(j<revq.length&&used+REVC<=cap+0){if(revq[j].due<=d&&(!inPre||isPre(revq[j].ch))){var r=revq.splice(j,1)[0];list.push(revTask(r.ch,r.r));used+=REVC;}else j++;}}
   if(inFinal){var due=revq.filter(function(r){return r.due<=d});}
   // weak
   var wix=-1;if(inPre){for(var q9=0;q9<weak.length;q9++)if(isPre(weak[q9][0])){wix=q9;break}}else if(weak.length)wix=0;
   if(wix>=0&&used<B&&!inFinal&&(!paperDay||(wk===4&&pace===2))){var w=weak.splice(wix,1)[0];list.push(weakTask(w[0],w[1]));used+=WEAKC;}
   // learn
-  var learnOK=!paperDay&&(!inPre||wk<=3)&&!(inPre&&wk===2&&pace===1&&(kpre%2));
-  if(!sun&&learnOK&&(inPre?leftPre:left)){var avoid=null,nl=0,maxL=(inPre&&wk>=2)?1:(pace===1?1:2);
+  var learnOK=!paperDay&&(!inPre||wk<=3||lm)&&!(inPre&&wk===2&&pace===1&&(kpre%2)&&!lm);
+  if(!sun&&learnOK&&(inPre?leftPre:left)){var avoid=null,nl=0,maxL=(inPre&&wk>=2&&!lm)?1:(pace===1?1:2);
    while((inPre?leftPre:left)&&nl<maxL&&(nl===0||B-used>=18)){
     var qx=pickQ(avoid);if(!qx)break;var ch=qx.q[0];
     if(nl>0&&ch.m>(B-used)*1.4)break;
@@ -803,7 +805,7 @@ function simulate(pace){var preOn=!!(S.pre&&S.sync!==false&&S.pre>(S.start>today
     else{var wk=null;if(weak.length){wk=weak.shift();}
      if(wk)list.push(weakTask(wk[0],wk[1]));else list.push({k:'F:'+d+':'+i,kind:'weak',sub:sb,m:30,title:'Weak-topic fix: '+SUB[sb].name+' — revisit your weakest chapter',desc:'Pick the chapter with your lowest quiz score, re-read, redo mistakes.'});}}
    used=B;}
-  else if(inPre&&wk>=2&&!sun){
+  else if(inPre&&wk>=2&&!sun&&!(lm&&!paperDay)){
    if(paperDay){var psb=PSUBS[(wk===3?Math.floor(dayNo/2):dayNo)%6];list.push({k:'P:'+d,kind:'paper',sub:psb,m:90,title:'Timed paper: '+SUB[psb].name.split(' (')[0]+(wk===4?' (today’s paper)':''),desc:'CBSE-pattern timed paper from official sample-paper and practice questions. Half length (about 90 min) or full 3 hours — your choice. Afterwards mark it and tag your mistakes.'});}
    else if(wk===2){var ssb=PSUBS[dayNo%6],stp=SECT[Math.floor(dayNo/6)%4];list.push({k:'X:'+d,kind:'sec',sub:ssb,st:stp[0],m:25,title:'Sample-paper section: '+SUB[ssb].name.split(' (')[0]+' — '+stp[1],desc:'Do one section like it comes in the paper, then check every answer against the marking points. Official sample-paper questions come first, then practice questions.'});if(B-used>=CYC+10){var cyl2=cyclePre||(cyclePre=chapterCycle(true));var cc2=cyl2[cpP%cyl2.length];cpP++;list.push({k:'V:'+cc2+':'+d,kind:'cyc',sub:CH[cc2].s.id,ch:cc2,m:CYC,title:'Revise chapter: '+CH[cc2].c.n,desc:'Notes → 5 key points → chapter quiz. Fix anything that feels shaky.'})}}
    else{list.push({k:'E:'+d+':err',kind:'err',sub:'maths',m:30,title:'Error review (30 min): go through your mistakes log',desc:'Open Me → Mistakes. Redo the questions you got wrong, name the cause of each one, and write the right method in your own words.'});var rcs=recallChs(d);list.push({k:'C:'+d+':rec',kind:'recall',sub:rcs.length?CH[rcs[0]].s.id:'maths',chs:rcs,m:20,title:'Recall: formulas, definitions & diagrams',desc:'Open the 5-minute sheets, cover them, and write or draw from memory. Then check. Questions you missed return through the spaced revision queue.'})}
@@ -819,7 +821,7 @@ function simulate(pace){var preOn=!!(S.pre&&S.sync!==false&&S.pre>(S.start>today
   res.days[d]={ph:ph,tasks:sortHard(list)};
  }
  res.learnLeft=left;
-if(preOn&&leftPre){res.preWarn='At this pace about '+leftPre+' study blocks of the pre-board syllabus will still be left on the pre-board date. Try 2-hour days when you can, or shrink the pre-board syllabus list.'}
+if(preOn&&leftPre){res.preWarn=''}
  if(left){res.warn='At this pace about '+left+' study blocks of new learning are still left when the final phase starts. Try a 2-hour day when you can — the plan will catch up.'}
  return res;
  function pickFinalSub(kind,n){var order=['maths','sci','sst','eng','maths','sci','hin','sst','cs','maths','sci','eng','cs'];return order[(n-1)%order.length]}
@@ -829,7 +831,7 @@ if(preOn&&leftPre){res.preWarn='At this pace about '+leftPre+' study blocks of t
 function modeToday(){return S.mode[today()]||S.pace}
 function isDone(k){var r=S.days[today()];if(r&&r.d.some(function(x){return x.k===k.k}))return true;
  if(k.kind==='learn')return k.ts.every(function(i){return tstat(k.ch,i)>=1});
- if(k.kind==='rev'){var cs=CS(k.ch);return k.r===1?!!cs.r1:!!cs.r2}
+ if(k.kind==='rev'){var cs=CS(k.ch);return k.r===3?cs.nwr===today():k.r===1?!!cs.r1:!!cs.r2}
  return false}
 function todayTasks(){var t=today(),m=modeToday(),sn=S.snap;
  if(t<S.start||t>=S.exam)return [];
@@ -967,7 +969,7 @@ function logDone(key,title,sub,min){var t=today(),r=D(t);if(r.d.some(function(x)
  return ev}
 function completeTask(k){var m=k.m;var ev=logDone(k.k,k.title,k.sub,m);var xp=0;
  if(k.kind==='learn'){k.ts.forEach(function(i){setCovered(k.ch,i,true)});xp=15}
- else if(k.kind==='rev'){var cs=CS(k.ch);if(k.r===1)cs.r1=1;else cs.r2=1;xp=10}
+ else if(k.kind==='rev'){var cs=CS(k.ch);if(k.r===3)cs.nwr=today();else if(k.r===1)cs.r1=1;else cs.r2=1;xp=10}
  else if(k.kind==='cyc'){var c2=CS(k.ch);if(!c2.r1)c2.r1=1;else c2.r2=1;xp=10}
  else if(k.kind==='weak'){if(k.ts){TP(k.ch,k.ts[0]).fx=today()}xp=10}
  else xp=10;
@@ -1005,7 +1007,7 @@ function wrapSession(){var ev=SES.ev;var st=stats();var t=today();var did=(S.day
  var more=SES.mini||SES.all?0:todayTasks().filter(function(k){return !isDone(k)}).length;h+=(more?'<button class="ok big" data-a="again">Another 25-minute session ('+more+' task'+(more>1?'s':'')+' left)</button><div style="height:10px"></div>':'')+'<button class="pri big" data-a="sesFin">Back to home</button><div style="height:10px"></div>'+(did?'<button class="full" data-a="winS">Share my win 🎉</button>':'');ovOpen(h);setTimeout(function(){mochiReact(document.getElementById('ov'),'right')},200)}
 /* ===== Views & actions ===== */
 var UI={sh:null,logAll:false,tab:'today',seg:{learn:'syl',me:'prog'},openSub:null,openCh:null,cal:null,pw:0,qf:{sub:'',ch:'',src:'all',ty:'',mk:'',flag:false,scope:true},rw:0,mt:'all',showGoal:false,gtype:'topics',gn:3};
-var PHN={w1:'Pre-board week 1 · cover everything',w2:'Pre-board week 2 · revise + new',w3:'Pre-board week 3 · timed papers',w4:'Pre-board week 4 · revision only',pre:'Pre-board prep',prerev:'Pre-board revision',learn:'Learn',revision:'Revision',final:'Mocks & fixes',eve:'Exam eve'};
+var PHN={w1:'Pre-board week 1 · learn the hardest first',w2:'Pre-board week 2 · learn + revise',w3:'Pre-board week 3 · finish + timed papers',w4:'Pre-board week 4 · revision only',pre:'Pre-board prep',prerev:'Pre-board revision',learn:'Learn',revision:'Revision',final:'Mocks & fixes',eve:'Exam eve'};
 function bar(c,s){return '<div class="bar"><i class="a" style="width:'+c+'%"></i><i class="b" style="width:'+s+'%"></i></div>'}
 function seg(g,items){return '<div class="seg">'+items.map(function(i){return '<button data-a="seg" data-g="'+g+'" data-v="'+i[0]+'" class="'+(UI.seg[g]===i[0]?'on':'')+'">'+i[1]+'</button>'}).join('')+'</div>'}
 function subjChip(k){var s=SUB[k.sub];return '<span class="chip" style="border-color:'+s.color+'">'+s.emoji+' '+esc(s.name.split(' (')[0])+'</span>'}
@@ -1052,10 +1054,10 @@ function vSyl(){var p=allProg(),h='<div class="card"><div class="row"><b class="
  SUBJECTS.forEach(function(s){var q=subProg(s.id),open=UI.openSub===s.id;
   h+='<button class="acc" data-a="osub" data-id="'+s.id+'" style="border-left:8px solid '+s.color+'"><div class="row"><b class="grow" style="font-size:1.1rem">'+s.emoji+' '+esc(s.name)+'</b><span>'+pct(q.cov,q.n)+'%</span></div>'+bar(pct(q.cov,q.n),pct(q.str,q.n))+'<span class="mute small">'+q.chd+'/'+q.ch+' chapters · '+q.cov+'/'+q.n+' topics'+(q.f?' · ⭐ '+q.f:'')+'</span></button>';
   if(open){var grp='';if(s.id==='hin')h+=hindiSwitch();s.chapters.forEach(function(c){if(c.g!==grp){grp=c.g;h+='<div class="mute" style="margin:10px 4px 2px;font-weight:700">'+esc(grp)+'</div>'}
-   var cp=chProg(c.id),co=UI.openCh===c.id;h+='<button class="acc" style="min-height:56px;margin-left:10px;width:calc(100% - 10px)" data-a="och" data-id="'+c.id+'"><div class="row"><b class="grow">'+esc(c.n)+(c.bonus?' <span class="chip off">School-assessed</span>':'')+(isLater(c.id)?' <span class="chip off">later</span>':'')+'</b><span class="small">'+cp.cov+'/'+cp.n+'</span></div>'+bar(pct(cp.cov,cp.n),pct(cp.str,cp.n))+'</button>';
+   var cp=chProg(c.id),co=UI.openCh===c.id;h+='<button class="acc" style="min-height:56px;margin-left:10px;width:calc(100% - 10px)" data-a="och" data-id="'+c.id+'"><div class="row"><b class="grow">'+esc(c.n)+(c.bonus?' <span class="chip off">School-assessed</span>':'')+(isLater(c.id)?' <span class="chip off">later</span>':'')+(c.bonus?'':' '+chBadge(c.id))+'</b><span class="small">'+cp.cov+'/'+cp.n+'</span></div>'+bar(pct(cp.cov,cp.n),pct(cp.str,cp.n))+'</button>';
    if(co)h+=chapterBody(c)});}});
  return h}
-function chapterBody(c){var cs=CS(c.id),h='<div class="card" style="margin-left:10px">'+notesBtn(c.id);
+function chapterBody(c){var cs=CS(c.id),h='<div class="card" style="margin-left:10px">'+(c.bonus?'':chStatusPick(c.id))+notesBtn(c.id);
  c.t.forEach(function(tn,i){var tp=S.topics[c.id+':'+i]||{s:0,f:false,cd:[]};var lab=tp.s===2?'💪 Strong':tp.s===1?(tp.f?'⭐ Needs work':'✅ Covered'):(tp.f?'⭐ Needs work':'Not started');
   h+='<div class="row" style="flex-wrap:nowrap"><button class="topic s'+tp.s+(tp.f?' f':'')+'" data-a="topic" data-c="'+c.id+'" data-i="'+i+'"><span class="bx">'+(tp.s?'✓':'')+'</span><span class="tn">'+esc(tname(c.id,i))+(tschool(c.id,i)?' <span class="chip off">school</span>':'')+'<br><span class="mute small">'+lab+(tp.ed?' · ✏️ edited '+fmt(tp.ed):'')+(tp.s===1&&hasQ(c.id,i)?' · strong after correct answers on 2 days ('+tp.cd.length+'/2)':'')+'</span></span></button><button class="star'+(tp.f?' on':'')+'" data-a="flag" data-c="'+c.id+'" data-i="'+i+'" aria-label="Needs work flag">⭐</button><button class="pen" data-a="tpEdit" data-c="'+c.id+'" data-i="'+i+'" aria-label="Edit topic">✏️</button></div><button class="vid'+(tp.w?' on':'')+'" data-a="watch" data-c="'+c.id+'" data-i="'+i+'">'+(tp.w?'▶ Watched video ✓ · '+fmt(tp.w):'▶ Watched video')+'</button>'+(tp.s>=1?tqBtn(c.id,i):'');
   if(tp.s===1&&!hasQ(c.id,i))h+='<button class="small" data-a="strong" data-c="'+c.id+'" data-i="'+i+'" style="min-height:44px">Mark this topic Strong 💪 (no quiz questions for it yet)</button>';});
@@ -1121,7 +1123,7 @@ function vSet(){var h='<div class="card"><h3>Dates</h3>'+dualCd()+'<div class="d
  h+='<div class="card"><h3>Usual study time</h3><div class="seg"><button data-a="pace" data-v="1" class="'+(S.pace===1?'on':'')+'">1 hour</button><button data-a="pace" data-v="2" class="'+(S.pace===2?'on':'')+'">2 hours</button></div><div class="mute small">Used for the long-range timetable. You can still switch today between 1h and 2h on the Today screen.</div></div>';
   h+='<div class="card"><h3>🪔 Hindi course</h3><div class="seg"><button data-a="hindi" data-v="A" class="'+(S.hindi!=='B'?'on':'')+'">Course A</button><button data-a="hindi" data-v="B" class="'+(S.hindi==='B'?'on':'')+'">Course B</button></div><div class="mute small">Course A (code 002): Kshitij, Kritika. Course B (code 085): Sparsh, Sanchayan. Default is A — switch if your school teaches B.</div></div>';
   h+='<div class="card"><h3>📦 Backup</h3><div class="mute small">All your progress lives only on this device/browser. Last backup: '+(S.lastBackup?fmt(S.lastBackup,2):'never')+'</div><div style="margin:8px 0"><button class="pri full" data-a="export">Export backup (JSON)</button></div><button class="full" data-a="import">Import backup</button><input type="file" id="impf" accept="application/json,.json" hidden></div>';
- h+='<div class="card"><h3>About</h3><div class="mute small">Syllabus: CBSE Class 10 (2026-27) — Maths (Standard), Science, Social Science, English (Language &amp; Literature), Computer Applications (code 165) and Hindi (Course A by default, Course B selectable). Bonus chapters are optional. Pre-board syllabus ticks are a default guess until the school shares its list. Questions tagged 🏛️ come from the official CBSE Sample Question Paper 2025-26 (older paper pattern) with the official marking scheme; a few answers were worked out from that text. Other questions are self-written practice. The timetable is an estimate — adjust as you go. Sharing is always manual: Vedika taps Share.</div></div>';
+ h+='<div class="card"><h3>About</h3><div class="mute small">Syllabus: CBSE Class 10 (2026-27) — Maths (Standard), Science, Social Science, English (Language &amp; Literature), Computer Applications (code 165) and Hindi (Course A by default, Course B selectable). Bonus chapters are optional. Pre-boards cover the full board syllabus (confirmed by school). Questions tagged 🏛️ come from the official CBSE Sample Question Paper 2025-26 (older paper pattern) with the official marking scheme; a few answers were worked out from that text. Other questions are self-written practice. The timetable is an estimate — adjust as you go. Sharing is always manual: Vedika taps Share.</div></div>';
  h+='<div class="card"><h3>Reset</h3><button class="full" style="color:var(--bad);border-color:var(--bad)" data-a="reset">Reset everything…</button></div>';return h}
 /* ===== Editing: tap anything to fix it ===== */
 function edMark(o){o.ed=today()}
@@ -1155,7 +1157,7 @@ function shDay(){var d=UI.sh.d,r=S.days[d]||{d:[]},st=stats(),cs=st.st[d]||daySt
  h+='<div class="mute small center">Questions answered: '+(r.qa||0)+' · correct: '+(r.qc||0)+' · XP today: '+(r.xp||0)+brkTxt(r)+'</div>';
  return h}
 function delLog(d,i,undo){var r=S.days[d],e=r.d[i];if(!e)return;r.d.splice(i,1);subDayXP(d,entXP(e));
- if(undo){var p=(e.k||'').split(':');if(p[0]==='L'&&CH[p[1]]){(p[2]||'').split(',').forEach(function(x){if(x!=='')setCovered(p[1],+x,false)})}else if(p[0]==='R'&&CH[p[1]]){var c=CS(p[1]);if(p[2]==='1')c.r1=0;else c.r2=0}}
+ if(undo){var p=(e.k||'').split(':');if(p[0]==='L'&&CH[p[1]]){(p[2]||'').split(',').forEach(function(x){if(x!=='')setCovered(p[1],+x,false)})}else if(p[0]==='R'&&CH[p[1]]){var c=CS(p[1]);if(p[2]==='3')c.nwr=0;else if(p[2]==='1')c.r1=0;else c.r2=0}}
  committed(d);toast('Deleted')}
 function delVid(d,i){var r=S.days[d],e=(r.wv||[])[i];if(!e)return;var p=e.k.split(':');var t=S.topics[e.k];if(t&&t.w===d)delete t.w;r.wv.splice(i,1);subDayXP(d,e.x==null?3:e.x);if(t)edMark(t);committed(d);toast('Deleted')}
 function delQuiz(d,i){var r=S.days[d],z=(r.zq||[])[i];if(!z)return;r.zq.splice(i,1);r.qa=Math.max(0,(r.qa||0)-(z.qa==null?z.t:z.qa));r.qc=Math.max(0,(r.qc||0)-(z.qc==null?Math.floor(z.s):z.qc));if(z.xa)r.xq=Math.max(0,(r.xq||0)-z.xa);
@@ -1278,28 +1280,56 @@ document.addEventListener('change',function(e){var el=e.target,c=el.dataset&&el.
  render()});
 window.addEventListener('error',function(e){window.__errs=(window.__errs||[]);window.__errs.push(String(e.message))});
 
+
+/* ===== automatic chapter status: Not done yet / Needs work / Strong ===== */
+function chStatus(cid){var cs=S.ch[cid]||{},ov=cs.ov;if(ov==='none'||ov==='work'||ov==='strong')return ov;
+ var p=chProg(cid),qs=cs.qs||[],last=qs.length?qs[qs.length-1]:null;
+ var low=!!(last&&last.t>=3&&last.s/last.t<0.6);
+ if(p.f>0||low)return 'work';
+ var days={};qs.forEach(function(x){if(x.t>=3&&x.s/x.t>=0.8)days[x.d]=1});
+ var goodLast=!!(last&&last.t>=3&&last.s/last.t>=0.8);
+ if(p.n&&p.str===p.n)return 'strong';
+ if(p.cov>0&&goodLast&&Object.keys(days).length>=2)return 'strong';
+ if(p.cov===0&&!qs.length)return 'none';
+ return 'ok'}
+function chBadge(cid){var k=chStatus(cid),ov=(S.ch[cid]||{}).ov;var m={none:['Not done yet','none'],work:['⭐ Needs work','work'],strong:['💪 Strong','strong'],ok:['✅ Covered','ok']}[k];return '<span class="stb '+m[1]+'">'+m[0]+(ov?' ✏️':'')+'</span>'}
+function chStatCounts(){var o={none:0,work:0,strong:0,ok:0,wl:[],sl:[]};SUBJECTS.forEach(function(s){s.chapters.forEach(function(c){if(c.bonus)return;var k=chStatus(c.id);o[k]++;if(k==='work')o.wl.push(c.id);if(k==='strong')o.sl.push(c.id)})});return o}
+function chapterCheckCard(){var o=chStatCounts();var h='<div class="card"><div class="row"><b class="grow">📊 Chapter check</b></div><div style="margin:6px 0"><span class="stb strong">💪 Strong '+o.strong+'</span> <span class="stb work">⭐ Needs work '+o.work+'</span> <span class="stb none">Not done yet '+o.none+'</span></div>';
+ if(o.wl.length){h+='<div class="mute small">Needs-work chapters come back in your plan automatically. Tap one to open it.</div>';o.wl.slice(0,4).forEach(function(c){h+='<button class="full" style="margin-top:6px;text-align:left" data-a="goCh" data-id="'+c+'">'+CH[c].s.emoji+' '+esc(CH[c].c.n)+' '+chBadge(c)+'</button>'});if(o.wl.length>4)h+='<div class="mute small" style="margin-top:4px">+ '+(o.wl.length-4)+' more in Learn → Syllabus</div>'}
+ else h+='<div class="mute small">No chapter needs work right now. Quiz scores under 60% will show up here.</div>';
+ return h+'</div>'}
+function chapterWeekCard(){var o=chStatCounts();var h='<div class="card"><h3>📊 Chapter status now</h3><div style="margin:4px 0"><span class="stb strong">💪 Strong '+o.strong+'</span> <span class="stb work">⭐ Needs work '+o.work+'</span> <span class="stb none">Not done yet '+o.none+'</span></div>';
+ if(o.wl.length){h+='<div class="small"><b>Needs work (queued for revision):</b></div><ul class="pts">'+o.wl.slice(0,8).map(function(c){return '<li>'+CH[c].s.emoji+' '+esc(CH[c].c.n)+'</li>'}).join('')+'</ul>'}
+ if(o.sl.length){h+='<div class="small"><b>Strong:</b></div><ul class="pts">'+o.sl.slice(0,8).map(function(c){return '<li>'+CH[c].s.emoji+' '+esc(CH[c].c.n)+'</li>'}).join('')+'</ul>'}
+ if(!o.wl.length&&!o.sl.length)h+='<div class="mute small">Do a chapter quiz and Mochi will set each chapter’s status for you.</div>';
+ return h+'</div>'}
+function chStatusPick(cid){var ov=(S.ch[cid]||{}).ov||'a';var h='<div class="mute small" style="margin-top:8px">Chapter status (automatic from your quizzes — tap to override): '+chBadge(cid)+'</div><div class="row" style="flex-wrap:wrap">';
+ [['a','Auto'],['none','Not done yet'],['work','Needs work'],['strong','Strong']].forEach(function(x){h+='<button class="tick'+(ov===x[0]?' on':'')+'" data-a="chSet" data-c="'+cid+'" data-v="'+x[0]+'">'+x[1]+'</button>'});return h+'</div>'}
 /* ===== Pre-boards, topic quick quizzes, breaks (added) ===== */
 var QBT={},QBC={};QB.forEach(function(q){var k=q.ch+':'+q.t;(QBT[k]=QBT[k]||[]).push(q);(QBC[q.ch]=QBC[q.ch]||[]).push(q)});
-function defPre(cid){var o=CH[cid],c=o.c,s=o.s;var lst=s.all.filter(function(x){return !x.bonus&&x.crs===c.crs&&(x.g||'')===(c.g||'')});var ix=lst.indexOf(c);return ix>=0&&ix<Math.ceil(lst.length/2)}
+function defPre(cid){return true}
+function preFull(){var ok=true;SUBJECTS.forEach(function(s){s.chapters.forEach(function(c){if(!c.bonus&&!isPre(c.id))ok=false})});return ok}
+function preFullChip(){return preFull()?'<span class="chip ok">🎯 Pre-boards: full syllabus</span>':''}
 function isPre(cid){var o=CH[cid];if(!o||o.c.bonus)return false;var v=S.preSel[cid];return v===undefined?defPre(cid):!!v}
 function preProgress(sid){var n=0,cov=0,ch=0;(sid?[SUB[sid]]:SUBJECTS).forEach(function(s){s.chapters.forEach(function(c){if(c.bonus||!isPre(c.id))return;ch++;c.t.forEach(function(x,i){n++;if(tstat(c.id,i)>=1)cov++})})});return {n:n,cov:cov,ch:ch}}
 function preStat(){if(!S.pre||S.pre<today()||S.pre>=S.exam)return '';var n=diff(today(),S.pre),p=preProgress();return '<div class="stat">🎯 Pre-boards<b>'+(n===0?'Today':n+' day'+(n===1?'':'s'))+'</b><span class="mute small">tentative '+fmt(S.pre,2)+' · '+pct(p.cov,p.n)+'% of pre-board syllabus covered</span></div>'}
 function preLine(){return (S.pre&&S.pre>=today()&&S.pre<S.exam)?'• Pre-boards (tentative '+fmt(S.pre,2)+'): '+diff(today(),S.pre)+' days to go; pre-board syllabus '+pct(preProgress().cov,preProgress().n)+'% covered\n':''}
-function preSummary(sim){if(!S.pre||S.pre>=S.exam)return '';var n=diff(today(),S.pre);var h='<div class="card" style="border-left:8px solid var(--pri)"><b>🎯 Pre-boards (tentative): '+fmt(S.pre,2)+'</b>'+(n>0?' · '+n+' days to go':'');
- if(sim.preOn){h+='<div class="small" style="margin-top:6px">Phase 1 (now → pre-boards): cover the pre-board syllabus first, then revise it with pre-board quizzes. '+(sim.preLearnEnd&&sim.preLearnEnd<=S.pre?'At your usual pace it is fully covered by <b>'+fmt(sim.preLearnEnd,2)+'</b>. ':'<b>Heads-up:</b> at your usual pace about '+(sim.preLeftAtPre||0)+' study blocks of it will still be left on the pre-board date — try for longer days, or shrink the list. ')+'Phase 2 (after the pre-boards): remaining syllabus → revision → mocks → boards ('+fmt(S.exam,2)+', tentative).</div>';if(sim.preWarn)h+='<div class="warn">'+esc(sim.preWarn)+'</div>'}
+function preSummary(sim){if(!S.pre||S.pre>=S.exam)return '';var n=diff(today(),S.pre);var hrs=sim.pace===1?'1 hour':'2 hours';var h='<div class="card" style="border-left:8px solid var(--pri)"><b>🎯 Pre-boards: full syllabus · '+fmt(S.pre,2)+'</b>'+(n>0?' · '+n+' days to go':'')+'<div style="margin-top:4px">'+preFullChip()+'</div>';
+ if(sim.preOn){h+='<div class="small" style="margin-top:6px">Plan until the pre-boards: hardest and weakest chapters first, then 1-3-7-21 day revision cycles, timed papers and mistake review in the last two weeks. Phase 2 (after the pre-boards): finish anything left → revision → mocks → boards ('+fmt(S.exam,2)+', tentative).</div>';
+  var left=sim.preLeftAtPre||0;h+='<div class="'+(left?'warn':'small')+'" style="margin-top:6px">'+(left?'<b>Heads-up:</b> at '+hrs+' a day about <b>'+left+'</b> study blocks will still be left on the pre-board date. Try 2-hour days when you can; the rest moves to after the pre-boards.':'At '+hrs+' a day the whole syllabus is covered before the pre-boards'+(sim.preLearnEnd?' (by <b>'+fmt(sim.preLearnEnd,2)+'</b>)':'')+'. 🎉')+'</div>'}
  return h+'</div>'}
 function vPre(){var tot=preProgress(),h='<div class="card"><h3>🎯 Pre-board syllabus</h3>';
- h+='<div>Pre-boards start <b>'+(S.pre?fmt(S.pre,2):'(not set)')+'</b> <span class="chip off">tentative</span>'+(S.pre&&S.pre>today()?' · '+diff(today(),S.pre)+' days to go':'')+'</div>';
- h+='<div class="mute small" style="margin:6px 0">Tick the chapters that are in the pre-boards. The plan, today’s tasks and the Pre-board quiz follow this list: until the pre-boards the plan covers these chapters first, then revises them; after that it goes back to the full syllabus. Change the date in Me → Settings.</div>';
+ h+='<div>Pre-boards start <b>'+(S.pre?fmt(S.pre,2):'(not set)')+'</b> <span class="chip off">tentative</span> '+preFullChip()+(S.pre&&S.pre>today()?' · '+diff(today(),S.pre)+' days to go':'')+'</div>';
+ h+='<div class="mute small" style="margin:6px 0">Her school confirmed that the pre-boards cover the <b>whole board syllabus</b>, so every chapter is ticked. The plan covers the hardest and weakest chapters first, then revises in cycles. You can still untick a chapter if school ever drops it. Change the date in Me → Settings.</div>';
  h+=bar(pct(tot.cov,tot.n),0)+'<div class="mute small">'+tot.ch+' chapters · '+tot.cov+'/'+tot.n+' topics covered</div>';
  h+='<div style="margin-top:8px"><button class="pri full" data-a="preQuiz" data-sub="">📝 Pre-board quiz (all subjects, 15 questions)</button></div>';
- h+='<div class="warn small"><b>Default guess — update when school shares syllabus.</b> Until you change a subject, its list is only the first half of each part of that subject (a guess, not the school’s list).</div></div>';
+ h+='</div>';
  SUBJECTS.forEach(function(s){var open=UI.preSub===s.id,pp=preProgress(s.id),tc=s.chapters.filter(function(c){return !c.bonus}).length;
-  h+='<button class="acc" data-a="opre" data-id="'+s.id+'" style="border-left:8px solid '+s.color+'"><div class="row"><b class="grow" style="font-size:1.05rem">'+s.emoji+' '+esc(s.name)+'</b><span>'+pp.ch+'/'+tc+'</span></div><span class="mute small">'+pp.cov+'/'+pp.n+' pre-board topics covered · '+(S.preMod[s.id]?'your selection':'<b>default guess — update when school shares syllabus</b>')+'</span></button>';
-  if(open){var grp='';h+='<div class="card" style="margin-left:10px"><div class="row"><button class="grow" data-a="pall" data-id="'+s.id+'" data-v="1">Select all</button><button class="grow" data-a="pall" data-id="'+s.id+'" data-v="0">Select none</button><button class="grow" data-a="pall" data-id="'+s.id+'" data-v="d">Reset guess</button></div>';
+  h+='<button class="acc" data-a="opre" data-id="'+s.id+'" style="border-left:8px solid '+s.color+'"><div class="row"><b class="grow" style="font-size:1.05rem">'+s.emoji+' '+esc(s.name)+'</b><span>'+pp.ch+'/'+tc+'</span></div><span class="mute small">'+pp.cov+'/'+pp.n+' pre-board topics covered · '+(S.preMod[s.id]?'your selection':'<b>full syllabus</b>')+'</span></button>';
+  if(open){var grp='';h+='<div class="card" style="margin-left:10px"><div class="row"><button class="grow" data-a="pall" data-id="'+s.id+'" data-v="1">Select all</button><button class="grow" data-a="pall" data-id="'+s.id+'" data-v="0">Select none</button><button class="grow" data-a="pall" data-id="'+s.id+'" data-v="d">Whole syllabus</button></div>';
    s.chapters.forEach(function(c){if(c.bonus)return;if(c.g!==grp){grp=c.g;h+='<div class="mute" style="margin:10px 2px 2px;font-weight:700">'+esc(grp)+'</div>'}
     var on=isPre(c.id);h+='<button class="tick'+(on?' on':'')+'" data-a="ptick" data-c="'+c.id+'" style="width:100%;text-align:left">'+(on?'✅':'⬜')+' <span>'+esc(c.n)+' <span class="mute small">('+c.t.length+' topics)</span></span></button>'});
-   h+='<div class="mute small">School-assessed-only chapters are not part of the plan.</div><button class="full" style="margin-top:8px" data-a="preQuiz" data-sub="'+s.id+'">📝 Pre-board quiz: '+esc(s.name.split(' (')[0])+' only</button></div>'}});
+   h+='<div class="mute small">School-assessed-only chapters (not in the board exam) are not part of the plan.</div><button class="full" style="margin-top:8px" data-a="preQuiz" data-sub="'+s.id+'">📝 Pre-board quiz: '+esc(s.name.split(' (')[0])+' only</button></div>'}});
  return h}
 function pickPreQs(sub,n){if(sub)return pickQs({sub:sub,pre:true},n);var per=Math.ceil(n/SUBJECTS.length),out=[];SUBJECTS.forEach(function(s){out=out.concat(pickQs({sub:s.id,pre:true},per))});return shuffle(out).slice(0,n)}
 /* ---- quick quiz on a topic ---- */
@@ -1442,7 +1472,7 @@ function dualCd(){var t=today(),ok=S.pre&&S.pre<S.exam,n=ok?diff(t,S.pre):0,b=di
  var pt=ok?(n>0?L('🎯','Pre-boards',n,'day'+(n===1?'':'s')+' left',fmt(S.pre,2)+' (tentative)',1):(n===0?L('🎯','Pre-boards','Today','all the best!',fmt(S.pre,2),1):L('🎯','Pre-boards','Started','since '+fmt(S.pre,2),'',1))):L('🎯','Pre-boards','—','not set','Me → Settings → Dates',1);
  return '<div class="cdrow">'+pt+L('🎓','Boards',Math.max(0,b),'day'+(b===1?'':'s')+' left',fmt(S.exam,2)+' (tentative)',0)+'</div>'}
 function countdownCard(){var t=today(),w=weekLabel(t),h='<div class="cd" style="padding:12px">'+dualCd();
- if(S.pre&&S.pre>t&&S.pre<S.exam){if(w)h+='<div class="chip">'+esc(PHN[w])+'</div>';var p=preProgress();h+='<div class="mute small" style="margin-top:6px">Pre-board syllabus covered: '+pct(p.cov,p.n)+'%</div>'+bar(pct(p.cov,p.n),0)}
+ if(S.pre&&S.pre>t&&S.pre<S.exam){h+=preFullChip();if(w)h+='<div class="chip">'+esc(PHN[w])+'</div>';var p=preProgress();h+='<div class="mute small" style="margin-top:6px">Pre-board syllabus covered: '+pct(p.cov,p.n)+'%</div>'+bar(pct(p.cov,p.n),0)}
  return h+'</div>'}
 function vToday(){var t=today(),st=stats(),p=allProg(),dte=daysToExam(),h='',m=modeToday();
  if(t<S.start){return '<h1>Hi Vedika 👋</h1>'+mochiBox('',pickMsg('welcome'))+'<div class="card">Your plan starts on <b>'+fmt(S.start,2)+'</b>.</div>'}
@@ -1455,7 +1485,7 @@ function vToday(){var t=today(),st=stats(),p=allProg(),dte=daysToExam(),h='',m=m
  if(S.pre&&S.pre>t&&S.pre<S.exam&&diff(t,S.pre)<=3)h+='<div class="card" style="border-left:8px solid var(--pri)">😴 <b>Sleep early for the next '+diff(t,S.pre)+' night'+(diff(t,S.pre)>1?'s':'')+'.</b> 7–8 hours helps memory more than one extra hour of revision.</div>';
  if(sick){h+='<div class="card" style="border-left:8px solid var(--ok)"><h3>🤒 Not feeling well — resting today</h3><div class="small">Today counts as a rest day: it is not marked missed and your streak stays safe. Today’s tasks move forward by themselves. Drink water and sleep well.</div><div style="height:10px"></div><button class="full" data-a="mini">Only if you feel like it: 2-minute minimum 🌈</button><div style="height:8px"></div><button class="full" data-a="unsick">I’m feeling better — bring back my tasks</button></div>'}
  else{
-  h+='<div class="card"><div class="row"><b class="grow">1 · 📌 Revision queue</b><span class="chip '+(due?'':'ok')+'">'+due+' due</span></div>'+(due?'<div class="small mute" style="margin:4px 0 8px">Questions you missed come back after 1, 3, 7 and 21 days. About 5–10 minutes.</div><button class="pri full" data-a="srsq">Practise due questions ('+Math.min(due,8)+')</button>':'<div class="small mute">Nothing due today 🎉</div>')+'</div>';
+  h+='<div class="card"><div class="row"><b class="grow">1 · 📌 Revision queue</b><span class="chip '+(due?'':'ok')+'">'+due+' due</span></div>'+(due?'<div class="small mute" style="margin:4px 0 8px">Questions you missed come back after 1, 3, 7 and 21 days. About 5–10 minutes.</div><button class="pri full" data-a="srsq">Practise due questions ('+Math.min(due,8)+')</button>':'<div class="small mute">Nothing due today 🎉</div>')+'</div>';h+=chapterCheckCard();
   if(next>=0){var k=tasks[next],s=SUB[k.sub];h+='<div class="card" style="border-left:8px solid '+s.color+'"><div class="mute small"><b>2 · Your one task for now</b> ('+dn+'/'+tasks.length+' done today)</div><h2 style="margin-top:4px">'+esc(k.title)+'</h2><div class="mute small">'+s.emoji+' '+esc(s.name.split(' (')[0])+' · ≈'+k.m+' min</div><p class="small">'+esc(k.desc)+'</p>'+
     '<button class="pri big" data-a="session">▶ Start a 25-minute session</button><div style="height:8px"></div><div class="row"><button class="grow" data-a="mini">🌈 Bad day? 2-minute minimum</button><button class="ok" data-a="doneTask" data-i="'+next+'">Done ✅</button></div></div>'}
   else if(tasks.length){h+='<div class="card center"><h3>🎉 All of today’s tasks are done!</h3><div class="mute small">Anything more is a bonus. Rest, sing, enjoy. 🎶</div></div>'}
@@ -1494,7 +1524,7 @@ function vWeek(){var w=addD(wkStart(today()),UI.rw*7),o=weekData(w),pv=weekData(
  if(o.fin.length){h+='<div class="small"><b>Finished this week ('+o.fin.length+'):</b></div><ul class="pts">'+o.fin.map(function(c){return '<li>'+CH[c].s.emoji+' '+esc(CH[c].c.n)+'</li>'}).join('')+'</ul>'}
  var pk=Object.keys(o.part);if(pk.length)h+='<div class="small"><b>Started / partly covered:</b></div><ul class="pts">'+pk.map(function(c){return '<li>'+esc(CH[c].c.n)+' — '+o.part[c]+' topic'+(o.part[c]>1?'s':'')+'</li>'}).join('')+'</ul>';
  if(!o.fin.length&&!pk.length)h+='<div class="mute small">No topics marked covered this week.</div>';
- h+='<div class="mute small">Topics covered this week: '+o.tp+'</div></div>';
+ h+='<div class="mute small">Topics covered this week: '+o.tp+'</div></div>';h+=chapterWeekCard();
  h+='<div class="card"><h3>🎯 Accuracy per subject</h3>';var any=false;SUBJECTS.forEach(function(s){var a=o.acc[s.id];if(!a.t)return;any=true;var p=pct(a.s,a.t);h+='<div class="row" style="margin:6px 0"><span style="width:120px" class="small">'+s.emoji+' '+esc(s.name.split(' (')[0])+'</span><div class="grow bar thin"><i class="'+(p>=75?'b':'a')+'" style="width:'+p+'%"></i></div><b style="width:44px;text-align:right">'+p+'%</b></div><div class="mute small" style="margin:-4px 0 4px 0">'+Math.round(a.s*10)/10+' / '+a.t+' marks of questions</div>'});
  if(!any)h+='<div class="mute small">No quiz answers in this week yet.</div>';h+='</div>';
  if(o.papers.length){h+='<div class="card"><h3>⏱ Timed papers</h3>';o.papers.forEach(function(m){h+='<div class="row"><span class="grow small">'+esc(m.name)+'</span><b>'+m.m+'/'+m.t+'</b></div>'});h+='</div>'}
@@ -1600,6 +1630,8 @@ Object.assign(ACT,{
   var b=new Blob([JSON.stringify({app:'mochi',reportedQuestions:L},null,1)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='mochi-reported-questions-'+today()+'.json';document.body.appendChild(a);a.click();setTimeout(function(){a.remove();URL.revokeObjectURL(a.href)},500);toast('Reported list saved ✅')},
  rqShare:function(){var L=Object.keys(S.flagQ).map(function(u){var q=QBY[u];return q?u+' · '+CH[q.ch].c.n+' · '+(q.q||'').slice(0,100)+' · key: '+(q.ty==='short'?'(model answer)':q.o[q.a]):null}).filter(Boolean);doShare('🚩 Mochi — questions I think are wrong or unclear:\n'+L.join('\n'))},
  rqClear:function(d){delete S.flagQ[d.u];save();render()},
+ goCh:function(d){var o=CH[d.id];UI.tab='learn';UI.seg.learn='syl';UI.openSub=o.s.id;UI.openCh=d.id;render();window.scrollTo(0,0)},
+ chSet:function(d){var cs=CS(d.c);if(d.v==='a')delete cs.ov;else cs.ov=d.v;S.snap=null;save();render();toast(d.v==='a'?'Status is automatic again':'Status set — tap Auto to let Mochi decide')},
  syncT:function(){S.sync=S.sync===false;S.snap=null;save();render();toast(S.sync?'Following the pre-board syllabus':'Using the whole syllabus')},
  rw:function(d){UI.rw=Math.min(0,UI.rw+(+d.v));render()},
  pPaperGo:function(d){paperIntro(UI.pSub||'maths',d.full==='1',null)}
@@ -1609,9 +1641,9 @@ document.addEventListener('change',function(e){var el=e.target,c=el.dataset&&el.
 var vMock0=vMock;vMock=function(){var sub=UI.pSub||'maths';var h='<div class="card"><h3>⏱ Timed paper</h3><div class="mute small">A CBSE-style paper with a countdown. At the end you mark your written answers, then see the marks you lost by topic.'+(scopeOn()?' It uses only your pre-board chapters.':'')+'</div><label>Subject</label><select data-c="psub" class="full">'+SUBJECTS.map(function(s){return '<option value="'+s.id+'"'+(sub===s.id?' selected':'')+'>'+s.emoji+' '+esc(s.name.split(' (')[0])+'</option>'}).join('')+'</select><div class="row" style="margin-top:10px"><button class="pri grow" data-a="pPaperGo" data-full="0">Half paper · ~90 min</button><button class="grow" data-a="pPaperGo" data-full="1">Full paper · 3 h</button></div></div>';
  var lp=S.mocks.filter(function(m){return m.paper&&m.lost}).pop();if(lp)h+='<div class="card"><h3>📉 Last paper: marks lost</h3><div class="mute small">'+esc(lp.name)+' · '+lp.m+'/'+lp.t+' · '+fmt(lp.d,2)+'</div>'+lp.lost.slice(0,6).map(function(x){return '<div class="row small"><span class="grow">'+esc(CH[x[0]]?CH[x[0]].c.n:x[0])+(x[1]>=0&&CH[x[0]]?' — '+esc(tname(x[0],x[1])):'')+'</span><b>−'+x[2]+'</b></div>'}).join('')+'</div>';
  return h+vMock0()};
-var vQuiz0=vQuiz;vQuiz=function(){var h=vQuiz0();if(scopeOn()){var n=0;SUBJECTS.forEach(function(s){s.chapters.forEach(function(c){if(isLater(c.id))n++})});h='<div class="card" style="border-left:8px solid var(--pri)"><div class="small">🎯 Quizzes, the revision queue and papers show <b>only your pre-board chapters</b> ('+n+' chapters are marked “later”). Change this in Me → Settings.</div></div>'+h}return h};
+var vQuiz0=vQuiz;vQuiz=function(){var h=vQuiz0();if(scopeOn()){var n=0;SUBJECTS.forEach(function(s){s.chapters.forEach(function(c){if(isLater(c.id))n++})});h=(n?'<div class="card" style="border-left:8px solid var(--pri)"><div class="small">🎯 Quizzes, the revision queue and papers show <b>only your pre-board chapters</b> ('+n+' chapters are marked “later”). Change this in Me → Settings.</div></div>':'<div class="card" style="border-left:8px solid var(--pri)">'+preFullChip()+'<div class="small" style="margin-top:4px">Quizzes, revision and papers use every chapter.</div></div>')+h}return h};
 var vSet0=vSet;vSet=function(){var h='<div class="card"><h3>📚 Important</h3><div class="small">'+NCERT_NOTE+'</div><div class="small mute" style="margin-top:6px">Practice questions are self-written. If an answer looks wrong or unclear, tap 🚩 Report this question and tell your teacher.</div></div>';
- h+='<div class="card"><h3>🎯 Pre-board syllabus sync</h3><button class="tick'+(S.sync!==false?' on':'')+'" data-a="syncT" style="width:100%">'+(S.sync!==false?'✅':'⬜')+' Follow my pre-board chapter list</button><div class="mute small">On: the plan, quizzes, revision queue and timed papers use only the chapters ticked in Learn → Pre-boards until the pre-boards start. Other chapters show “later”. Off: everything uses the whole syllabus.</div></div>';
+ h+='<div class="card"><h3>🎯 Pre-board syllabus sync</h3><button class="tick'+(S.sync!==false?' on':'')+'" data-a="syncT" style="width:100%">'+(S.sync!==false?'✅':'⬜')+' Follow my pre-board chapter list</button><div class="mute small">'+preFullChip()+' On: the plan counts down to the pre-boards (hardest and weakest first, then revision cycles). Chapters you untick in Learn → Pre-boards would show “later”. Off: the plan ignores the pre-board date.</div></div>';
  h+=vSet0();
  var fq=Object.keys(S.flagQ).filter(function(u){return QBY[u]});
  h+='<div class="card"><h3>🚩 Reported questions ('+fq.length+')</h3>';
