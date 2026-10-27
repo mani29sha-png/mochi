@@ -664,6 +664,19 @@ var KEY='vedu_tracker_v1', S, SUB={}, CH={}, INT=[1,3,7,21];
 SUBJECTS.forEach(function(s){SUB[s.id]=s;s.all=s.chapters.slice();s.all.forEach(function(c){if(s.id==='hin'&&!c.crs)c.crs='A';CH[c.id]={c:c,s:s};});});
 function applyHindi(){var h=SUB.hin,b=(S&&S.hindi)==='B'?'B':'A';h.chapters=h.all.filter(function(c){return c.crs===b});h.name='Hindi (Course '+b+')'}
 function qActive(q){var o=CH[q.ch];return o.s.id!=='hin'||o.c.crs===((S&&S.hindi)==='B'?'B':'A')}
+/* ---- Daily-plan quiz questions (dated; shown in Learn → Plan → Daily plan and on Today) ---- */
+var DAILYQ={'2026-10-26':['DQ-1026-1','DQ-1026-2','DQ-1026-3','DQ-1026-4','DQ-1026-5'],'2026-10-27':['DQ-1027-1','DQ-1027-2','DQ-1027-3','DQ-1027-4','DQ-1027-5']};
+function DQ(id,ch,t,q,o,a,e){_p({id:id,ch:ch,t:t,ty:'mcq',mk:1,q:q,o:o,a:a,e:e,src:'own'});}
+DQ('DQ-1026-1','m1',1,'What are the HCF and LCM of 12 and 18?',['HCF 6, LCM 36','HCF 3, LCM 36','HCF 6, LCM 72','HCF 2, LCM 18'],0,'12 = 2²×3 and 18 = 2×3². HCF = 2×3 = 6 and LCM = 2²×3² = 36. Check: 6 × 36 = 216 = 12 × 18.');
+DQ('DQ-1026-2','s1',0,'Balance the equation H₂ + O₂ → H₂O. The balanced form is',['2H₂ + O₂ → 2H₂O','H₂ + O₂ → 2H₂O','H₂ + 2O₂ → 2H₂O','2H₂ + 2O₂ → 2H₂O'],0,'Left: 4 H and 2 O. Right: 4 H and 2 O. Both sides now have equal atoms of each element.');
+DQ('DQ-1026-3','s1',1,'A reaction in which two or more substances combine to form a single product is a',['combination reaction','decomposition reaction','displacement reaction','double displacement reaction'],0,'Combination reaction, e.g. CaO + H₂O → Ca(OH)₂ (slaked lime), or 2Mg + O₂ → 2MgO.');
+DQ('DQ-1026-4','ep1',1,'In “A Letter to God”, what did Lencho ask God to send him?',['100 pesos','200 pesos','70 pesos','1000 pesos'],0,'Hail destroyed his ripe field, so Lencho wrote asking God for 100 pesos to sow the field again. (The post office staff collected only 70.)');
+DQ('DQ-1026-5','hi1',2,'Who among these was a leader of the unification of Italy?',['Giuseppe Garibaldi','Otto von Bismarck','Duke Metternich','Louis XVI'],0,'Garibaldi, Mazzini, Cavour and King Victor Emmanuel II led Italy’s unification. Bismarck led Germany’s.');
+DQ('DQ-1027-1','m2',2,'The sum of the zeroes of the polynomial x² − 5x + 6 is',['5','−5','6','1'],0,'Sum of zeroes = −b/a = −(−5)/1 = 5. (The zeroes are 2 and 3.)');
+DQ('DQ-1027-2','s2',2,'The pH of pure water is',['7','0','14','1'],0,'Pure water is neutral, so its pH is 7. Below 7 is acidic, above 7 is basic.');
+DQ('DQ-1027-3','s2',0,'Which acid is found in lemon?',['Citric acid','Acetic acid','Lactic acid','Tartaric acid'],0,'Lemon and other citrus fruits contain citric acid. Vinegar has acetic acid, curd has lactic acid, tamarind has tartaric acid.');
+DQ('DQ-1027-4','ep1',1,'Why did Lencho write a letter to God?',['Hail destroyed his crop and he needed money to sow again','He wanted a new house','He wanted to thank God for the rain','He wanted to find a job'],0,'The hailstorm ruined his field of ripe corn. Lencho had complete faith in God, so he asked Him for 100 pesos.');
+DQ('DQ-1027-5','m1',1,'The HCF of 12 and 18 is',['6','3','36','2'],0,'12 = 2²×3, 18 = 2×3². HCF = product of the smallest powers of the common primes = 2×3 = 6.');
 QB.forEach(function(q,i){q.uid=q.id||('P'+i);});
 var QBY={};QB.forEach(function(q){QBY[q.uid]=q;});
 function pad(n){return n<10?'0'+n:''+n}
@@ -1604,5 +1617,83 @@ var vSet0=vSet;vSet=function(){var h='<div class="card"><h3>📚 Important</h3><
   h+='<div class="row" style="margin-top:8px"><button class="pri grow" data-a="rqExport">Export list (file)</button><button class="grow" data-a="rqShare">Share / copy as text</button></div><div class="mute small">Reported questions are hidden from quizzes and papers on this device.</div>'}
  return h+'</div>'};
 
+/* ===== Daily plan (v3): dated 1-hour / 2-hour plan, revision and a 5-question quiz for every day ===== */
+var DP_END='2026-11-23';
+// Posted days (preloaded). Every other day is generated from the plan logic (simulate) and always follows her progress.
+// spec: h1 = 1-hour learn blocks, x2 = extra blocks for the 2-hour plan; ['ch',[topic idx],'subject',minutes]
+var POSTED_SPEC={
+ '2026-10-26':{h1:[['m1',[1],'maths',30],['s1',[0],'sci',30]],x2:[['ep1',[0],'eng',30],['hi1',[0,1],'sst',30]]},
+ '2026-10-27':{h1:[['m2',[2],'maths',30],['s2',[2],'sci',25]],x2:[['ep1',[1],'eng',30],['hk1',[0],'hin',25]],recap:5,
+  rev:['m1','maths',10,'Revise: Real Numbers — solve 3 HCF/LCM sums','Without looking at your notes, solve 3 HCF/LCM sums, then check each answer.']}};
+var _pc={};
+function postedPlan(d){var sp=POSTED_SPEC[d];if(!sp)return null;if(_pc[d])return _pc[d];
+ var mk=function(a){return learnTask({ch:a[0],sub:a[2],ts:a[1].slice(),m:a[3]})};
+ var a=sp.h1.map(mk),b=sp.x2.map(mk),tail=[];
+ if(sp.recap)tail.push({k:'DP:'+d+':recap',kind:'recap',sub:sp.h1[0][2],ch:sp.h1[0][0],m:sp.recap,title:'5-minute recap of today’s topics',desc:'Close the book and say the key points of today’s topics out loud. Then check what you missed.'});
+ if(sp.rev)tail.push({k:'DP:'+d+':rev',kind:'dprev',sub:sp.rev[1],ch:sp.rev[0],m:sp.rev[2],title:sp.rev[3],desc:sp.rev[4]});
+ return _pc[d]={h1:a.concat(tail),h2:a.concat(b,tail),q:DAILYQ[d]||null}}
+function cloneT(a){return JSON.parse(JSON.stringify(a))}
+var todayTasks0=todayTasks;
+todayTasks=function(){var t=today(),p=postedPlan(t);if(!p||t<S.start||t>=S.exam)return todayTasks0();
+ var m=modeToday(),sn=S.snap;if(!sn||sn.date!==t||sn.posted!==m){S.snap={date:t,mode:m,ph:'learn',posted:m,tasks:cloneT(m===1?p.h1:p.h2)}}
+ return S.snap.tasks};
+var fixS0=fixS;fixS=function(){fixS0();if(!S.dq||typeof S.dq!=='object'||Array.isArray(S.dq))S.dq={}};
+function dpDone(d,k){if(d===today())return isDone(k);var r=S.days[d];if(r&&r.d&&r.d.some(function(x){return x.k===k.k}))return true;if(k.kind==='learn'&&k.ts)return k.ts.every(function(i){return tstat(k.ch,i)>=1});return false}
+function dpFind(d,key){var p=postedPlan(d),all=p?p.h2:(d===today()?todayTasks():[]);return all.filter(function(k){return k.k===key})[0]||(p?p.h1.filter(function(k){return k.k===key})[0]:null)}
+function logPast(d,k){var r=D(d);if(r.d.some(function(x){return x.k===k.k}))return;var ent={k:k.k,t:k.title,s:k.sub,m:k.m,x:0},xp=0;r.d.push(ent);r.min=(r.min||0)+k.m;
+ if(k.kind==='learn'&&k.ts){k.ts.forEach(function(i){var t=TP(k.ch,i);if(t.s===0){t.s=1;t.d=d;t.x=8;r.tp=(r.tp||0)+1;xp+=8}});ent.x=15;xp+=15}else{ent.x=10;xp+=10}
+ r.xp=(r.xp||0)+xp;recalcAll();save()}
+function dpLists(d,sims){var t=today(),p=postedPlan(d);
+ if(p)return [['⏱ 1 hour',p.h1],['⏱ 2 hours',p.h2]];
+ if(d===t)return [['⏱ Your plan today ('+(modeToday()===1?'1 hour':'2 hours')+')',todayTasks()]];
+ if(d>t){var a=sims[1].days[d],b=sims[2].days[d];if(!a&&!b)return null;return [['⏱ 1 hour',a?a.tasks:[]],['⏱ 2 hours',b?b.tasks:[]]]}
+ return null}
+function dpItem(d,k,can){var s=SUB[k.sub]||SUB.maths,done=can&&dpDone(d,k),ic=(k.kind==='rev'||k.kind==='cyc'||k.kind==='dprev'||k.kind==='weak')?'🔁 ':'';
+ return '<div class="task'+(done?' done':'')+'" style="--c:'+s.color+'"><div class="t"><b>'+(done?'✅ ':'')+ic+esc(k.title)+'</b><span class="mute small">'+s.emoji+' '+esc(s.name.split(' (')[0])+' · ≈'+k.m+' min</span></div>'+(can?(done?'<button class="pen" data-a="dayedit" data-d="'+d+'" aria-label="Edit this day">✏️</button>':'<button class="ok" data-a="dpTick" data-d="'+d+'" data-k="'+esc(k.k)+'">Done</button>'):'')+'</div>'}
+function sc3(q){var s=S.qs[q.uid];return (!s?0:(s.w?1:2))+Math.random()*0.9}
+function dpQuizQs(d){var p=postedPlan(d);if(p&&p.q)return p.q.map(function(u){return QBY[u]}).filter(Boolean);
+ var tasks=d===today()?todayTasks():((simulate(S.pace).days[d]||{}).tasks||[]),used={},out=[],pools=[];
+ tasks.forEach(function(k){if(!k.ch||!CH[k.ch])return;var f={ch:k.ch};var pool=QB.filter(function(q){return q.ty!=='short'&&matchQ(q,f)&&(k.kind!=='learn'||!k.ts||k.ts.indexOf(q.t)>=0)});if(pool.length<2)pool=QB.filter(function(q){return q.ty!=='short'&&matchQ(q,f)});pool.sort(function(a,b){return sc3(a)-sc3(b)});pools.push(pool)});
+ for(var r=0;out.length<5&&r<6;r++)pools.forEach(function(pl){var q=pl[r];if(q&&out.length<5&&!used[q.uid]){used[q.uid]=1;out.push(q)}});
+ if(out.length<5)pickQs({scope:true},80).filter(function(q){return q.ty!=='short'}).forEach(function(q){if(out.length<5&&!used[q.uid]){used[q.uid]=1;out.push(q)}});
+ return shuffle(out).slice(0,5)}
+var quizEnd0=quizEnd;quizEnd=function(){var d=QZ&&QZ.dq,full=QZ&&QZ.res.length===QZ.qs.length;quizEnd0();if(d&&full&&window._lastQ){S.dq[d]={s:window._lastQ.s,t:window._lastQ.t};save()}};
+function dpQuizBtn(d){var t=today(),q=S.dq[d];
+ if(d>t)return '<div class="card"><b>📝 5-question quiz</b><div class="mute small">Opens on this day. The answers show after you answer each question.</div></div>';
+ return '<div class="card"><div class="row"><b class="grow">📝 5-question quiz</b>'+(q?'<span class="chip ok">last '+q.s+'/'+q.t+'</span>':'')+'</div><div class="mute small" style="margin:4px 0 8px">Answers show after you answer each question. You earn XP like in every quiz.</div><button class="pri full" data-a="dpQuiz" data-d="'+d+'">'+(q?'Try again ▶':'Start quiz ▶')+'</button></div>'}
+function dpTodayCard(){var t=today();if(t<S.start||t>=S.exam||isSick())return '';var tasks=todayTasks(),m=modeToday(),q=S.dq[t];
+ var h='<div class="card" style="border-left:8px solid var(--pri)"><div class="row"><b class="grow">📋 Today’s plan · '+fmt(t,1)+'</b><span class="chip">⏱ '+(m===1?'1 hour':'2 hours')+'</span></div>';
+ if(!tasks.length)h+='<div class="small" style="margin:6px 0">Rest day 🎶</div>';
+ tasks.forEach(function(k){var s=SUB[k.sub]||SUB.maths;h+='<div class="small" style="margin:6px 0">'+(isDone(k)?'✅':'⬜')+' '+s.emoji+' '+esc(k.title)+' <span class="mute">≈'+k.m+'m</span></div>'});
+ h+='<div class="mute small">Tick things off with Done below. Your streak and progress update by themselves.</div><div style="height:8px"></div><button class="pri full" data-a="dpQuiz" data-d="'+t+'">📝 Today’s 5-question quiz'+(q?' · last '+q.s+'/'+q.t:'')+'</button><div style="height:8px"></div><button class="full" data-a="dpOpen">📅 See all days</button></div>';return h}
+var vToday0=vToday;vToday=function(){var h=vToday0(),c=dpTodayCard();if(!c)return h;
+ var mk='<div class="card"><div class="row"><b class="grow">1 · 📌 Revision queue',i=h.indexOf(mk);if(i<0){mk='<div class="stats">';i=h.indexOf(mk)}
+ return i<0?h+c:h.slice(0,i)+c+h.slice(i)};
+function dpRange(){return [S.start,(S.pre&&S.pre<S.exam)?S.pre:DP_END]}
+function vDaily(){var t=today(),R=dpRange(),a=R[0],e=R[1],d=UI.dd||t;if(d<a)d=a;if(d>e)d=e;UI.dd=d;
+ var sims={1:simulate(1),2:simulate(2)},st=stats(),h='';
+ h+='<div class="card"><h3>📋 Daily plan</h3><div class="small">Every day has a 1-hour plan, a 2-hour plan, revision and a 5-question quiz. Tap Done as you finish things — your streak, missed days and progress update by themselves.</div></div>';
+ h+='<div class="row"><button data-a="dpStep" data-v="-1" aria-label="Previous day"'+(d<=a?' disabled':'')+'>◀</button><b class="grow center" style="font-size:1.15rem">'+fmt(d,1)+(d===t?' · today':'')+'</b><button data-a="dpStep" data-v="1" aria-label="Next day"'+(d>=e?' disabled':'')+'>▶</button></div>';
+ if(d!==t&&t>=a&&t<=e)h+='<button class="full" style="margin:8px 0" data-a="dpGo" data-d="'+t+'">Jump to today</button>';
+ var can=d<=t&&d>=S.start,ss=st.st[d],lists=dpLists(d,sims);
+ h+='<div class="card"><div class="row"><b class="grow">'+fmt(d,1)+' '+pd(d).getFullYear()+'</b>'+(d<=t&&ss?'<span class="chip '+(ss==='studied'?'ok':ss==='missed'?'bad':'')+'">'+stLabel(ss)+'</span>':'')+(S.pre&&d===S.pre?'<span class="chip bad">🎯 Pre-boards start</span>':'')+'</div>';
+ if(lists){lists.forEach(function(L){h+='<h3 style="margin-top:12px">'+L[0]+'</h3>';if(!L[1].length)h+='<div class="mute small">Nothing planned.</div>';L[1].forEach(function(k){h+=dpItem(d,k,can)})})}
+ else{var r=S.days[d];h+='<div class="mute small" style="margin:8px 0">'+(r&&r.d&&r.d.length?'What you did:':(ss==='rest'?'Rest day 🎶':(d<=t?'Nothing logged for this day — unfinished tasks moved forward in your plan.':'Outside the plan.')))+'</div>';if(r&&r.d)r.d.forEach(function(x){h+='<div class="small">✅ '+esc(x.t)+'</div>'});
+  if(d<=t)h+='<button class="full" style="margin-top:8px" data-a="dayedit" data-d="'+d+'">✏️ Fix or add something for this day</button>'}
+ h+='</div>';
+ if(d<=e)h+=dpQuizBtn(d);
+ h+='<h3 style="margin-top:16px">All days until the pre-boards</h3>';
+ for(var x=a;x<=e;x=addD(x,1)){var s2=x<=t?st.st[x]:'',q=S.dq[x];
+  h+='<button class="dayrow" data-a="dpGo" data-d="'+x+'"'+(x===d?' style="border-color:var(--pri)"':'')+'><div class="row"><b class="grow">'+fmt(x,1)+(x===t?' · today':'')+'</b>'+(s2?'<span class="chip '+(s2==='studied'?'ok':s2==='missed'?'bad':'')+'">'+stLabel(s2)+'</span>':'')+(q?'<span class="chip ok">📝 '+q.s+'/'+q.t+'</span>':'')+(S.pre&&x===S.pre?'<span class="chip bad">🎯 Pre-boards</span>':'')+'</div></button>'}
+ return h}
+var vPlan0=vPlan;vPlan=function(){return seg('plan',[['daily','📋 Daily plan'],['table','📅 Timetable']])+((UI.seg.plan||'daily')==='daily'?vDaily():vPlan0())};
+UI.seg.plan='daily';
+ACT.dpTick=function(x){var d=x.d,k=dpFind(d,x.k);if(!k)return;
+ if(d===today()){if(isDone(k)){toast('Already done ✅');return}var ev=completeTask(k);render();toast('Nice! +XP ⭐');if(ev&&ev.milestone)modal('<div class="mochi">'+mochiSvg('cheer')+'<div class="bubble">'+esc(pickMsg('streak',ev.milestone))+'</div></div>',[{t:'Close'}]);else if(k.kind==='learn')setTimeout(function(){offerTopicQuiz(k.ch,k.ts)},300);return}
+ if(d>today()||d<S.start)return;logPast(d,k);render();toast('Saved for '+fmt(d)+' ✅')};
+ACT.dpQuiz=function(x){var d=x.d;if(d>today())return;var qs=dpQuizQs(d);startQuiz({qs:qs,title:'Daily quiz · '+fmt(d),kind:'quiz'});if(QZ)QZ.dq=d};
+ACT.dpOpen=function(){UI.tab='learn';UI.seg.learn='plan';UI.seg.plan='daily';UI.dd=today();render();window.scrollTo(0,0)};
+ACT.dpGo=function(x){UI.dd=x.d;render();window.scrollTo(0,0)};
+ACT.dpStep=function(x){UI.dd=addD(UI.dd||today(),+x.v);render()};
 load();recalcAll();save();render();if(S.pause)showBreak();
 </script></body></html>
