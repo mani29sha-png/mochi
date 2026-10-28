@@ -739,7 +739,7 @@ SUBJECTS.forEach(function(s){SUB[s.id]=s;s.all=s.chapters.slice();s.all.forEach(
 function applyHindi(){var h=SUB.hin,b=(S&&S.hindi)==='B'?'B':'A';h.chapters=h.all.filter(function(c){return c.crs===b});h.name='Hindi (Course '+b+')'}
 function qActive(q){var o=CH[q.ch];return o.s.id!=='hin'||o.c.crs===((S&&S.hindi)==='B'?'B':'A')}
 /* ---- Daily-plan quiz questions (dated; shown in Learn → Plan → Daily plan and on Today) ---- */
-var DAILYQ={'2026-10-26':['DQ-1026-1','DQ-1026-2','DQ-1026-3','DQ-1026-4','DQ-1026-5'],'2026-10-27':['DQ-1027-1','DQ-1027-2','DQ-1027-3','DQ-1027-4','DQ-1027-5']};
+var DAILYQ={'2026-10-26':['DQ-1026-1','DQ-1026-2','DQ-1026-3','DQ-1026-4','DQ-1026-5'],'2026-10-27':['DQ-1027-1','DQ-1027-2','DQ-1027-3','DQ-1027-4','DQ-1027-5'],'2026-10-28':['DQ-1028-1','DQ-1028-2','DQ-1028-3','DQ-1028-4','DQ-1028-5']};
 function DQ(id,ch,t,q,o,a,e){_p({id:id,ch:ch,t:t,ty:'mcq',mk:1,q:q,o:o,a:a,e:e,src:'own'});}
 DQ('DQ-1026-1','m1',1,'What are the HCF and LCM of 12 and 18?',['HCF 6, LCM 36','HCF 3, LCM 36','HCF 6, LCM 72','HCF 2, LCM 18'],0,'12 = 2²×3 and 18 = 2×3². HCF = 2×3 = 6 and LCM = 2²×3² = 36. Check: 6 × 36 = 216 = 12 × 18.');
 DQ('DQ-1026-2','s1',0,'Balance the equation H₂ + O₂ → H₂O. The balanced form is',['2H₂ + O₂ → 2H₂O','H₂ + O₂ → 2H₂O','H₂ + 2O₂ → 2H₂O','2H₂ + 2O₂ → 2H₂O'],0,'Left: 4 H and 2 O. Right: 4 H and 2 O. Both sides now have equal atoms of each element.');
@@ -751,6 +751,11 @@ DQ('DQ-1027-2','s2',2,'The pH of pure water is',['7','0','14','1'],0,'Pure water
 DQ('DQ-1027-3','s2',0,'Which acid is found in lemon?',['Citric acid','Acetic acid','Lactic acid','Tartaric acid'],0,'Lemon and other citrus fruits contain citric acid. Vinegar has acetic acid, curd has lactic acid, tamarind has tartaric acid.');
 DQ('DQ-1027-4','ep1',1,'Why did Lencho write a letter to God?',['Hail destroyed his crop and he needed money to sow again','He wanted a new house','He wanted to thank God for the rain','He wanted to find a job'],0,'The hailstorm ruined his field of ripe corn. Lencho had complete faith in God, so he asked Him for 100 pesos.');
 DQ('DQ-1027-5','m1',1,'The HCF of 12 and 18 is',['6','3','36','2'],0,'12 = 2²×3, 18 = 2×3². HCF = product of the smallest powers of the common primes = 2×3 = 6.');
+DQ('DQ-1028-1','m2',3,'A quadratic polynomial whose zeroes add up to 5 and multiply to 6 is',['x² − 5x + 6','x² + 5x + 6','x² − 6x + 5','x² + 6x − 5'],0,'Form: x² − (sum of zeroes)x + (product of zeroes) = x² − 5x + 6. (Its zeroes are 2 and 3.)');
+DQ('DQ-1028-2','s2',2,'The pH of a neutral solution is',['7','0','14','1'],0,'A neutral solution (like pure water) has pH 7. Below 7 is acidic and above 7 is basic.');
+DQ('DQ-1028-3','s2',3,'The products of the chlor-alkali process (electrolysis of brine) are',['NaOH, Cl₂ and H₂','NaOH, Na₂CO₃ and H₂','HCl, Cl₂ and O₂','NaHCO₃, Cl₂ and H₂'],0,'Electrolysis of brine gives sodium hydroxide (NaOH) at the cathode side along with hydrogen gas, and chlorine gas at the anode. Chlorine is used to make bleaching powder.');
+DQ('DQ-1028-4','cs1',0,'What is the difference between the Internet and the World Wide Web (WWW)?',['The Internet is the network of networks; the WWW is the collection of web pages accessed over it','The Internet is a collection of web pages; the WWW is the hardware network','Both mean exactly the same thing','The WWW is a type of e-mail protocol; the Internet is a web browser'],0,'The Internet is the global network of networks (the infrastructure). The World Wide Web is a collection of web pages and resources that we access over the Internet using a browser.');
+DQ('DQ-1028-5','hi1',1,'In 1815 Europe, what did liberalism mean for the middle classes?',['Freedom of markets, an end to state-imposed restrictions on goods and capital, and equality before law (but not universal suffrage)','Universal adult voting rights for all men and women','Rule by hereditary monarchs with no constitution','Abolition of private property'],0,'Liberalism stood for freedom of the individual and equality before the law. For the propertied middle classes it meant free markets and the end of state-imposed restrictions on the movement of goods and capital. It did not mean universal suffrage: voting was limited to men with property.');
 QB.forEach(function(q,i){q.uid=q.id||('P'+i);});
 var QBY={};QB.forEach(function(q){QBY[q.uid]=q;});
 function pad(n){return n<10?'0'+n:''+n}
@@ -1731,7 +1736,9 @@ var DP_END='2026-11-23';
 var POSTED_SPEC={
  '2026-10-26':{h1:[['m1',[1],'maths',30],['s1',[0],'sci',30]],x2:[['ep1',[0],'eng',30],['hi1',[0,1],'sst',30]]},
  '2026-10-27':{h1:[['m2',[2],'maths',30],['s2',[2],'sci',25]],x2:[['ep1',[1],'eng',30],['hk1',[0],'hin',25]],recap:5,
-  rev:['m1','maths',10,'Revise: Real Numbers — solve 3 HCF/LCM sums','Without looking at your notes, solve 3 HCF/LCM sums, then check each answer.']}};
+  rev:['m1','maths',10,'Revise: Real Numbers — solve 3 HCF/LCM sums','Without looking at your notes, solve 3 HCF/LCM sums, then check each answer.']},
+ '2026-10-28':{h1:[['m2',[3],'maths',30],['s2',[3],'sci',25]],x2:[['cs1',[0],'cs',30],['hi1',[1],'sst',25]],recap:5,
+  rev:['s1','sci',10,'Revise: Chemical Reactions and Equations — balance 3 equations','Without looking at your notes, balance 3 chemical equations, then check each one.']}};
 var _pc={};
 function postedPlan(d){var sp=POSTED_SPEC[d];if(!sp)return null;if(_pc[d])return _pc[d];
  var mk=function(a){return learnTask({ch:a[0],sub:a[2],ts:a[1].slice(),m:a[3]})};
